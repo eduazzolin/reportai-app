@@ -1,8 +1,17 @@
 .leaflet-container {
-    height: 600px;
+    height: calc(100vh - 60px);
     width: 100%;
 }
 
 .sidebar {
-    height: 500px;
+    height: calc(100vh - 60px);
+    overflow: auto;
+}
+
+.placeholder_card {
+    height: 200px;
+}
+
+.placeholder_adicionar {
+    height: 50px;
 }
