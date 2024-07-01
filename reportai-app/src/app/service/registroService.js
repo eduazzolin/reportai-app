@@ -13,27 +13,28 @@ export async function consultar() {
       "usuario": {
         "id": 1,
         "nome": "João da Silva",
-        "email": "joao@email.com"
+        "email": "joao@email.com",
+        "foto": "/fotos/joao.jpg"
       },
       "imagens": [
         {
           "id": 1,
           "nome": "buraco1.jpg",
-          "url": "./imagens/buraco1.jpg"
+          "url": "/fotos/buraco1.jpg"
         },
         {
           "id": 2,
           "nome": "buraco2.jpg",
-          "url": "./imagens/buraco2.jpg"
+          "url": "/fotos/buraco2.jpg"
         },
         {
           "id": 3,
           "nome": "buraco3.jpg",
-          "url": "./imagens/buraco3.jpg"
+          "url": "/fotos/buraco3.jpg"
         }
       ],
       "interacao_likes": 10,
-      "interacao_concluido": 5,
+      "interacao_concluido": 5
     },
     {
       id: 2,
@@ -48,18 +49,19 @@ export async function consultar() {
       usuario: {
         id: 2,
         nome: "Maria Oliveira",
-        email: "maria@email.com"
+        email: "maria@email.com",
+        foto: "/fotos/maria.jpg"
       },
       imagens: [
         {
           id: 4,
-          nome: "lampada1.jpg",
-          url: "./imagens/lampada1.jpg"
+          nome: "poste1.jpg",
+          url: "/fotos/poste1.jpg"
         },
         {
           id: 5,
-          nome: "lampada2.jpg",
-          url: "./imagens/lampada2.jpg"
+          nome: "poste2.jpg",
+          url: "/fotos/poste2.jpg"
         }
       ],
       interacao_likes: 15,
@@ -78,18 +80,19 @@ export async function consultar() {
       usuario: {
         id: 3,
         nome: "Carlos Souza",
-        email: "carlos@email.com"
+        email: "carlos@email.com",
+        foto: "/fotos/carlos.jpg"
       },
       imagens: [
         {
           id: 6,
           nome: "arvore1.jpg",
-          url: "./imagens/arvore1.jpg"
+          url: "/fotos/arvore1.jpg"
         },
         {
           id: 7,
           nome: "arvore2.jpg",
-          url: "./imagens/arvore2.jpg"
+          url: "/fotos/arvore2.jpg"
         }
       ],
       interacao_likes: 20,

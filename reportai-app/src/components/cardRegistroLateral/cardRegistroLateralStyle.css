@@ -1,0 +1,51 @@
+.card_container {
+    height: 200px;
+}
+
+.img_thumb {
+    height: 182px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.text_localizacao {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: small;
+}
+
+.icone_localizacao {
+    width: 20px;
+}
+
+.text_descricao {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Adjust this to change the number of lines before truncating */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text_titulo {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.img_usuario {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+.text_usuario{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.div_usuario{
+    max-width: 70%;
+    display: flex;
+    align-items: center;
+}
