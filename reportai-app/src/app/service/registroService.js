@@ -130,3 +130,29 @@ export async function consultar() {
     }
   ];
 }
+
+export const registroPrototype = {
+  "id": 0,
+  "titulo": "",
+  "descricao": "",
+  "localizacao": "",
+  "latitude": 0,
+  "longitude": 0,
+  "dt_criacao": "",
+  "dt_modificacao": "",
+  "is_concluido": false,
+  "categoria": {
+    "id": 0,
+    "nome": "",
+    "icone": ""
+  },
+  "usuario": {
+    "id": 0,
+    "nome": "",
+    "email": "",
+    "foto": ""
+  },
+  "imagens": [],
+  "interacao_likes": [],
+  "interacao_concluido": []
+};

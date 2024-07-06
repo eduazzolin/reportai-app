@@ -1,9 +1,11 @@
 import React from 'react';
 import './cardRegistroLateralStyle.css'
-import {BsFillGeoAltFill, BsCheckSquare} from "react-icons/bs";
-import {BiLike} from "react-icons/bi";
+import {FaSquareCheck} from "react-icons/fa6";
+import {FaMap} from "react-icons/fa";
+import {AiFillLike} from "react-icons/ai";
 
-export default function CardRegistroLateral({registro}) {
+export default function CardRegistroLateral({registro, focarMapaNoRegistro}) {
+
   return (<div className={"container card_container bg-light border rounded"}>
     <div className="row p-2">
 
@@ -32,8 +34,10 @@ export default function CardRegistroLateral({registro}) {
                   <img src={registro.usuario.foto} className="img_usuario" alt="..."/>
                   <span className={"text_usuario"}>{registro.usuario.nome}</span>
                 </div>
-                <div>
-                  <BiLike size={"26px"}/><BsCheckSquare size={"26px"}/>
+                <div className='gap-2 d-flex'>
+                  <FaMap className='icone_clicavel' onClick={() => focarMapaNoRegistro(registro)} size={"26px"}/>
+                  <AiFillLike  size={"26px"}/>
+                  <FaSquareCheck size={"26px"}/>
                 </div>
               </div>
             </div>
