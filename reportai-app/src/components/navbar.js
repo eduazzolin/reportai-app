@@ -19,7 +19,8 @@ function AppNavbar() {
           <Nav className="me-auto">
             <Nav.Link href="#home">Home</Nav.Link>
             <Nav.Link href="#meus-registros">Meus Registros</Nav.Link>
-            <Nav.Link href="#sobre">Sobre o Reportaí</Nav.Link>
+            <Nav.Link href="#relatorios">Relatórios Públicos</Nav.Link>
+            <Nav.Link href="#sobre">Sobre</Nav.Link>
           </Nav>
           <Nav className="ml-auto">
             <div className="d-flex align-items-center gap-3">

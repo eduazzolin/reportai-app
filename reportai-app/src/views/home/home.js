@@ -2,10 +2,10 @@ import React, {useRef, useEffect, useState} from "react";
 import './homeStyle.css'
 import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet"
 import L from 'leaflet'
-import osm from '../app/service/osm-providers'
+import osm from '../../app/service/osm-providers'
 import 'leaflet/dist/leaflet.css'
-import {consultar} from "../app/service/registroService";
-import CardRegistroLateral from "../components/cardRegistroLateral/cardRegistroLateral";
+import {consultar} from "../../app/service/registroService";
+import CardRegistroLateral from "../../components/cardRegistroLateral/cardRegistroLateral";
 
 export default function Home() {
   const [center, setCenter] = useState([-27.6012, -48.4812]) // [latitude, longitude]
@@ -66,7 +66,7 @@ export default function Home() {
                 position={[registro.latitude, registro.longitude]}
                 icon={
                   new L.Icon({
-                    iconUrl: '/markers/' + registro.icone + '.png',
+                    iconUrl: registro.categoria.icone,
                     iconSize: [32, 40],
                     iconAnchor: [16, 40]
                   })
