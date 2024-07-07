@@ -5,12 +5,17 @@ import osm from '../app/service/osm-providers';
 import 'leaflet/dist/leaflet.css';
 import {consultar} from "../app/service/registroService";
 import CardRegistroLateral from "../components/cardRegistroLateral/cardRegistroLateral";
+import {Button} from "react-bootstrap";
+import {useNavigate} from "react-router-dom";
+
 
 export default function Home() {
   const [registros, setRegistros] = useState([]);
   const mapRef = useRef();
   const cardRefs = useRef([]);
   const [activeRegistroId, setActiveRegistroId] = useState(null);
+
+  const navigate = useNavigate();
 
   const mountPage = async () => {
     try {
@@ -41,13 +46,17 @@ export default function Home() {
   return (
     <div className={'container-fluid'}>
       <div className={'row'}>
+
+        {/* ---------------------- SIDEBAR ------------------------*/}
+
         <div className={'col-lg-5 col-8 sidebar'}>
           <div className={'row p-3 gap-3'}>
-            <div
-              className={'col-12 bg-light border rounded placeholder_adicionar justify-content-center align-content-center'}></div>
+            <div className={'col-12 placeholder_adicionar'}>
+              <Button variant="warning" className={'w-100'} onClick={() => navigate('/novo-registro')}>Adicionar Registro</Button>
+            </div>
             {
               registros.map((registro, index) => (
-                <div ref={(el) => cardRefs.current[registro.id] = el} key={index}>
+                <div ref={(el) => cardRefs.current[registro.id] = el} key={index} className={'p-0'}>
                   <CardRegistroLateral
                     key={index}
                     focarMapaNoRegistro={focarMapaNoRegistro}
@@ -57,6 +66,10 @@ export default function Home() {
             }
           </div>
         </div>
+
+
+        {/* ---------------------- MAPA ------------------------*/}
+
         <div className={'col-lg-7 col-4 p-0'}>
           <MapContainer
             center={[-27.6012, -48.4812]}
@@ -87,6 +100,8 @@ export default function Home() {
             ))}
           </MapContainer>
         </div>
+
+
       </div>
     </div>
   );

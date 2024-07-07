@@ -7,6 +7,12 @@
     height: 50px;
 }
 
-.icone_clicavel {
+.clicavel {
     cursor: pointer;
+    &:hover {
+        color: rgba(0, 7, 14, 0.59);
+    }
+}
+.texto_justificado{
+    text-align: justify;
 }

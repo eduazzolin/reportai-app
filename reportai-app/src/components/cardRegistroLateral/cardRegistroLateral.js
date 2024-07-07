@@ -3,9 +3,12 @@ import './cardRegistroLateralStyle.css'
 import {FaSquareCheck} from "react-icons/fa6";
 import {FaMap} from "react-icons/fa";
 import {AiFillLike} from "react-icons/ai";
+import {ReactSVG} from "react-svg";
 
 export default function CardRegistroLateral({registro, focarMapaNoRegistro}) {
-
+  const handleTitleClick = () => {
+    window.open(`/registro/${registro.id}`, '_blank');
+  };
   return (<div className={"container card_container bg-light border rounded"}>
     <div className="row p-2">
 
@@ -19,10 +22,10 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro}) {
         <div className="container p-0">
           <div className="row">
 
-            <div className="col-12 d-flex mb-3 mt-3 gap-2">
-              <img src={registro.categoria.icone} className="img_localizacao" alt="..."/>
-              <div className={"div_titulo"}>
-                <h5 className={"text_titulo"}>{registro.titulo}</h5>
+            <div onClick={handleTitleClick} className="col-12 d-flex mb-3 mt-3 gap-2 clicavel div_titulo">
+              <img src={registro.categoria.icone} className="teste" alt="..."/>
+              <div>
+                <h5 className={"text_titulo "}>{registro.titulo}</h5>
                 <div className={"text_localizacao"}>{registro.localizacao}</div>
               </div>
             </div>
@@ -35,8 +38,8 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro}) {
                   <span className={"text_usuario"}>{registro.usuario.nome}</span>
                 </div>
                 <div className='gap-2 d-flex'>
-                  <FaMap className='icone_clicavel' onClick={() => focarMapaNoRegistro(registro)} size={"26px"}/>
-                  <AiFillLike  size={"26px"}/>
+                  <FaMap className='clicavel' onClick={() => focarMapaNoRegistro(registro)} size={"26px"}/>
+                  <AiFillLike size={"26px"}/>
                   <FaSquareCheck size={"26px"}/>
                 </div>
               </div>

@@ -149,9 +149,6 @@ export default function NovoRegistro() {
 
 
                       </MapContainer>
-
-
-
                     </div>
                   </Form.Group>
                 </div>

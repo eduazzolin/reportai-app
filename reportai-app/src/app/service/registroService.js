@@ -3,7 +3,7 @@ export async function consultar() {
     {
       "id": 1,
       "titulo": "Buraco na rua",
-      "descricao": "Tem um buraco na rua da minha casa, já faz 1 semana que está aberto e com a chuva piorou. Precisamos de uma solução urgente.",
+      "descricao": "A rua onde moro está enfrentando um problema sério há uma semana. Um grande buraco se formou no meio da via, trazendo inúmeros transtornos para os moradores e motoristas que passam pelo local. Este buraco não só representa um obstáculo físico, mas também um risco significativo para a segurança de todos que trafegam pela área.\n\nNos últimos dias, a situação se agravou devido às fortes chuvas que atingiram a região. A água da chuva ampliou o tamanho do buraco e tornou a via ainda mais perigosa. O buraco está ficando mais profundo e largo, aumentando as chances de acidentes. Além disso, a água acumulada dentro do buraco pode causar danos adicionais à infraestrutura da rua e aos veículos que, inadvertidamente, passem por ali.\n\nÉ urgente que medidas sejam tomadas para resolver este problema. Os moradores da rua estão preocupados e apelam para as autoridades responsáveis para que realizem os reparos necessários o mais rápido possível. Uma solução imediata é essencial para garantir a segurança dos pedestres, ciclistas e motoristas, além de evitar que o problema se torne ainda mais grave.\n\nA presença deste buraco já está afetando a rotina diária de todos que vivem e transitam pela região. É imperativo que as autoridades municipais priorizem este reparo e implementem uma solução duradoura para evitar futuros transtornos. A comunidade local espera uma resposta rápida e eficaz para este problema que, embora pareça simples, tem grandes repercussões na vida cotidiana de muitas pessoas.",
       "localizacao": "Na frente dos Bombeiros na Trindade",
       "latitude": -27.5884,
       "longitude": -48.5229,
@@ -13,7 +13,7 @@ export async function consultar() {
       "categoria": {
         "id": 1,
         "nome": "Buraco na rua",
-        "icone": "/markers/street.png"
+        "icone": "/markers/street.svg"
       },
       "usuario": {
         "id": 1,
@@ -59,7 +59,7 @@ export async function consultar() {
       "categoria": {
         "id": 2,
         "nome": "Lâmpada queimada",
-        "icone": "/markers/light.png"
+        "icone": "/markers/light.svg"
       },
       "usuario": {
         "id": 2,
@@ -100,7 +100,7 @@ export async function consultar() {
       "categoria": {
         "id": 3,
         "nome": "Árvore caída",
-        "icone": "/markers/tree.png"
+        "icone": "/markers/tree.svg"
       },
       "usuario": {
         "id": 3,
@@ -129,6 +129,11 @@ export async function consultar() {
       ]
     }
   ];
+}
+
+export async function consultarPorId(id) {
+  const lista = await consultar();
+  return lista.find(registro => registro.id == id);
 }
 
 export const registroPrototype = {
