@@ -3,37 +3,37 @@ export async function consultarCategorias() {
     {
       id: 1,
       nome: 'Buraco na rua',
-      icone: '/markers/street.png'
+      icone: '/markers/street.svg'
     },
     {
       id: 2,
       nome: 'Lâmpada queimada',
-      icone: '/markers/traffic-light.png'
+      icone: '/markers/traffic-light.svg'
     },
     {
       id: 3,
       nome: 'Calçada danificada',
-      icone: '/markers/path.png'
+      icone: '/markers/path.svg'
     },
     {
       id: 4,
       nome: 'Poda de árvore',
-      icone: '/markers/tree.png'
+      icone: '/markers/tree.svg'
     },
     {
       id: 5,
       nome: 'Vazamento de água',
-      icone: '/markers/flood.png'
+      icone: '/markers/flood.svg'
     },
     {
       id: 6,
       nome: 'Sinalização de trânsito',
-      icone: '/markers/traffic-sign.png'
+      icone: '/markers/traffic-sign.svg'
     },
     {
       id: 7,
       nome: 'Outros',
-      icone: '/markers/general.png'
+      icone: '/markers/general.svg'
     }
   ]
 }

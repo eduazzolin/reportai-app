@@ -51,8 +51,9 @@ export default function Home() {
 
         <div className={'col-lg-5 col-8 sidebar'}>
           <div className={'row p-3 gap-3'}>
-            <div className={'col-12 placeholder_adicionar'}>
-              <Button variant="warning" className={'w-100'} onClick={() => navigate('/novo-registro')}>Adicionar Registro</Button>
+            <div className={'col-12'}>
+              <Button variant="warning" className={'w-100'} onClick={() => navigate('/novo-registro')}>Adicionar
+                Registro</Button>
             </div>
             {
               registros.map((registro, index) => (
@@ -93,7 +94,10 @@ export default function Home() {
                   })
                 }
                 eventHandlers={{
-                  click: () => highlightRegistro(registro.id),
+                  click: () => {
+                    highlightRegistro(registro.id);
+                    focarMapaNoRegistro(registro);
+                  },
                 }}
               >
               </Marker>

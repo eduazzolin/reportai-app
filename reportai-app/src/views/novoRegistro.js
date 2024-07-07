@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {registroPrototype} from "../app/service/registroService";
-import {consultarCategorias} from "../app/service/APIService";
+import {consultarCategorias} from "../app/service/categoriaService";
 import {MapContainer, Marker, Popup, TileLayer, useMapEvents} from "react-leaflet";
 import osm from "../app/service/osm-providers";
 import Form from 'react-bootstrap/Form';
@@ -135,19 +135,8 @@ export default function NovoRegistro() {
                               })
                             }
                           >
-                            <Popup>
-                              <div className={'card'}>
-                                <div className={'card-body'}>
-                                  <h5 className={'card-title'}>{registro.titulo}</h5>
-                                  <p className={'card-text'}>{registro.descricao}</p>
-                                  <p className={'card-text'}><small className={'text-muted'}>{registro.localizacao}</small></p>
-                                </div>
-                              </div>
-                            </Popup>
                           </Marker>
                         )}
-
-
                       </MapContainer>
                     </div>
                   </Form.Group>
