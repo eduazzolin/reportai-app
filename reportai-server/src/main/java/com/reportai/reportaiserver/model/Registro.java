@@ -46,8 +46,11 @@ public class Registro {
    @Column()
    private LocalDateTime dtModificacao;
 
-   @Column(nullable = false)
+   @Column()
    private Boolean isConcluido = false;
+
+   @Column()
+   private Boolean isDeleted = false;
 
    @ManyToOne
    @JoinColumn(nullable = false)

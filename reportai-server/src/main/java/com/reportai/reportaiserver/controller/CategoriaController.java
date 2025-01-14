@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/imagens")
+@RequestMapping("/categorias")
 @RequiredArgsConstructor
 public class CategoriaController {
 

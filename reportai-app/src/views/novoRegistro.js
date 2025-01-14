@@ -56,9 +56,7 @@ export default function NovoRegistro() {
                     <Form.Label>Descrição do local</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Digite a descrição do local"
-                      value={registro.localizacao}
-                      onChange={event => setRegistro({...registro, titulo: event.target.value})}/>
+                      placeholder="Digite a descrição do local"/>
                   </Form.Group>
 
                   <div className='gap-3 d-flex'>
@@ -106,7 +104,7 @@ export default function NovoRegistro() {
                       onChange={event => setRegistro({...registro, imagens: event.target.files})}/>
                   </Form.Group>
 
-                  <Button variant="primary" onClick={() => console.log(registro)}> test </Button>
+                  <Button variant="primary" onClick={() => console.log(registro)}> Cadastrar </Button>
                 </div>
 
                 <div className='col-6 '>

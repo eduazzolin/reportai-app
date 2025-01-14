@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -18,13 +20,29 @@ public class Usuario {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
+
+   @Column(length = 50)
+   private String role;
+
    private String nome;
+
    @Column(unique = true)
    private String email;
+
    @Column(unique = true)
    private String cpf;
+
    private String senha;
-   private LocalDateTime dataCriacao;
-   private boolean isDeleted;
+
+   @CreationTimestamp
+   @Column(updatable = false)
+   private LocalDateTime dtCriacao;
+
+   @UpdateTimestamp
+   @Column()
+   private LocalDateTime dtModificacao;
+
+   @Column()
+   private Boolean isDeleted = false;
 
 }
