@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,11 +31,11 @@ public class Registro {
    @Column(length = 255)
    private String localizacao;
 
-   @Column(precision = 10, scale = 8)
-   private BigDecimal latitude;
+   @Column(precision = 10)
+   private Double latitude;
 
-   @Column(precision = 11, scale = 8)
-   private BigDecimal longitude;
+   @Column(precision = 11)
+   private Double longitude;
 
    @CreationTimestamp
    @Column(updatable = false)
