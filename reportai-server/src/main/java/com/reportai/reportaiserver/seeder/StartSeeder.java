@@ -8,10 +8,10 @@ import com.reportai.reportaiserver.repository.RegistroRepository;
 import com.reportai.reportaiserver.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-
 public class StartSeeder implements CommandLineRunner {
 
    @Autowired
@@ -23,12 +23,45 @@ public class StartSeeder implements CommandLineRunner {
    @Autowired
    RegistroRepository registroRepository;
 
+   @Autowired
+   private JdbcTemplate jdbcTemplate;
+
    @Override
    public void run(String... args) throws Exception {
       loadCategoria();
       loadUsuario();
       loadRegistro();
+      createProcedureRegistroPorDistancia();
    }
+
+   private void createProcedureRegistroPorDistancia() {
+
+      jdbcTemplate.execute("DROP PROCEDURE IF EXISTS SP_REGISTROS_POR_DISTANCIA;");
+      String sql = """
+                                 CREATE PROCEDURE SP_REGISTROS_POR_DISTANCIA(
+                                     IN p_lat DOUBLE,
+                                     IN p_long DOUBLE,
+                                     IN p_distancia DOUBLE,
+                                     IN p_paginacao INT,
+                                     IN p_pagina INT
+                                 )
+                                 BEGIN
+                                     DECLARE v_offset INT;
+                                     SET v_offset = (p_pagina - 1) * p_paginacao;
+              
+                                     SELECT
+                                         *,
+                                         (SQRT(POW(latitude - p_lat, 2) + POW(longitude - p_long, 2))) * 100 AS distancia,
+                                         ROUND((SQRT(POW(latitude - p_lat, 2) + POW(longitude - p_long, 2)) * 100 / 4)) * 4 AS distancia_arredondada
+                                     FROM REGISTRO
+                                     WHERE (SQRT(POW(latitude - p_lat, 2) + POW(longitude - p_long, 2))) * 100 <= p_distancia
+                                     ORDER BY distancia_arredondada ASC, dt_criacao DESC
+                                     LIMIT p_paginacao OFFSET v_offset;
+                                 END;
+              """;
+      jdbcTemplate.execute(sql);
+   }
+
 
    private void loadCategoria() {
       if (categoriaRepository.count() == 0) {
