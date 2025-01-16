@@ -23,19 +23,53 @@ public class RegistroService {
 
    public List<Registro> findAll() {
       List<Registro> registros = repository.findAll();
-      return orderByProximity(registros, -27.66674533163343, -48.48246553064851);
+      return ordenarPorProximidade(registros, -27.66674533163343, -48.48246553064851);
    }
 
    public void deleteById(Long id) {
       repository.deleteById(id);
    }
 
-   private List<Registro> orderByProximity(List<Registro> registros, double latitude, double longitude) {
+   /***
+    * Ordena os registros por proximidade com a latitude e longitude informadas.
+    * A ordenação é feita primeiramente pela distância entre a localização do registro e a localização informada.
+    * A distância é arredondada para o próximo múltiplo de 4km.
+    * Caso a distância arrendondada seja a mesma, a ordenação é feita pela data de criação do registro.
+    * @param registros
+    * @param latitude
+    * @param longitude
+    * @return
+    */
+   public List<Registro> ordenarPorProximidade(List<Registro> registros, double latitude, double longitude) {
       registros.sort((r1, r2) -> {
-         double distance1 = Math.sqrt(Math.pow(r1.getLatitude() - latitude, 2) + Math.pow(r1.getLongitude() - longitude, 2));
-         double distance2 = Math.sqrt(Math.pow(r2.getLatitude() - latitude, 2) + Math.pow(r2.getLongitude() - longitude, 2));
-         return Double.compare(distance1, distance2);
+         double distancia1 = arredondarParaProximoMultiploDe4Km(
+                 calcularDistancia(r1.getLatitude(), r1.getLongitude(), latitude, longitude)
+         );
+         double distancia2 = arredondarParaProximoMultiploDe4Km(
+                 calcularDistancia(r2.getLatitude(), r2.getLongitude(), latitude, longitude)
+         );
+
+         int comparacaoDistancia = Double.compare(distancia1, distancia2);
+         if (comparacaoDistancia != 0) {
+            return comparacaoDistancia;
+         }
+
+         return r2.getDtCriacao().compareTo(r1.getDtCriacao());
       });
+
       return registros;
    }
+
+   private double calcularDistancia(double lat1, double lon1, double lat2, double lon2) {
+      // https://pt.stackoverflow.com/questions/310350/dist%C3%A2ncia-entre-dois-pontos
+      // Euclidiana
+      double powLong = Math.pow(lon2 - lon1, 2);
+      double powLat = Math.pow(lat2 - lat1, 2);
+      return Math.sqrt(powLong + powLat) * 100;
+   }
+
+   private double arredondarParaProximoMultiploDe4Km(double distancia) {
+      return Math.round(distancia / 4) * 4;
+   }
+
 }
