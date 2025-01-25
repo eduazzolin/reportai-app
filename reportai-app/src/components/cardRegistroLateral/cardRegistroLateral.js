@@ -1,7 +1,7 @@
 import React from 'react';
 import './cardRegistroLateralStyle.css'
 import {FaSquareCheck} from "react-icons/fa6";
-import {FaMap} from "react-icons/fa";
+import {FaMap, FaUserCircle} from "react-icons/fa";
 import {AiFillLike} from "react-icons/ai";
 import {ReactSVG} from "react-svg";
 
@@ -14,7 +14,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro}) {
 
       <div className="col-4 p-0">
         <div>
-          <img src={registro.imagens[0].caminho} className="img_thumb rounded" alt="..."/>
+          {registro.imagens[0]?.caminho && <img src={registro.imagens[0].caminho} className="img_thumb rounded" alt="..."/>}
         </div>
       </div>
 
@@ -34,7 +34,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro}) {
               <p className={"text_descricao"}>{registro.descricao}</p>
               <div className="col-12 gap-2 d-flex justify-content-between align-items-center">
                 <div className={"div_usuario"}>
-                  <img src={registro.usuario.foto} className="img_usuario" alt="..."/>
+                  <FaUserCircle className="img_usuario" size="26px" />
                   <span className={"text_usuario"}>{registro.usuario.nome}</span>
                 </div>
                 <div className='gap-2 d-flex'>
