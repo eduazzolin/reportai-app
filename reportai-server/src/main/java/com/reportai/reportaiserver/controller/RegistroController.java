@@ -40,9 +40,10 @@ public class RegistroController {
    }
 
    @GetMapping("/distancia")
-   public ResponseEntity<?> listarPorDistancia(@RequestParam double latitude, @RequestParam double longitude, @RequestParam double distancia, @RequestParam int paginacao, @RequestParam int pagina) {
+   public ResponseEntity<?> listarPorDistancia(@RequestParam double latitude, @RequestParam double longitude, @RequestParam double distancia, @RequestParam int pagina) {
+
       try {
-         return ResponseEntity.ok(service.findByDistancia(latitude, longitude, distancia, paginacao, pagina));
+         return ResponseEntity.ok(service.findByDistancia(latitude, longitude, distancia, 99999, pagina));
       } catch (Exception e) {
          return ResponseEntity.badRequest().body(e.getMessage());
       }

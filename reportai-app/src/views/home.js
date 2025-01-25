@@ -1,34 +1,59 @@
 import React, {useEffect, useRef, useState} from "react";
-import {MapContainer, Marker, TileLayer} from "react-leaflet";
+import {MapContainer, Marker, TileLayer, useMapEvents} from "react-leaflet";
 import L from 'leaflet';
 import osm from '../app/service/osm-providers';
 import 'leaflet/dist/leaflet.css';
-import {consultar} from "../app/service/registroService";
+import {RegistroService} from "../app/service/registroService";
 import CardRegistroLateral from "../components/cardRegistroLateral/cardRegistroLateral";
 import {Button} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 
+function MapEventsHandler({onZoomChange, onCenterChange}) {
+  // Esse hook permite "ouvir" eventos do mapa
+  const map = useMapEvents({
+    zoomend: () => {
+      onZoomChange(map.getZoom());
+    },
+    moveend: () => {
+      const center = map.getCenter();
+      onCenterChange(center.lat, center.lng);
+    },
+  });
+
+  return null; // Esse componente não renderiza nada visível
+}
 
 export default function Home() {
   const [registros, setRegistros] = useState([]);
   const mapRef = useRef();
   const cardRefs = useRef([]);
   const [activeRegistroId, setActiveRegistroId] = useState(null);
+  const [zoom, setZoom] = useState(13); // 11 = 50 km  12 = 25 km  13 = 12 km  14 = 6 km  15 = 3 km  16 = 1.5 km  17 = 750 m  18 = 375 m  19 = 187 m  20 = 93 m
+  const [latitude, setLatitude] = useState(-27.6012);
+  const [longitude, setLongitude] = useState(-48.4812);
+  const [distancia, setDistancia] = useState(calculateDistance(13));
+
+  // Função para calcular a distância com base no zoom
+  function calculateDistance(zoomLevel) {
+    const baseDistance = 50000; // Distância para zoom 11
+    return (baseDistance * Math.pow(2, -(zoomLevel - 11))) / 1000;
+  }
+
 
   const navigate = useNavigate();
+  const registroService = new RegistroService();
 
-  const mountPage = async () => {
-    try {
-      const response_registros = await consultar();
-      setRegistros(response_registros);
-    } catch (error) {
-      console.log("Erro ao buscar dados", error);
-    }
-  };
 
   useEffect(() => {
-    mountPage();
-  }, []);
+    setDistancia(calculateDistance(zoom));
+    registroService.consultar(latitude, longitude, distancia).then(response => {
+      setRegistros(response.data);
+    }).catch(error => {
+      console.log('Erro ao buscar projetos');
+    });
+
+
+  }, [zoom, latitude, longitude]);
 
   const focarMapaNoRegistro = (registro) => {
     console.log([registro.latitude, registro.longitude]);
@@ -73,14 +98,22 @@ export default function Home() {
 
         <div className={'col-lg-7 col-4 p-0'}>
           <MapContainer
-            center={[-27.6012, -48.4812]}
-            zoom={11}
+            center={[latitude, longitude]}
+            zoom={zoom}
             ref={mapRef}
             style={{height: 'calc(100vh - 60px)', width: '100%'}}
           >
             <TileLayer
               url={osm.maptiler.url}
               attribution={osm.maptiler.attribution}
+            />
+            {/* Componente que "escuta" os eventos e atualiza o estado */}
+            <MapEventsHandler
+              onZoomChange={(novoZoom) => setZoom(novoZoom)}
+              onCenterChange={(lat, lng) => {
+                setLatitude(lat);
+                setLongitude(lng);
+              }}
             />
             {registros.map((registro, index) => (
               <Marker

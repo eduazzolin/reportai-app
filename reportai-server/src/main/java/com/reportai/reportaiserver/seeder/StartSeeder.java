@@ -1,9 +1,11 @@
 package com.reportai.reportaiserver.seeder;
 
 import com.reportai.reportaiserver.model.Categoria;
+import com.reportai.reportaiserver.model.Imagem;
 import com.reportai.reportaiserver.model.Registro;
 import com.reportai.reportaiserver.model.Usuario;
 import com.reportai.reportaiserver.repository.CategoriaRepository;
+import com.reportai.reportaiserver.repository.ImagemRepository;
 import com.reportai.reportaiserver.repository.RegistroRepository;
 import com.reportai.reportaiserver.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class StartSeeder implements CommandLineRunner {
    RegistroRepository registroRepository;
 
    @Autowired
+   ImagemRepository imagemRepository;
+
+   @Autowired
    private JdbcTemplate jdbcTemplate;
 
    @Override
@@ -32,6 +37,7 @@ public class StartSeeder implements CommandLineRunner {
       loadUsuario();
       loadRegistro();
       createProcedureRegistroPorDistancia();
+      loadImagem();
    }
 
    private void createProcedureRegistroPorDistancia() {
@@ -213,6 +219,19 @@ public class StartSeeder implements CommandLineRunner {
                  .usuario(usuarioRepository.findById(2L).get())
                  .build());
       }
+   }
+
+   private void loadImagem() {
+      if (0 == 0) {
+         imagemRepository.save(Imagem.builder().caminho("https://www.educolorir.com/imagem-numero-1-dl20182.jpg").registro(registroRepository.findById(1L).get()).build());
+         imagemRepository.save(Imagem.builder().caminho("https://www.educolorir.com/imagem-numero-1-dl20182.jpg").registro(registroRepository.findById(1L).get()).build());
+         imagemRepository.save(Imagem.builder().caminho("https://www.educolorir.com/imagem-numero-1-dl20182.jpg").registro(registroRepository.findById(1L).get()).build());
+         imagemRepository.save(Imagem.builder().caminho("https://img.freepik.com/fotos-gratis/numero-2-feito-de-flores-e-grama-isoladas-em-branco_169016-57072.jpg").registro(registroRepository.findById(2L).get()).build());
+         imagemRepository.save(Imagem.builder().caminho("https://img.freepik.com/fotos-gratis/numero-2-feito-de-flores-e-grama-isoladas-em-branco_169016-57072.jpg").registro(registroRepository.findById(2L).get()).build());
+         imagemRepository.save(Imagem.builder().caminho("https://img.freepik.com/fotos-gratis/numero-2-feito-de-flores-e-grama-isoladas-em-branco_169016-57072.jpg").registro(registroRepository.findById(2L).get()).build());
+
+      }
+
    }
 
 
