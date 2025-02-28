@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 import {Button} from "react-bootstrap";
 import L from 'leaflet'
 
-export default function NovoRegistro() {
+export default function CadastrarRegistro() {
   // const [center, setCenter] = useState([-27.6012, -48.4812]) // [latitude, longitude]
   // const [zoom, setZoom] = useState(11)
   // const mapRef = useRef();

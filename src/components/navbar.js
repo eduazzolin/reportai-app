@@ -27,7 +27,7 @@ function AppNavbar() {
           {/*links*/}
           <Nav className="me-auto">
             <Nav.Link as={NavLink} to="/home">Home</Nav.Link>
-            <Nav.Link as={NavLink} to="/novo-registro">Novo Registro</Nav.Link>
+            <Nav.Link as={NavLink} to="/cadastrar-registro">Novo Registro</Nav.Link>
             <Nav.Link as={NavLink} to="/relatorios">Relatórios Públicos</Nav.Link>
             <Nav.Link as={NavLink} to="/sobre">Sobre</Nav.Link>
           </Nav>

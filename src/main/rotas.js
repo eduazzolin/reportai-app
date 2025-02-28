@@ -1,11 +1,12 @@
 import React from "react";
 import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom'
 import Home from "../views/home";
-import DetalhesRegistro from "../views/detalhesRegistro";
-import NovoRegistro from "../views/novoRegistro";
+import VerRegistro from "../views/verRegistro";
+import CadastrarRegistro from "../views/cadastrarRegistro";
 import AppNavbar from "../components/navbar";
 import Sandbox from "../views/sandbox";
 import 'toastr/build/toastr.min.css';
+import CadastrarUsuario from "../views/cadastrarUsuario";
 
 function Rotas() {
 
@@ -16,9 +17,10 @@ function Rotas() {
         <Routes>
           <Route path="/" element={<Navigate to="/home"/>}/>
           <Route path="/home" element={<Home/>}/>
-          <Route path="/novo-registro" element={<NovoRegistro/>}/>
-          <Route path="/registro/:id" element={<DetalhesRegistro />} />
+          <Route path="/cadastrar-registro" element={<CadastrarRegistro/>}/>
+          <Route path="/registro/:id" element={<VerRegistro />} />
           <Route path="/sandbox" element={<Sandbox />} />
+          <Route path="/cadastrar-usuario" element={<CadastrarUsuario />} />
         </Routes>
       </div>
     </Router>)
