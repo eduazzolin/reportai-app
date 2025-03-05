@@ -5,7 +5,6 @@ import VerRegistro from "../views/verRegistro";
 import CadastrarRegistro from "../views/cadastrarRegistro";
 import AppNavbar from "../components/navbar";
 import Sandbox from "../views/sandbox";
-import 'toastr/build/toastr.min.css';
 import CadastrarUsuario from "../views/cadastrarUsuario";
 
 function Rotas() {

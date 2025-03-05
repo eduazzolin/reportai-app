@@ -3,19 +3,40 @@ import {useNavigate} from 'react-router-dom';
 import Form from "react-bootstrap/Form";
 import UsuarioService, {usuarioPrototype} from "../app/service/usuarioService";
 import {Button} from "react-bootstrap";
+import {mensagemErro, mensagemSucesso} from "../components/toastr";
 
 
 export default function CadastrarUsuario() {
 
-  // TODO: VALIDAR CPF
-
-
-  const [usuario, setUsuario] = useState({usuarioPrototype});
+  const [usuario, setUsuario] = useState(usuarioPrototype);
 
   const navigate = useNavigate();
   const service = new UsuarioService();
 
   const cadastrar = () => {
+
+    console.log(usuario);
+
+    try {
+      service.validar(usuario);
+    } catch (erro) {
+      const msgs = erro.mensagens;
+      msgs.forEach(msg => mensagemErro(msg));
+      return false;
+    }
+
+    service
+      .salvar(usuario)
+      .then(response => {
+        mensagemSucesso('Cadastro realizado com sucesso! Faça o login para acessar o sistema.');
+        console.log(response)
+        navigate("/login")
+      })
+      .catch(error => {
+        mensagemErro(error.response.data.descricao)
+        console.log(error.data)
+        setUsuario({...usuario, senha: '', senhaRepeticao: ''})
+      })
 
 
   }
@@ -79,6 +100,7 @@ export default function CadastrarUsuario() {
               <Form.Control
                 type="password"
                 placeholder="Crie uma senha"
+                value={usuario.senha}
                 onChange={event => setUsuario({...usuario, senha: event.target.value})}/>
             </Form.Group>
 
@@ -87,11 +109,12 @@ export default function CadastrarUsuario() {
               <Form.Control
                 type="password"
                 placeholder="Repita a senha, por favor"
+                value={usuario.senhaRepeticao || ''}
                 onChange={event => setUsuario({...usuario, senhaRepeticao: event.target.value})}/>
             </Form.Group>
 
             {/*botão*/}
-              <Button className="mt-3" variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
+            <Button className="mt-3" variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
 
 
           </Form>
