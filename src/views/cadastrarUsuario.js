@@ -15,8 +15,6 @@ export default function CadastrarUsuario() {
 
   const cadastrar = () => {
 
-    console.log(usuario);
-
     try {
       service.validar(usuario);
     } catch (erro) {

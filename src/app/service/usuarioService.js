@@ -62,4 +62,8 @@ export default class UsuarioService extends ApiService {
 
   }
 
+  autenticar(credenciais) {
+    credenciais.senha = this.hashSenha(credenciais.senha);
+    return this.post('/autenticar', credenciais)
+  }
 }

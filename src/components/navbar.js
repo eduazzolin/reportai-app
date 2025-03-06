@@ -3,8 +3,13 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Dropdown from 'react-bootstrap/Dropdown';
 import {Link, NavLink} from 'react-router-dom';
+import {useContext} from "react";
+import {AuthContext} from "../main/provedorAutenticacao";
 
 function AppNavbar() {
+
+  const authContext = useContext(AuthContext);
+
   return (
 
     <Navbar expand="md" className="bg-body-tertiary">
@@ -34,12 +39,11 @@ function AppNavbar() {
 
 
           {/*usuário*/}
+          <Nav className="ml-auto" hidden={authContext.isAutenticado}>
+            <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
+          </Nav>
 
-          {/*<Nav className="ml-auto">*/}
-          {/*  <Nav.Link as={NavLink} to="/home">Login</Nav.Link>*/}
-          {/*</Nav>*/}
-
-          <Nav className="ml-auto">
+          <Nav className="ml-auto" hidden={!authContext.isAutenticado}>
             <Dropdown align="end">
               <Dropdown.Toggle variant="gray" id="dropdown-basic" className="d-flex align-items-center gap-3">
                 <span>Eduardo</span>
@@ -54,7 +58,7 @@ function AppNavbar() {
 
               <Dropdown.Menu>
                 <Dropdown.Item as={NavLink} to="/meus-relatorios">Meus Relatórios</Dropdown.Item>
-                <Dropdown.Item as={NavLink} to="/sair">Sair</Dropdown.Item>
+                <Dropdown.Item as={NavLink} onClick={authContext.encerrarSessao} to="/">Sair</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Nav>
