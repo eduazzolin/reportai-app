@@ -1,17 +1,22 @@
-import React, {useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom';
 import Form from "react-bootstrap/Form";
 import UsuarioService, {usuarioPrototype} from "../app/service/usuarioService";
 import {Button} from "react-bootstrap";
 import {mensagemErro, mensagemSucesso} from "../components/toastr";
+import {AuthContext} from "../main/provedorAutenticacao";
+import LocalStorageService from "../app/service/localStorageService";
+import {USUARIO_LOGADO} from "../app/service/authService";
 
-
-export default function CadastrarUsuario() {
+export default function MinhaConta() {
 
   const [usuario, setUsuario] = useState(usuarioPrototype);
 
   const navigate = useNavigate();
   const service = new UsuarioService();
+
+
+  const {encerrarSessao} = useContext(AuthContext);
 
   const cadastrar = () => {
 
@@ -26,26 +31,29 @@ export default function CadastrarUsuario() {
     service
       .salvar(usuario)
       .then(response => {
-        mensagemSucesso('Cadastro realizado com sucesso! Faça o login para acessar o sistema.');
-        navigate("/login")
+        mensagemSucesso('Usuario editado com sucesso!');
+        encerrarSessao();
       })
       .catch(error => {
-        mensagemErro(error.response.data.descricao)
-        setUsuario({...usuario, senha: '', senhaRepeticao: ''})
+        mensagemErro(error.response.data)
       })
 
-
   }
 
-  const mascaraCpf = value => {
-    // https://medium.com/reactbrasil/mascara-de-cpf-com-react-javascript-a07719345c93
-    return value
-      .replace(/\D/g, '')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
-      .replace(/(-\d{2})\d+?$/, '$1')
-  }
+
+  useEffect(() => {
+    const usuarioStorage = LocalStorageService.obterItem(USUARIO_LOGADO);
+    service
+      .buscarDTOPorId(usuarioStorage.id)
+      .then(response => {
+        setUsuario(response.data)
+        console.log('01', response.data)
+      })
+      .catch(error => {
+        mensagemErro(error.response.data)
+      })
+  }, []);
+
 
   return (
     <div className='container'>
@@ -53,7 +61,7 @@ export default function CadastrarUsuario() {
 
         {/*titulo*/}
         <div className="col-12">
-          <h2>Faça parte do Reportaí 👋</h2>
+          <h2>👤 {usuario.nome}</h2>
         </div>
 
         {/*form*/}
@@ -75,9 +83,8 @@ export default function CadastrarUsuario() {
               <Form.Label>CPF</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="000.000.000-00"
-                value={usuario.cpf}
-                onChange={event => setUsuario({...usuario, cpf: mascaraCpf(event.target.value)})}/>
+                disabled={true}
+                value={usuario.cpf}/>
             </Form.Group>
 
             {/*email*/}
@@ -110,7 +117,7 @@ export default function CadastrarUsuario() {
             </Form.Group>
 
             {/*botão*/}
-            <Button className="mt-3" variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
+            <Button className="mt-3" variant="warning" onClick={() => cadastrar()}> Salvar alterações </Button>
 
 
           </Form>
@@ -118,7 +125,6 @@ export default function CadastrarUsuario() {
 
       </div>
     </div>
-
 
   )
 }

@@ -11,6 +11,10 @@ export default class UsuarioService extends ApiService {
     super('/usuarios');
   }
 
+  buscarDTOPorId(id) {
+    return this.get(`/${id}`);
+  }
+
   hashSenha(senha) {
     return MD5(senha).toString();
   }

@@ -57,6 +57,7 @@ function AppNavbar() {
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
+                <Dropdown.Item as={NavLink} to="/minha-conta">Minha Conta</Dropdown.Item>
                 <Dropdown.Item as={NavLink} to="/meus-relatorios">Meus Relatórios</Dropdown.Item>
                 <Dropdown.Item as={NavLink} onClick={authContext.encerrarSessao} to="/">Sair</Dropdown.Item>
               </Dropdown.Menu>

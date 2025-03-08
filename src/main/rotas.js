@@ -6,6 +6,7 @@ import CadastrarRegistro from "../views/cadastrarRegistro";
 import AppNavbar from "../components/navbar";
 import Sandbox from "../views/sandbox";
 import CadastrarUsuario from "../views/cadastrarUsuario";
+import MinhaConta from "../views/minhaConta";
 import EntrarUsuario from "../views/entrarUsuario";
 import {AuthContext} from "./provedorAutenticacao";
 
@@ -26,6 +27,7 @@ function Rotas() {
           <Route path="/" element={<Navigate to="/home"/>}/>
           <Route path="/home" element={<Home/>}/>
           <Route path="/cadastrar-registro" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<CadastrarRegistro/>}/>}/>
+          <Route path="/minha-conta" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<MinhaConta/>}/>}/>
           <Route path="/registro/:id" element={<VerRegistro/>}/>
           <Route path="/sandbox" element={<Sandbox/>}/>
           <Route path="/cadastrar-usuario" element={<CadastrarUsuario/>}/>
