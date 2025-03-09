@@ -1,150 +1,200 @@
 import React, {useEffect, useRef, useState} from "react";
-// import {registroPrototype} from "../app/service/registroService";
-import {consultarCategorias} from "../app/service/categoriaService";
+import {registroPrototype, RegistroService} from "../app/service/registroService";
+import {categoriaPrototype, CategoriaService, consultarCategorias} from "../app/service/categoriaService";
 import {MapContainer, Marker, Popup, TileLayer, useMapEvents} from "react-leaflet";
 import osm from "../app/service/osm-providers";
 import Form from 'react-bootstrap/Form';
 import {Button} from "react-bootstrap";
 import L from 'leaflet'
+import {mensagemErro} from "../components/toastr";
 
 export default function CadastrarRegistro() {
-  // const [center, setCenter] = useState([-27.6012, -48.4812]) // [latitude, longitude]
-  // const [zoom, setZoom] = useState(11)
-  // const mapRef = useRef();
-  // const [categorias, setCategorias] = useState([])
-  // const [registro, setRegistro] = useState(registroPrototype)
-  // const [iconeCategoriaSelecionada, setIconeCategoriaSelecionada] = useState('')
-  //
-  // const mountPage = async () => {
-  //   try {
-  //     const response_categorias = await consultarCategorias()
-  //     setCategorias(response_categorias)
-  //     setIconeCategoriaSelecionada(response_categorias[0].icone)
-  //   } catch (error) {
-  //     console.log("Erro ao buscar dados", error)
-  //   }
-  // }
-  //
-  // useEffect(() => {
-  //   mountPage();
-  // }, []);
-  //
-  // const MapClickHandler = () => {
-  //   useMapEvents({
-  //     click(e) {
-  //       const { lat, lng } = e.latlng;
-  //       setRegistro({...registro, latitude: lat, longitude: lng})
-  //     }
-  //   });
-  //   return null;
-  // }
-  //
-  // return (
-  //   <div className={'container-fluid'}>
-  //     <div className={'row  px-5 py-4 '}>
-  //       <div className={'col-12  mb-3'}>
-  //         <h3>Novo Registro</h3>
-  //       </div>
-  //       <div className={'col-12'}>
-  //         <Form>
-  //           <div className="container-fluid">
-  //             <div className="row p-0">
-  //
-  //               <div className="col-6  ">
-  //
-  //                 <Form.Group className="mb-3">
-  //                   <Form.Label>Descrição do local</Form.Label>
-  //                   <Form.Control
-  //                     type="text"
-  //                     placeholder="Digite a descrição do local"/>
-  //                 </Form.Group>
-  //
-  //                 <div className='gap-3 d-flex'>
-  //                   <Form.Group className="mb-3 flex-grow-1">
-  //                     <Form.Label>Título</Form.Label>
-  //                     <Form.Control
-  //                       type="text"
-  //                       placeholder="Digite o título"
-  //                       value={registro.titulo}
-  //                       onChange={event => setRegistro({...registro, titulo: event.target.value})}/>
-  //                   </Form.Group>
-  //                   <Form.Group className="mb-3">
-  //                     <Form.Label>Categoria</Form.Label>
-  //                     <Form.Select
-  //                       aria-label="Categoria"
-  //                       value={registro.categoria.id}
-  //                       onChange={event => {
-  //                         setRegistro({...registro, categoria: {id: event.target.value}});
-  //                         setIconeCategoriaSelecionada(categorias.find(categoria => categoria.id == event.target.value).icone)
-  //                       }
-  //                       }>
-  //                       {
-  //                         categorias.map((categoria, index) => (
-  //                           <option key={index} value={categoria.id}>{categoria.nome}</option>
-  //                         ))
-  //                       }
-  //                     </Form.Select>
-  //                   </Form.Group>
-  //                 </div>
-  //
-  //                 <Form.Group className="mb-3">
-  //                   <Form.Label>Descrição</Form.Label>
-  //                   <Form.Control
-  //                     as="textarea"
-  //                     rows={3}
-  //                     value={registro.descricao}
-  //                     onChange={event => setRegistro({...registro, descricao: event.target.value})}/>
-  //                 </Form.Group>
-  //
-  //                 <Form.Group className="mb-3">
-  //                   <Form.Label>Imagens</Form.Label>
-  //                   <Form.Control
-  //                     type="file"
-  //                     multiple
-  //                     onChange={event => setRegistro({...registro, imagens: event.target.files})}/>
-  //                 </Form.Group>
-  //
-  //                 <Button variant="primary" onClick={() => console.log(registro)}> Cadastrar </Button>
-  //               </div>
-  //
-  //               <div className='col-6 '>
-  //                 <Form.Group className="mb-3">
-  //                   <Form.Label>Clique no mapa para inserir um marcador</Form.Label>
-  //                   <div className="rounded border overflow-hidden">
-  //                     <MapContainer
-  //                       center={center}
-  //                       zoom={zoom}
-  //                       ref={mapRef}
-  //                       style={{height: 'calc(100vh - 230px)', width: '100%'}}
-  //                     >
-  //                       <TileLayer
-  //                         url={osm.maptiler.url}
-  //                         attribution={osm.maptiler.attribution}
-  //                       />
-  //                       <MapClickHandler />
-  //                       {registro.latitude && registro.longitude && (
-  //                         <Marker
-  //                           position={[registro.latitude, registro.longitude]}
-  //                           icon={
-  //                             new L.Icon({
-  //                               iconUrl: iconeCategoriaSelecionada,
-  //                               iconSize: [32, 40],
-  //                               iconAnchor: [16, 40]
-  //                             })
-  //                           }
-  //                         >
-  //                         </Marker>
-  //                       )}
-  //                     </MapContainer>
-  //                   </div>
-  //                 </Form.Group>
-  //               </div>
-  //
-  //             </div>
-  //           </div>
-  //         </Form>
-  //       </div>
-  //     </div>
-  //   </div>
-  // )
+
+  const [zoom, setZoom] = useState(13); // 11 = 50 km  12 = 25 km  13 = 12 km  14 = 6 km  15 = 3 km  16 = 1.5 km  17 = 750 m  18 = 375 m  19 = 187 m  20 = 93 m
+  const [latitude, setLatitude] = useState(-27.6012);
+  const [longitude, setLongitude] = useState(-48.4812);
+  const mapRef = useRef();
+
+
+  const [categorias, setCategorias] = useState([categoriaPrototype])
+  const [registro, setRegistro] = useState(registroPrototype)
+  const [iconeCategoriaSelecionada, setIconeCategoriaSelecionada] = useState('')
+  const [imagem1, setImagem1] = useState(null)
+  const [imagem2, setImagem2] = useState(null)
+  const [imagem3, setImagem3] = useState(null)
+
+
+  const registroService = new RegistroService();
+  const categoriaService = new CategoriaService();
+
+
+  useEffect(() => {
+
+    categoriaService
+      .consultar()
+      .then(response => {
+        setCategorias(response.data)
+      }).catch(error => {
+      mensagemErro(error.response.data.descricao)
+    });
+
+
+  }, []);
+
+
+  const MapClickHandler = () => {
+    useMapEvents({
+      click(e) {
+        const {lat, lng} = e.latlng;
+        setRegistro({...registro, latitude: lat, longitude: lng})
+      }
+    });
+    return null;
+  }
+
+
+  return (
+    <div className='container'>
+      <div className="row mt-5">
+
+        {/*formulário*/}
+        <div className="col-lg-6">
+
+          {/*titulo*/}
+          <div className="col-12">
+            <h2>Crie um novo registro</h2>
+          </div>
+
+          {/*formulário*/}
+          <div className="col-12 mt-3">
+            <Form>
+
+              {/*localizacao*/}
+              <Form.Group className="mb-3">
+                <Form.Label>Descrição do local</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Descreva a localização"
+                  value={registro.localizacao}
+                  onChange={event => setRegistro({...registro, localizacao: event.target.value})}/>
+              </Form.Group>
+
+              {/*titulo e categoria*/}
+              <div className='row mb-3'>
+
+                {/*titulo*/}
+                <Form.Group className="col-md-6">
+                  <Form.Label>Título</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Digite o título"
+                    value={registro.titulo}
+                    onChange={event => setRegistro({...registro, titulo: event.target.value})}/>
+                </Form.Group>
+
+                {/*categoria*/}
+                <Form.Group className="col-md-6">
+                  <Form.Label>Categoria</Form.Label>
+                  <Form.Select
+                    aria-label="Categoria"
+                    value={registro.categoria.id}
+                    onChange={event => {
+                      const categoriaSelecionada = categorias.find(cat => cat.id == event.target.value);
+                      setRegistro({...registro, categoria: categoriaSelecionada});
+                      setIconeCategoriaSelecionada(categoriaSelecionada.icone)
+                    }}>
+
+                    {/*opções*/}
+                    {categorias.map((categoria, index) => (
+                      <option key={index} value={categoria.id}>{categoria.nome}</option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+
+              </div>
+
+              {/*descrição*/}
+              <Form.Group className="mb-3">
+                <Form.Label>Descrição</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={5}
+                  value={registro.descricao}
+                  onChange={event => setRegistro({...registro, descricao: event.target.value})}/>
+              </Form.Group>
+
+              {/*imagens*/}
+              <Form.Group className="mb-3">
+                <Form.Label>Imagens</Form.Label>
+                <div className="d-flex gap-1 flex-column">
+
+                  <Form.Control
+                    type="file"
+                    onChange={event => {
+                      setImagem1(event.target.files[0]);
+                    }}/>
+
+                  <Form.Control
+                    type="file"
+                    hidden={!imagem1}
+                    onChange={event => {
+                      setImagem2(event.target.files[0]);
+                    }}/>
+
+                  <Form.Control
+                    type="file"
+                    hidden={!imagem2}
+                    onChange={event => {
+                      setImagem3(event.target.files[0]);
+                    }}/>
+
+                </div>
+              </Form.Group>
+
+
+              <Button variant="warning" onClick={() => console.log(registro)}> Cadastrar </Button>
+            </Form>
+          </div>
+
+        </div>
+        {/*          <div className='col-6 '>*/}
+        {/*            <Form.Group className="mb-3">*/}
+        {/*              <Form.Label>Clique no mapa para inserir um marcador</Form.Label>*/}
+        {/*              <div className="rounded border overflow-hidden">*/}
+        {/*                <MapContainer*/}
+        {/*                  center={[latitude, longitude]}*/}
+        {/*                  zoom={zoom}*/}
+        {/*                  ref={mapRef}*/}
+        {/*                  style={{height: 'calc(100vh - 230px)', width: '100%'}}*/}
+        {/*                >*/}
+        {/*                  <TileLayer*/}
+        {/*                    url={osm.maptiler.url}*/}
+        {/*                    attribution={osm.maptiler.attribution}*/}
+        {/*                  />*/}
+        {/*                  <MapClickHandler />*/}
+        {/*                  {registro.latitude && registro.longitude && (*/}
+        {/*                    <Marker*/}
+        {/*                      position={[registro.latitude, registro.longitude]}*/}
+        {/*                      icon={*/}
+        {/*                        new L.Icon({*/}
+        {/*                          iconUrl: iconeCategoriaSelecionada,*/}
+        {/*                          iconSize: [32, 40],*/}
+        {/*                          iconAnchor: [16, 40]*/}
+        {/*                        })*/}
+        {/*                      }*/}
+        {/*                    >*/}
+        {/*                    </Marker>*/}
+        {/*                  )}*/}
+        {/*                </MapContainer>*/}
+        {/*              </div>*/}
+        {/*            </Form.Group>*/}
+        {/*          </div>*/}
+
+        {/*        </div>*/}
+        {/*      </div>*/}
+        {/*    </Form>*/}
+        {/*  </div>*/}
+      </div>
+    </div>
+  )
 }
