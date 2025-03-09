@@ -24,6 +24,10 @@ export default class UsuarioService extends ApiService {
     return this.post('', usuario);
   }
 
+  deletar(id) {
+    return this.delete(`/${id}`);
+  }
+
   validar(usuario) {
     const erros = []
 

@@ -7,10 +7,12 @@ import {mensagemErro, mensagemSucesso} from "../components/toastr";
 import {AuthContext} from "../main/provedorAutenticacao";
 import LocalStorageService from "../app/service/localStorageService";
 import {USUARIO_LOGADO} from "../app/service/authService";
+import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 
 export default function MinhaConta() {
 
   const [usuario, setUsuario] = useState(usuarioPrototype);
+  const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
 
   const navigate = useNavigate();
   const service = new UsuarioService();
@@ -40,6 +42,25 @@ export default function MinhaConta() {
 
   }
 
+  const abrirPopupRemocao = () => {
+    setVisibilidadePopupRemocao(true)
+  }
+
+  const fecharPopupRemocao = () => {
+    setVisibilidadePopupRemocao(false)
+  }
+
+  const handleDelete = () => {
+    service
+      .deletar(usuario.id)
+      .then(response => {
+        mensagemSucesso('Conta removida com sucesso!');
+        encerrarSessao();
+      })
+      .catch(error => {
+        mensagemErro(error.response.data)
+      })
+  }
 
   useEffect(() => {
     const usuarioStorage = LocalStorageService.obterItem(USUARIO_LOGADO);
@@ -57,6 +78,15 @@ export default function MinhaConta() {
 
   return (
     <div className='container'>
+
+      <PopupConfirmacao
+        visivel={visibilidadePopupRemocao}
+        titulo="Remover conta"
+        mensagem="Tem certeza que deseja remover sua conta? Todos os seus registros continuarão publicados, mas você não poderá mais acessar o sistema."
+        onConfirm={handleDelete}
+        onCancel={fecharPopupRemocao}
+      />
+
       <div className="row mt-5">
 
         {/*titulo*/}
@@ -117,7 +147,10 @@ export default function MinhaConta() {
             </Form.Group>
 
             {/*botão*/}
-            <Button className="mt-3" variant="warning" onClick={() => cadastrar()}> Salvar alterações </Button>
+            <div className='d-flex gap-2'>
+              <Button className="mt-3" variant="warning" onClick={() => cadastrar()}> Salvar alterações </Button>
+              <Button className="mt-3" variant="danger" onClick={() => abrirPopupRemocao()}> Remover conta </Button>
+            </div>
 
 
           </Form>
