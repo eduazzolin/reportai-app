@@ -6,7 +6,9 @@ import osm from "../app/service/osm-providers";
 import Form from 'react-bootstrap/Form';
 import {Button} from "react-bootstrap";
 import L from 'leaflet'
-import {mensagemErro} from "../components/toastr";
+import {mensagemErro, mensagemSucesso} from "../components/toastr";
+import {imagemPrototype, ImagemService} from "../app/service/imagemService";
+import {forEach} from "react-bootstrap/ElementChildren";
 
 export default function CadastrarRegistro() {
 
@@ -19,14 +21,12 @@ export default function CadastrarRegistro() {
   const [categorias, setCategorias] = useState([categoriaPrototype])
   const [registro, setRegistro] = useState(registroPrototype)
   const [iconeCategoriaSelecionada, setIconeCategoriaSelecionada] = useState('')
-  const [imagem1, setImagem1] = useState(null)
-  const [imagem2, setImagem2] = useState(null)
-  const [imagem3, setImagem3] = useState(null)
+  const [imagens, setImagens] = useState([null, null, null])
 
 
   const registroService = new RegistroService();
   const categoriaService = new CategoriaService();
-
+  const imagemService = new ImagemService();
 
   useEffect(() => {
 
@@ -52,10 +52,28 @@ export default function CadastrarRegistro() {
     return null;
   }
 
+  const cadastrar = () => {
+
+    const id_registro = 1
+
+    for (let i = 0; i < imagens.length; i++) {
+      if (imagens[i]) {
+        const formdata = new FormData();
+        formdata.append('file', imagens[i]);
+        formdata.append('idRegistro', id_registro);
+        imagemService.salvar(formdata).then(response => {
+          mensagemSucesso('Imagem cadastrada com sucesso!')
+        }).catch(error => {
+          mensagemErro('Erro ao cadastrar imagem')
+        })
+      }
+    }
+
+  }
 
   return (
     <div className='container'>
-      <div className="row mt-5">
+      <div className="row mt-5 mb-5">
 
         {/*formulário*/}
         <div className="col-lg-6">
@@ -131,28 +149,26 @@ export default function CadastrarRegistro() {
                   <Form.Control
                     type="file"
                     onChange={event => {
-                      setImagem1(event.target.files[0]);
+                      setImagens([event.target.files[0], imagens[1], imagens[2]]);
                     }}/>
 
                   <Form.Control
                     type="file"
-                    hidden={!imagem1}
                     onChange={event => {
-                      setImagem2(event.target.files[0]);
+                      setImagens([imagens[0], event.target.files[0], imagens[2]]);
                     }}/>
 
                   <Form.Control
                     type="file"
-                    hidden={!imagem2}
                     onChange={event => {
-                      setImagem3(event.target.files[0]);
+                      setImagens([imagens[0], imagens[1], event.target.files[0]]);
                     }}/>
 
                 </div>
               </Form.Group>
 
 
-              <Button variant="warning" onClick={() => console.log(registro)}> Cadastrar </Button>
+              <Button variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
             </Form>
           </div>
 

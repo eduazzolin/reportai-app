@@ -17,7 +17,6 @@ class ApiService {
     token = token.replace(/^"|"$/g, '');
     const header = {
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }
     }
