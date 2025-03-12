@@ -1,5 +1,6 @@
 import ApiService from "./apiService";
 import {categoriaPrototype} from "./categoriaService";
+import {COORDENADAS_CENTRO} from "./appService";
 
 export class RegistroService extends ApiService {
   constructor() {
@@ -15,7 +16,15 @@ export class RegistroService extends ApiService {
     return this.get(url);
   }
 
+  calcularDistanciaDoCentro(lat, lon) {
+    const diferencaLat = COORDENADAS_CENTRO[0] - lat;
+    const diferencaLong = COORDENADAS_CENTRO[1] - lon;
+    return Math.sqrt(Math.pow(diferencaLat, 2) + Math.pow(diferencaLong, 2)) * 100;
+  }
 
+  salvar(registro) {
+    return this.post('', registro);
+  }
 }
 
 export const registroPrototype = {

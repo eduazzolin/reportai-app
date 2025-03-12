@@ -46,13 +46,24 @@ export default function CadastrarRegistro() {
     useMapEvents({
       click(e) {
         const {lat, lng} = e.latlng;
-        setRegistro({...registro, latitude: lat, longitude: lng})
+        console.log(registroService.calcularDistanciaDoCentro(lat, lng));
+        if (registroService.calcularDistanciaDoCentro(lat, lng) > 30) {
+          mensagemErro('O local do registro deve estar a menos de 30 km do centro');
+        } else {
+          setRegistro({...registro, latitude: lat, longitude: lng})
+        }
       }
     });
     return null;
   }
 
   const cadastrar = () => {
+
+    registroService.salvar(registro).then(response => {
+      console.log(response)
+    }).catch(error => {
+      mensagemErro('Erro ao cadastrar imagem')
+    })
 
     const id_registro = 1
 
@@ -173,43 +184,41 @@ export default function CadastrarRegistro() {
           </div>
 
         </div>
-        {/*          <div className='col-6 '>*/}
-        {/*            <Form.Group className="mb-3">*/}
-        {/*              <Form.Label>Clique no mapa para inserir um marcador</Form.Label>*/}
-        {/*              <div className="rounded border overflow-hidden">*/}
-        {/*                <MapContainer*/}
-        {/*                  center={[latitude, longitude]}*/}
-        {/*                  zoom={zoom}*/}
-        {/*                  ref={mapRef}*/}
-        {/*                  style={{height: 'calc(100vh - 230px)', width: '100%'}}*/}
-        {/*                >*/}
-        {/*                  <TileLayer*/}
-        {/*                    url={osm.maptiler.url}*/}
-        {/*                    attribution={osm.maptiler.attribution}*/}
-        {/*                  />*/}
-        {/*                  <MapClickHandler />*/}
-        {/*                  {registro.latitude && registro.longitude && (*/}
-        {/*                    <Marker*/}
-        {/*                      position={[registro.latitude, registro.longitude]}*/}
-        {/*                      icon={*/}
-        {/*                        new L.Icon({*/}
-        {/*                          iconUrl: iconeCategoriaSelecionada,*/}
-        {/*                          iconSize: [32, 40],*/}
-        {/*                          iconAnchor: [16, 40]*/}
-        {/*                        })*/}
-        {/*                      }*/}
-        {/*                    >*/}
-        {/*                    </Marker>*/}
-        {/*                  )}*/}
-        {/*                </MapContainer>*/}
-        {/*              </div>*/}
-        {/*            </Form.Group>*/}
-        {/*          </div>*/}
 
-        {/*        </div>*/}
-        {/*      </div>*/}
-        {/*    </Form>*/}
-        {/*  </div>*/}
+        {/*mapa*/}
+        {/*<div className='col-6 '>*/}
+        {/*  <Form.Group className="mb-3">*/}
+        {/*    <Form.Label>Clique no mapa para inserir um marcador</Form.Label>*/}
+        {/*    <div className="rounded border overflow-hidden">*/}
+        {/*      <MapContainer*/}
+        {/*        center={[latitude, longitude]}*/}
+        {/*        zoom={zoom}*/}
+        {/*        ref={mapRef}*/}
+        {/*        style={{height: 'calc(100vh - 230px)', width: '100%'}}*/}
+        {/*      >*/}
+        {/*        <TileLayer*/}
+        {/*          url={osm.maptiler.url}*/}
+        {/*          attribution={osm.maptiler.attribution}*/}
+        {/*        />*/}
+        {/*        <MapClickHandler/>*/}
+        {/*        {registro.latitude && registro.longitude && (*/}
+        {/*          <Marker*/}
+        {/*            position={[registro.latitude, registro.longitude]}*/}
+        {/*            icon={*/}
+        {/*              new L.Icon({*/}
+        {/*                iconUrl: iconeCategoriaSelecionada,*/}
+        {/*                iconSize: [32, 40],*/}
+        {/*                iconAnchor: [16, 40]*/}
+        {/*              })*/}
+        {/*            }*/}
+        {/*          >*/}
+        {/*          </Marker>*/}
+        {/*        )}*/}
+        {/*      </MapContainer>*/}
+        {/*    </div>*/}
+        {/*  </Form.Group>*/}
+        {/*</div>*/}
+
       </div>
     </div>
   )
