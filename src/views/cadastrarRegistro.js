@@ -9,12 +9,13 @@ import L from 'leaflet'
 import {mensagemErro, mensagemSucesso} from "../components/toastr";
 import {ImagemService} from "../app/service/imagemService";
 import {COORDENADAS_CENTRO} from "../app/service/appService";
+import InputEndereco from "../components/inputEndereco/inputEndereco";
 
 export default function CadastrarRegistro() {
 
-  const [zoom, setZoom] = useState(13); // 11 = 50 km  12 = 25 km  13 = 12 km  14 = 6 km  15 = 3 km  16 = 1.5 km  17 = 750 m  18 = 375 m  19 = 187 m  20 = 93 m
-  const [latitude, setLatitude] = useState(COORDENADAS_CENTRO[0]);
-  const [longitude, setLongitude] = useState(COORDENADAS_CENTRO[1]);
+  const zoom = 13; // 11 = 50 km  12 = 25 km  13 = 12 km  14 = 6 km  15 = 3 km  16 = 1.5 km  17 = 750 m  18 = 375 m  19 = 187 m  20 = 93 m
+  const zoomSelecao = 16; // 11 = 50 km  12 = 25 km  13 = 12 km  14 = 6 km  15 = 3 km  16 = 1.5 km  17 = 750 m  18 = 375 m  19 = 187 m  20 = 93 m
+  const centroMapa = COORDENADAS_CENTRO;
   const mapRef = useRef();
 
 
@@ -34,12 +35,20 @@ export default function CadastrarRegistro() {
       .consultar()
       .then(response => {
         setCategorias(response.data)
+        setIconeCategoriaSelecionada(response.data[0].icone);
       }).catch(error => {
       mensagemErro(error.response.data.descricao)
     });
 
 
   }, []);
+
+  // Atualiza o mapa para a posição do registro
+  useEffect(() => {
+    if (registro.latitude || registro.longitude) {
+      mapRef.current.setView([registro.latitude, registro.longitude], zoomSelecao);
+    }
+  }, [registro.latitude, registro.longitude]);
 
 
   const MapClickHandler = () => {
@@ -55,6 +64,16 @@ export default function CadastrarRegistro() {
     });
     return null;
   }
+
+
+  const handleSelecaoEnderecoInput = ({address, latitude, longitude}) => {
+    setRegistro(prev => ({
+      ...prev,
+      localizacao: address,
+      latitude,
+      longitude
+    }));
+  };
 
   const cadastrar = () => {
 
@@ -101,12 +120,11 @@ export default function CadastrarRegistro() {
 
             {/*localizacao*/}
             <Form.Group className="mb-3">
-              <Form.Label>Descrição do local</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Descreva a localização"
-                value={registro.localizacao}
-                onChange={event => setRegistro({...registro, localizacao: event.target.value})}/>
+              <Form.Label>Localização</Form.Label>
+              <InputEndereco
+                onSelect={handleSelecaoEnderecoInput}
+                initialAddress={registro.localizacao}
+              />
             </Form.Group>
 
             {/*titulo e categoria*/}
@@ -188,7 +206,7 @@ export default function CadastrarRegistro() {
           <Form.Label>Clique no mapa para inserir um marcador</Form.Label>
           <div className="rounded border overflow-hidden">
             <MapContainer
-              center={[latitude, longitude]}
+              center={centroMapa}
               zoom={zoom}
               ref={mapRef}
               style={{height: 'calc(100vh - 223px)', width: '100%'}}
@@ -197,6 +215,8 @@ export default function CadastrarRegistro() {
                 url={osm.maptiler.url}
                 attribution={osm.maptiler.attribution}
               />
+
+
               <MapClickHandler/>
               {registro.latitude && registro.longitude && (
                 <Marker
@@ -218,7 +238,7 @@ export default function CadastrarRegistro() {
         {/*botão*/}
         <div className="col-lg-6 mt-2">
 
-        <Button variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
+          <Button variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
         </div>
 
       </div>
