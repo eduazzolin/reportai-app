@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {OpenStreetMapProvider} from 'leaflet-geosearch';
 import {Form, ListGroup} from 'react-bootstrap';
 
-const InputEndereco = ({onSelect, initialAddress = ''}) => {
+export default function InputEndereco  ({onSelect, initialAddress = ''})  {
   const [query, setQuery] = useState(initialAddress);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -11,6 +11,8 @@ const InputEndereco = ({onSelect, initialAddress = ''}) => {
   const provider = new OpenStreetMapProvider();
   const containerRef = useRef(null);
 
+  // efetuar pesquisa através do leaflet-geosearch
+  // https://www.npmjs.com/package/leaflet-geosearch
   useEffect(() => {
     const search = async () => {
       if (query.length > 2 && query !== selectedLabel) {
@@ -24,6 +26,7 @@ const InputEndereco = ({onSelect, initialAddress = ''}) => {
     return () => clearTimeout(timer);
   }, [query]);
 
+  // fechar sugestões ao clicar fora do componente
   const handleClickOutside = useCallback((event) => {
     if (containerRef.current && !containerRef.current.contains(event.target)) {
       setShowSuggestions(false);
@@ -35,6 +38,7 @@ const InputEndereco = ({onSelect, initialAddress = ''}) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [handleClickOutside]);
 
+  // ao selecionar uma sugestão, atualizar o input e chamar a função onSelect do componente pai
   const handleSelect = (result) => {
     setQuery(result.label);
     setShowSuggestions(false);
@@ -47,6 +51,8 @@ const InputEndereco = ({onSelect, initialAddress = ''}) => {
 
   return (
     <div ref={containerRef} className="position-relative">
+
+      {/*input*/}
       <Form.Control
         type="search"
         placeholder="Digite o endereço..."
@@ -59,6 +65,7 @@ const InputEndereco = ({onSelect, initialAddress = ''}) => {
         aria-haspopup="listbox"
       />
 
+      {/*sugestões*/}
       {showSuggestions && suggestions.length > 0 && (
         <ListGroup
           as="ul"
@@ -82,7 +89,6 @@ const InputEndereco = ({onSelect, initialAddress = ''}) => {
                 setSelectedLabel(result.label);
               }}
               role="option"
-              className="cursor-pointer"
               style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minHeight: '40px'}}
             >
               {result.label}
@@ -93,5 +99,3 @@ const InputEndereco = ({onSelect, initialAddress = ''}) => {
     </div>
   );
 };
-
-export default InputEndereco;

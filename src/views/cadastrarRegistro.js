@@ -51,6 +51,7 @@ export default function CadastrarRegistro() {
   }, [registro.latitude, registro.longitude]);
 
 
+  // Função que captura o click no mapa
   const MapClickHandler = () => {
     useMapEvents({
       click(e) {
@@ -65,7 +66,7 @@ export default function CadastrarRegistro() {
     return null;
   }
 
-
+  // Função que gerencia o input de endereço
   const handleSelecaoEnderecoInput = ({address, latitude, longitude}) => {
     setRegistro(prev => ({
       ...prev,
@@ -105,7 +106,7 @@ export default function CadastrarRegistro() {
 
 
       {/*titulo*/}
-      <div className="row mt-5">
+      <div className="row mt-3">
         <div className="col-12">
           <h2>Crie um novo registro</h2>
         </div>
@@ -123,7 +124,6 @@ export default function CadastrarRegistro() {
               <Form.Label>Localização</Form.Label>
               <InputEndereco
                 onSelect={handleSelecaoEnderecoInput}
-                initialAddress={registro.localizacao}
               />
             </Form.Group>
 
@@ -166,7 +166,7 @@ export default function CadastrarRegistro() {
               <Form.Label>Descrição</Form.Label>
               <Form.Control
                 as="textarea"
-                rows={5}
+                rows={4}
                 value={registro.descricao}
                 onChange={event => setRegistro({...registro, descricao: event.target.value})}/>
             </Form.Group>
@@ -209,7 +209,7 @@ export default function CadastrarRegistro() {
               center={centroMapa}
               zoom={zoom}
               ref={mapRef}
-              style={{height: 'calc(100vh - 223px)', width: '100%'}}
+              style={{height: '395px', width: '100%'}}
             >
               <TileLayer
                 url={osm.maptiler.url}
@@ -233,13 +233,14 @@ export default function CadastrarRegistro() {
               )}
             </MapContainer>
           </div>
+
+          {/*botão*/}
+          <div className="mt-3 d-flex justify-content-end">
+            <Button  variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
+          </div>
+
         </div>
 
-        {/*botão*/}
-        <div className="col-lg-6 mt-2">
-
-          <Button variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
-        </div>
 
       </div>
     </div>
