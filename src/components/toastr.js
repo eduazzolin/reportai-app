@@ -2,7 +2,7 @@ import toastr from 'toastr'
 
 toastr.options = {
   "closeButton": true,
-  "debug": true,
+  "debug": false,
   "newestOnTop": false,
   "progressBar": true,
   "positionClass": "toast-top-right",
@@ -15,7 +15,7 @@ toastr.options = {
   "showEasing": "swing",
   "hideEasing": "linear",
   "showMethod": "fadeIn",
-  "hideMethod": "fadeOut"
+  "hideMethod": "fadeOut",
 }
 
 export function mostrarToast(titulo, mensagem, tipo) {

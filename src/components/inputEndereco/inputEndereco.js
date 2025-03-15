@@ -2,8 +2,8 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {OpenStreetMapProvider} from 'leaflet-geosearch';
 import {Form, ListGroup} from 'react-bootstrap';
 
-export default function InputEndereco  ({onSelect, initialAddress = ''})  {
-  const [query, setQuery] = useState(initialAddress);
+export default function InputEndereco  ({registro, setRegistro})  {
+  const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -38,15 +38,11 @@ export default function InputEndereco  ({onSelect, initialAddress = ''})  {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [handleClickOutside]);
 
-  // ao selecionar uma sugestão, atualizar o input e chamar a função onSelect do componente pai
+  // ao selecionar uma sugestão, atualizar o input e atuaalizar o registro
   const handleSelect = (result) => {
     setQuery(result.label);
     setShowSuggestions(false);
-    onSelect({
-      address: result.label,
-      latitude: result.y,
-      longitude: result.x
-    });
+    setRegistro({...registro, latitude: result.y, longitude: result.x, localizacao: result.label});
   };
 
   return (
@@ -60,6 +56,7 @@ export default function InputEndereco  ({onSelect, initialAddress = ''})  {
         onChange={(e) => {
           setQuery(e.target.value);
           setShowSuggestions(true);
+          setRegistro({...registro, localizacao: e.target.value});
         }}
         aria-label="Pesquisar endereço"
         aria-haspopup="listbox"

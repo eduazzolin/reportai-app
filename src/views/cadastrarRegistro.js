@@ -10,6 +10,7 @@ import {mensagemErro, mensagemSucesso} from "../components/toastr";
 import {ImagemService} from "../app/service/imagemService";
 import {COORDENADAS_CENTRO} from "../app/service/appService";
 import InputEndereco from "../components/inputEndereco/inputEndereco";
+import {useNavigate} from "react-router-dom";
 
 export default function CadastrarRegistro() {
 
@@ -23,7 +24,7 @@ export default function CadastrarRegistro() {
   const [registro, setRegistro] = useState(registroPrototype)
   const [iconeCategoriaSelecionada, setIconeCategoriaSelecionada] = useState('')
   const [imagens, setImagens] = useState([null, null, null])
-
+  const navigate = useNavigate();
 
   const registroService = new RegistroService();
   const categoriaService = new CategoriaService();
@@ -36,6 +37,7 @@ export default function CadastrarRegistro() {
       .then(response => {
         setCategorias(response.data)
         setIconeCategoriaSelecionada(response.data[0].icone);
+        setRegistro({...registro, categoria: response.data[0]});
       }).catch(error => {
       mensagemErro(error.response.data.descricao)
     });
@@ -66,40 +68,44 @@ export default function CadastrarRegistro() {
     return null;
   }
 
-  // Função que gerencia o input de endereço
-  const handleSelecaoEnderecoInput = ({address, latitude, longitude}) => {
-    setRegistro(prev => ({
-      ...prev,
-      localizacao: address,
-      latitude,
-      longitude
-    }));
+  const cadastrar = async () => {
+    try {
+
+      try {
+        registroService.validar(registro);
+        imagemService.validar(imagens);
+      } catch (erro) {
+        const msgs = erro.mensagens;
+        msgs.forEach(msg => mensagemErro(msg));
+        return false;
+      }
+
+      const {data} = await registroService.salvar(registro);
+
+      for (const imagem of imagens) {
+        if (!imagem) continue;
+
+        const formData = new FormData();
+        formData.append('file', imagem);
+        formData.append('idRegistro', data.id);
+
+        try {
+          await imagemService.salvar(formData);
+          mensagemSucesso('Imagem cadastrada com sucesso!');
+        } catch (error) {
+          mensagemErro('Erro ao cadastrar imagem');
+          await registroService.deletar(data.id);
+          throw error;
+        }
+      }
+
+      mensagemSucesso('Registro cadastrado com sucesso!');
+      navigate('/')
+    } catch (error) {
+      mensagemErro('Erro ao cadastrar registro');
+    }
   };
 
-  const cadastrar = () => {
-
-    registroService.salvar(registro).then(response => {
-      console.log(response)
-    }).catch(error => {
-      mensagemErro('Erro ao cadastrar imagem')
-    })
-
-    const id_registro = 1
-
-    for (let i = 0; i < imagens.length; i++) {
-      if (imagens[i]) {
-        const formdata = new FormData();
-        formdata.append('file', imagens[i]);
-        formdata.append('idRegistro', id_registro);
-        imagemService.salvar(formdata).then(response => {
-          mensagemSucesso('Imagem cadastrada com sucesso!')
-        }).catch(error => {
-          mensagemErro('Erro ao cadastrar imagem')
-        })
-      }
-    }
-
-  }
 
   return (
     <div className='container'>
@@ -123,7 +129,8 @@ export default function CadastrarRegistro() {
             <Form.Group className="mb-3">
               <Form.Label>Localização</Form.Label>
               <InputEndereco
-                onSelect={handleSelecaoEnderecoInput}
+                registro={registro}
+                setRegistro={setRegistro}
               />
             </Form.Group>
 
@@ -158,6 +165,7 @@ export default function CadastrarRegistro() {
                   ))}
                 </Form.Select>
               </Form.Group>
+
 
             </div>
 
@@ -236,7 +244,7 @@ export default function CadastrarRegistro() {
 
           {/*botão*/}
           <div className="mt-3 d-flex justify-content-end">
-            <Button  variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
+            <Button variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
           </div>
 
         </div>
