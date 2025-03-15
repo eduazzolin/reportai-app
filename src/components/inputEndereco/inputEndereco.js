@@ -14,7 +14,7 @@ const InputEndereco = ({onSelect, initialAddress = ''}) => {
   useEffect(() => {
     const search = async () => {
       if (query.length > 2 && query !== selectedLabel) {
-        const results = await provider.search({query});
+        const results = await provider.search({ query: `Florianópolis ${query}` });
         setSuggestions(results);
         setShowSuggestions(true);
       }
