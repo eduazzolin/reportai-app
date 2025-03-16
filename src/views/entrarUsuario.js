@@ -35,7 +35,7 @@ export default function EntrarUsuario() {
         navigate("/")
       })
       .catch(error => {
-        mensagemErro(error.response.data.descricao)
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao fazer login')
       })
   }
 

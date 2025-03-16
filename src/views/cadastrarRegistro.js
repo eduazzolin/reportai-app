@@ -93,7 +93,7 @@ export default function CadastrarRegistro() {
           await imagemService.salvar(formData);
           mensagemSucesso('Imagem cadastrada com sucesso!');
         } catch (error) {
-          mensagemErro('Erro ao cadastrar imagem');
+          mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar imagem');
           await registroService.deletar(data.id);
           throw error;
         }
@@ -102,7 +102,7 @@ export default function CadastrarRegistro() {
       mensagemSucesso('Registro cadastrado com sucesso!');
       navigate('/')
     } catch (error) {
-      mensagemErro('Erro ao cadastrar registro');
+      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar registro');
     }
   };
 

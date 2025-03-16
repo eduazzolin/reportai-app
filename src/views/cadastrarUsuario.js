@@ -30,7 +30,7 @@ export default function CadastrarUsuario() {
         navigate("/login")
       })
       .catch(error => {
-        mensagemErro(error.response.data.descricao)
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar usuário')
         setUsuario({...usuario, senha: '', senhaRepeticao: ''})
       })
 
