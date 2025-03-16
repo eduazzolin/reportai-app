@@ -7,6 +7,7 @@ import {RegistroService} from "../app/service/registroService";
 import CardRegistroLateral from "../components/cardRegistroLateral/cardRegistroLateral";
 import {Button} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
+import {COORDENADAS_CENTRO} from "../app/service/appService";
 
 function MapEventsHandler({onZoomChange, onCenterChange}) {
   // Esse hook permite "ouvir" eventos do mapa
@@ -29,8 +30,8 @@ export default function Home() {
   const cardRefs = useRef([]);
   const [activeRegistroId, setActiveRegistroId] = useState(null);
   const [zoom, setZoom] = useState(13); // 11 = 50 km  12 = 25 km  13 = 12 km  14 = 6 km  15 = 3 km  16 = 1.5 km  17 = 750 m  18 = 375 m  19 = 187 m  20 = 93 m
-  const [latitude, setLatitude] = useState(-27.6012);
-  const [longitude, setLongitude] = useState(-48.4812);
+  const [latitude, setLatitude] = useState(COORDENADAS_CENTRO[0]);
+  const [longitude, setLongitude] = useState(COORDENADAS_CENTRO[1]);
   const [distancia, setDistancia] = useState(calculateDistance(13));
 
   // Função para calcular a distância com base no zoom

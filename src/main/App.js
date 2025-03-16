@@ -1,9 +1,14 @@
 import Rotas from "./rotas";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'toastr/build/toastr.min.css';
+import ProvedorAutenticacao from "./provedorAutenticacao";
 
 function App() {
   return (
     <div>
-      <Rotas/>
+      <ProvedorAutenticacao>
+        <Rotas/>
+      </ProvedorAutenticacao>
     </div>
   );
 }

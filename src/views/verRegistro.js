@@ -10,7 +10,7 @@ import osm from "../app/service/osm-providers";
 import L from "leaflet";
 
 
-export default function DetalhesRegistro() {
+export default function VerRegistro() {
   // const {id} = useParams();
   // const [registro, setRegistro] = useState(null);
   //
