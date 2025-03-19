@@ -11,6 +11,8 @@ import {ImagemService} from "../app/service/imagemService";
 import {COORDENADAS_CENTRO} from "../app/service/appService";
 import InputEndereco from "../components/inputEndereco/inputEndereco";
 import {useNavigate} from "react-router-dom";
+import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
+import PopupSimples from "../components/popupSimples/PopupSimples";
 
 export default function CadastrarRegistro() {
 
@@ -24,6 +26,9 @@ export default function CadastrarRegistro() {
   const [registro, setRegistro] = useState(registroPrototype)
   const [iconeCategoriaSelecionada, setIconeCategoriaSelecionada] = useState('')
   const [imagens, setImagens] = useState([null, null, null])
+  const [checkRegras, setCheckRegras] = useState(true)
+  const [visibilidadePopupRegras, setVisibilidadePopupRegras] = useState(false)
+
   const navigate = useNavigate();
 
   const registroService = new RegistroService();
@@ -69,46 +74,67 @@ export default function CadastrarRegistro() {
   }
 
   const cadastrar = async () => {
-    try {
 
+    if (checkRegras) {
       try {
-        registroService.validar(registro);
-        imagemService.validar(imagens);
-      } catch (erro) {
-        const msgs = erro.mensagens;
-        msgs.forEach(msg => mensagemErro(msg));
-        return false;
-      }
-
-      const {data} = await registroService.salvar(registro);
-
-      for (const imagem of imagens) {
-        if (!imagem) continue;
-
-        const formData = new FormData();
-        formData.append('file', imagem);
-        formData.append('idRegistro', data.id);
 
         try {
-          await imagemService.salvar(formData);
-          mensagemSucesso('Imagem cadastrada com sucesso!');
-        } catch (error) {
-          mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar imagem');
-          await registroService.deletar(data.id);
-          throw error;
+          registroService.validar(registro);
+          imagemService.validar(imagens);
+        } catch (erro) {
+          const msgs = erro.mensagens;
+          msgs.forEach(msg => mensagemErro(msg));
+          return false;
         }
-      }
 
-      mensagemSucesso('Registro cadastrado com sucesso!');
-      navigate('/')
-    } catch (error) {
-      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar registro');
+        const {data} = await registroService.salvar(registro);
+
+        for (const imagem of imagens) {
+          if (!imagem) continue;
+
+          const formData = new FormData();
+          formData.append('file', imagem);
+          formData.append('idRegistro', data.id);
+
+          try {
+            await imagemService.salvar(formData);
+            mensagemSucesso('Imagem cadastrada com sucesso!');
+          } catch (error) {
+            mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar imagem');
+            await registroService.deletar(data.id);
+            throw error;
+          }
+        }
+
+        mensagemSucesso('Registro cadastrado com sucesso!');
+        navigate('/')
+      } catch (error) {
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar registro');
+      }
+    } else {
+      mensagemErro('Você deve concordar com as regras de uso para cadastrar um registro.')
     }
   };
 
 
   return (
     <div className='container'>
+
+      {/*popup com as regras de publicação*/}
+       <PopupSimples
+        visivel={visibilidadePopupRegras}
+        titulo="Regras de Publicação"
+        mensagem="
+            <ul>
+              <li><strong>Sem palavrões ou linguagem ofensiva:</strong> O uso de xingamentos, palavras de baixo calão ou expressões agressivas não será permitido.</li>
+              <li><strong>Sem discurso de ódio:</strong> Não são aceitos textos que incentivem ou promovam preconceito, discriminação ou violência contra qualquer grupo ou indivíduo.</li>
+              <li><strong>Sem conteúdo explícito ou inapropriado:</strong> Qualquer menção a temas de natureza sexual explícita, violência gráfica ou conteúdo impróprio será removida.</li>
+              <li><strong>Sem calúnia ou difamação:</strong> O usuário não pode acusar terceiros sem provas, fazer alegações falsas ou prejudicar a reputação de pessoas ou instituições.</li>
+              <li><strong>Sem spam ou autopromoção:</strong> O sistema não deve ser usado para publicidade, propagandas ou autopromoção de produtos e serviços.</li>
+            </ul>
+        "
+        fechar={() => setVisibilidadePopupRegras(false)}
+      />
 
 
       {/*titulo*/}
@@ -174,6 +200,7 @@ export default function CadastrarRegistro() {
               <Form.Label>Descrição</Form.Label>
               <Form.Control
                 as="textarea"
+                placeholder="Descreva o problema em detalhes"
                 rows={4}
                 value={registro.descricao}
                 onChange={event => setRegistro({...registro, descricao: event.target.value})}/>
@@ -242,9 +269,21 @@ export default function CadastrarRegistro() {
             </MapContainer>
           </div>
 
-          {/*botão*/}
-          <div className="mt-3 d-flex justify-content-end">
+          {/*botões*/}
+          <div className="mt-3 d-flex justify-content-end gap-2">
+
+            {/*check de regras*/}
+            <div className='rounded border border-1 border-dark-subtle p-2 d-flex gap-2'>
+              <Form.Check // prettier-ignore
+                type='checkbox'
+                onChange={event => setCheckRegras(event.target.checked)}
+              />
+              <span>Li e concordo com as <a className='clicavel' onClick={() => setVisibilidadePopupRegras(true)}>regras de publicação</a></span>
+            </div>
+
+            {/*botão de cadastro*/}
             <Button variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
+
           </div>
 
         </div>
