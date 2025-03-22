@@ -6,13 +6,15 @@ import osm from "../app/service/osm-providers";
 import Form from 'react-bootstrap/Form';
 import {Button} from "react-bootstrap";
 import L from 'leaflet'
-import {mensagemErro, mensagemSucesso} from "../components/toastr";
+import {mensagemAlerta, mensagemErro, mensagemSucesso} from "../components/toastr";
 import {ImagemService} from "../app/service/imagemService";
 import {COORDENADAS_CENTRO} from "../app/service/appService";
 import InputEndereco from "../components/inputEndereco/inputEndereco";
 import {useNavigate} from "react-router-dom";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import PopupSimples from "../components/popupSimples/PopupSimples";
+import IaService from "../app/service/iaService";
+import PopupCorrecao from "../components/popupCorrecao/popupCorrecao";
 
 export default function CadastrarRegistro() {
 
@@ -28,12 +30,17 @@ export default function CadastrarRegistro() {
   const [imagens, setImagens] = useState([null, null, null])
   const [checkRegras, setCheckRegras] = useState(true)
   const [visibilidadePopupRegras, setVisibilidadePopupRegras] = useState(false)
+  const [visibilidadePopupCorrecao, setVisibilidadePopupCorrecao] = useState(false)
+
+  const [correcaoTextoCorrigido, setCorrecaoTextoCorrigido] = useState('')
+  const [correcaoTipo, setCorrecaoTipo] = useState('')
 
   const navigate = useNavigate();
 
   const registroService = new RegistroService();
   const categoriaService = new CategoriaService();
   const imagemService = new ImagemService();
+  const iaService = new IaService();
 
   useEffect(() => {
 
@@ -78,6 +85,11 @@ export default function CadastrarRegistro() {
     if (checkRegras) {
       try {
 
+        mensagemAlerta("Validando dados...");
+        console.log(registro)
+
+
+        // validações
         try {
           registroService.validar(registro);
           imagemService.validar(imagens);
@@ -86,6 +98,27 @@ export default function CadastrarRegistro() {
           msgs.forEach(msg => mensagemErro(msg));
           return false;
         }
+
+        // correção com IA
+        const respCorrecaoTitulo = await iaService.corrigir(registro.titulo);
+        const respCorrecaoTituloData = respCorrecaoTitulo.data;
+        if (!respCorrecaoTituloData.valido) {
+          setCorrecaoTextoCorrigido(respCorrecaoTituloData.texto_corrigido);
+          setCorrecaoTipo('titulo');
+          setVisibilidadePopupCorrecao(true);
+          return false;
+        }
+
+
+        const respCorrecaoDescricao = await iaService.corrigir(registro.descricao);
+        const respCorrecaoDescricaoData = respCorrecaoDescricao.data;
+        if (!respCorrecaoDescricaoData.valido) {
+          setCorrecaoTextoCorrigido(respCorrecaoDescricaoData.texto_corrigido);
+          setCorrecaoTipo('descricao');
+          setVisibilidadePopupCorrecao(true);
+          return false;
+        }
+
 
         const {data} = await registroService.salvar(registro);
 
@@ -116,12 +149,23 @@ export default function CadastrarRegistro() {
     }
   };
 
+  const aceitarCorrecao = () => {
+    const correcaoTextoCorrigidoTratado = correcaoTextoCorrigido.replaceAll('<correcao>', '').replaceAll('</correcao>', '');
+    if (correcaoTipo === 'titulo') {
+      setRegistro({...registro, titulo: correcaoTextoCorrigidoTratado});
+    }
+    if (correcaoTipo === 'descricao') {
+      setRegistro({...registro, descricao: correcaoTextoCorrigidoTratado});
+    }
+    setVisibilidadePopupCorrecao(false);
+  }
+
 
   return (
     <div className='container'>
 
       {/*popup com as regras de publicação*/}
-       <PopupSimples
+      <PopupSimples
         visivel={visibilidadePopupRegras}
         titulo="Regras de Publicação"
         mensagem="
@@ -136,6 +180,14 @@ export default function CadastrarRegistro() {
         fechar={() => setVisibilidadePopupRegras(false)}
       />
 
+      {/*popup com as correções de IA*/}
+      <PopupCorrecao
+        visivel={visibilidadePopupCorrecao}
+        tipo={correcaoTipo}
+        textoCorrigido={correcaoTextoCorrigido}
+        onAceitar={aceitarCorrecao}
+        onRejeitar={() => setVisibilidadePopupCorrecao(false)}
+      />
 
       {/*titulo*/}
       <div className="row mt-3">

@@ -47,8 +47,8 @@ export class RegistroService extends ApiService {
     // descrição
     if (!registro.descricao) {
       erros.push("O campo descrição é obrigatório.")
-    } else if (registro.descricao.length > 999) {
-      erros.push("O campo descrição deve ter no máximo 999 caracteres.")
+    } else if (registro.descricao.length > 3500) {
+      erros.push("O campo descrição deve ter no máximo 3500 caracteres.")
     }
 
     // categoria
