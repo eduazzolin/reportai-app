@@ -4,7 +4,7 @@ import {categoriaPrototype, CategoriaService} from "../app/service/categoriaServ
 import {MapContainer, Marker, TileLayer, useMapEvents} from "react-leaflet";
 import osm from "../app/service/osm-providers";
 import Form from 'react-bootstrap/Form';
-import {Button} from "react-bootstrap";
+import {Button, Spinner} from "react-bootstrap";
 import L from 'leaflet'
 import {mensagemAlerta, mensagemErro, mensagemSucesso} from "../components/toastr";
 import {ImagemService} from "../app/service/imagemService";
@@ -31,9 +31,10 @@ export default function CadastrarRegistro() {
   const [checkRegras, setCheckRegras] = useState(true)
   const [visibilidadePopupRegras, setVisibilidadePopupRegras] = useState(false)
   const [visibilidadePopupCorrecao, setVisibilidadePopupCorrecao] = useState(false)
-
   const [correcaoTextoCorrigido, setCorrecaoTextoCorrigido] = useState('')
   const [correcaoTipo, setCorrecaoTipo] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+
 
   const navigate = useNavigate();
 
@@ -84,8 +85,7 @@ export default function CadastrarRegistro() {
 
     if (checkRegras) {
       try {
-
-        mensagemAlerta("Validando dados...");
+        setIsLoading(true);
         console.log(registro)
 
 
@@ -143,6 +143,8 @@ export default function CadastrarRegistro() {
         navigate('/')
       } catch (error) {
         mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar registro');
+      } finally {
+        setIsLoading(false);
       }
     } else {
       mensagemErro('Você deve concordar com as regras de uso para cadastrar um registro.')
@@ -164,6 +166,17 @@ export default function CadastrarRegistro() {
   return (
     <div className='container'>
 
+
+      {/*popup com as correções de IA*/}
+      <PopupCorrecao
+        visivel={visibilidadePopupCorrecao}
+        tipo={correcaoTipo}
+        textoCorrigido={correcaoTextoCorrigido}
+        abrirRegrasPublicacao={() => setVisibilidadePopupRegras(true)}
+        onAceitar={aceitarCorrecao}
+        onRejeitar={() => setVisibilidadePopupCorrecao(false)}
+      />
+
       {/*popup com as regras de publicação*/}
       <PopupSimples
         visivel={visibilidadePopupRegras}
@@ -178,15 +191,6 @@ export default function CadastrarRegistro() {
             </ul>
         "
         fechar={() => setVisibilidadePopupRegras(false)}
-      />
-
-      {/*popup com as correções de IA*/}
-      <PopupCorrecao
-        visivel={visibilidadePopupCorrecao}
-        tipo={correcaoTipo}
-        textoCorrigido={correcaoTextoCorrigido}
-        onAceitar={aceitarCorrecao}
-        onRejeitar={() => setVisibilidadePopupCorrecao(false)}
       />
 
       {/*titulo*/}
@@ -326,7 +330,7 @@ export default function CadastrarRegistro() {
 
             {/*check de regras*/}
             <div className='rounded border border-1 border-dark-subtle p-2 d-flex gap-2'>
-              <Form.Check // prettier-ignore
+              <Form.Check
                 type='checkbox'
                 onChange={event => setCheckRegras(event.target.checked)}
               />
@@ -334,8 +338,20 @@ export default function CadastrarRegistro() {
             </div>
 
             {/*botão de cadastro*/}
-            <Button variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
-
+            {
+              isLoading ? (
+                // versão com spinner
+                <Button variant="warning" disabled className="d-flex gap-2 align-items-center">
+                  <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
+                  <div>Cadastrar</div>
+                </Button>
+              ) : (
+                // versão sem spinner
+                <Button variant="warning" onClick={cadastrar}>
+                  Cadastrar
+                </Button>
+              )
+            }
           </div>
 
         </div>

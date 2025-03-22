@@ -1,7 +1,7 @@
 import React from 'react';
 import './PopupCorrecao.css';
 
-export default function PopupCorrecao({visivel, tipo, textoOriginal, textoCorrigido, onAceitar, onRejeitar}) {
+export default function PopupCorrecao({visivel, tipo, textoCorrigido, abrirRegrasPublicacao, onAceitar, onRejeitar}) {
   if (!visivel) return null;
   const textoCorrigidoTratado = textoCorrigido.replaceAll(/\n/g, '<br />').replaceAll('<correcao>', '<mark>').replaceAll('</correcao>', '</mark>');
   return (
@@ -19,7 +19,7 @@ export default function PopupCorrecao({visivel, tipo, textoOriginal, textoCorrig
             <div className="modal-body p-3">
 
               <div className="mb-3">
-                Detectamos um possível ajuste no texto para se adequar melhor às <strong>regras de publicação</strong>.
+                Detectamos um possível ajuste no texto para se adequar melhor às <a onClick={abrirRegrasPublicacao} className='clicavel'>regras de publicação</a>.
               </div>
 
               <div className="border rounded p-3">
