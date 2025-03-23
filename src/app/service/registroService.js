@@ -8,12 +8,14 @@ export class RegistroService extends ApiService {
     super('/registros');
   }
 
-  consultar(latitude, longitude, distancia) {
-    let url = `/distancia?latitude=${latitude}&longitude=${longitude}`;
-    if (distancia) {
-      url += `&distancia=${distancia}`;
-    }
-    url += `&pagina=1`;
+  consultar(latitude, longitude, distancia, filtro, ordenacao) {
+    const p_lat = `latitude=${latitude}`;
+    const p_long = `longitude=${longitude}`;
+    const p_dist = `distancia=${distancia}`;
+    const p_filtro = `filtro=${filtro || '0=0'}`;
+    const p_ordenacao = `ordenacao=${ordenacao || 'dt_criacao DESC'}`;
+
+    const url = `/distancia?${p_lat}&${p_long}&${p_dist}&${p_filtro}&${p_ordenacao}`;
     return this.get(url);
   }
 

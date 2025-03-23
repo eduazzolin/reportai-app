@@ -6,12 +6,11 @@ import osm from "../app/service/osm-providers";
 import Form from 'react-bootstrap/Form';
 import {Button, Spinner} from "react-bootstrap";
 import L from 'leaflet'
-import {mensagemAlerta, mensagemErro, mensagemSucesso} from "../components/toastr";
+import {mensagemErro, mensagemSucesso} from "../components/toastr";
 import {ImagemService} from "../app/service/imagemService";
 import {COORDENADAS_CENTRO} from "../app/service/appService";
 import InputEndereco from "../components/inputEndereco/inputEndereco";
 import {useNavigate} from "react-router-dom";
-import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import PopupSimples from "../components/popupSimples/PopupSimples";
 import IaService from "../app/service/iaService";
 import PopupCorrecao from "../components/popupCorrecao/popupCorrecao";

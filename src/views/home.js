@@ -8,53 +8,43 @@ import CardRegistroLateral from "../components/cardRegistroLateral/cardRegistroL
 import {Button} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {COORDENADAS_CENTRO} from "../app/service/appService";
-
-function MapEventsHandler({onZoomChange, onCenterChange}) {
-  // Esse hook permite "ouvir" eventos do mapa
-  const map = useMapEvents({
-    zoomend: () => {
-      onZoomChange(map.getZoom());
-    },
-    moveend: () => {
-      const center = map.getCenter();
-      onCenterChange(center.lat, center.lng);
-    },
-  });
-
-  return null; // Esse componente não renderiza nada visível
-}
+import {mensagemErro} from "../components/toastr";
 
 export default function Home() {
-  const [registros, setRegistros] = useState([]);
+
+  const zoomSelecao = 16;
   const mapRef = useRef();
-  const cardRefs = useRef([]);
-  const [activeRegistroId, setActiveRegistroId] = useState(null);
   const [zoom, setZoom] = useState(13); // 11 = 50 km  12 = 25 km  13 = 12 km  14 = 6 km  15 = 3 km  16 = 1.5 km  17 = 750 m  18 = 375 m  19 = 187 m  20 = 93 m
-  const [latitude, setLatitude] = useState(COORDENADAS_CENTRO[0]);
-  const [longitude, setLongitude] = useState(COORDENADAS_CENTRO[1]);
-  const [distancia, setDistancia] = useState(calculateDistance(13));
+  const [centroMapa, setCentroMapa] = useState(COORDENADAS_CENTRO);
+  const [distanciaVisivel, setdistanciaVisivel] = useState(calcularDistanciaComBaseNoZoom(13));
 
-  // Função para calcular a distância com base no zoom
-  function calculateDistance(zoomLevel) {
-    const baseDistance = 50000; // Distância para zoom 11
-    return (baseDistance * Math.pow(2, -(zoomLevel - 11))) / 1000;
-  }
-
+  const [registros, setRegistros] = useState([]);
+  const cardRefs = useRef([]);
 
   const navigate = useNavigate();
   const registroService = new RegistroService();
 
 
+  // a cada mudança de zoom ou no centro do mapa, atualiza os registros
   useEffect(() => {
-    setDistancia(calculateDistance(zoom));
-    registroService.consultar(latitude, longitude, distancia).then(response => {
-      setRegistros(response.data);
+
+    setdistanciaVisivel(calcularDistanciaComBaseNoZoom(zoom));
+
+    registroService
+      .consultar(centroMapa[0], centroMapa[1], distanciaVisivel)
+      .then(response => {
+        setRegistros(response.data);
+        console.log(response.data);
     }).catch(error => {
-      console.log('Erro ao buscar projetos');
+      mensagemErro(error.response.data.descricao);
     });
 
+  }, [zoom, centroMapa]);
 
-  }, [zoom, latitude, longitude]);
+  function calcularDistanciaComBaseNoZoom(zoomLevel) {
+    const baseDistancia = 50000;
+    return (baseDistancia * Math.pow(2, -(zoomLevel - 11))) / 1000;
+  }
 
   const focarMapaNoRegistro = (registro) => {
     console.log([registro.latitude, registro.longitude]);
@@ -62,12 +52,25 @@ export default function Home() {
   }
 
   const highlightRegistro = (id) => {
-    setActiveRegistroId(id);
     const card = cardRefs.current[id];
     if (card) {
       card.scrollIntoView({behavior: 'smooth', block: 'center'});
     }
   };
+
+  function MapEventsHandler({onZoomChange, onCenterChange}) {
+    // Esse hook permite "ouvir" eventos do mapa
+    const map = useMapEvents({
+      zoomend: () => {
+        onZoomChange(map.getZoom());
+      },
+      moveend: () => {
+        const center = map.getCenter();
+        onCenterChange(center.lat, center.lng);
+      },
+    });
+  }
+
 
   return (
     <div className={'container-fluid'}>
@@ -99,7 +102,7 @@ export default function Home() {
 
         <div className={'col-lg-7 col-4 p-0'}>
           <MapContainer
-            center={[latitude, longitude]}
+            center={centroMapa}
             zoom={zoom}
             ref={mapRef}
             style={{height: 'calc(100vh - 60px)', width: '100%'}}
@@ -112,8 +115,7 @@ export default function Home() {
             <MapEventsHandler
               onZoomChange={(novoZoom) => setZoom(novoZoom)}
               onCenterChange={(lat, lng) => {
-                setLatitude(lat);
-                setLongitude(lng);
+                setCentroMapa([lat, lng]);
               }}
             />
             {registros.map((registro, index) => (
