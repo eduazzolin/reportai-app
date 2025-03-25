@@ -1,7 +1,25 @@
-.sidebar {
-    height: calc(100vh - 75px);
-    overflow: auto;
+@media (min-width: 992px) {
+    .scrollable-lg {
+        height: calc(100vh - 60px);
+        overflow: auto;
+    }
 }
+
+.custom-map-container {
+  /* Altura padrão para telas menores */
+  height: calc(100vh - 250px);
+  border-radius: 8px;
+}
+
+/* A partir de lg: altura mudada e sem border-radius */
+@media (min-width: 992px) {
+  .custom-map-container {
+    height: calc(100vh - 60px);
+    border-radius: 0;
+  }
+}
+
+
 
 .placeholder_adicionar {
     height: 50px;

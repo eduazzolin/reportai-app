@@ -166,7 +166,7 @@ export default function CadastrarRegistro() {
     <div className='container'>
 
 
-      {/*popup com as correções de IA*/}
+      {/* ---------------------- popup com as correções de IA ---------------------- */}
       <PopupCorrecao
         visivel={visibilidadePopupCorrecao}
         tipo={correcaoTipo}
@@ -176,7 +176,7 @@ export default function CadastrarRegistro() {
         onRejeitar={() => setVisibilidadePopupCorrecao(false)}
       />
 
-      {/*popup com as regras de publicação*/}
+      {/* ---------------------- popup com as regras de publicação ---------------------- */}
       <PopupSimples
         visivel={visibilidadePopupRegras}
         titulo="Regras de Publicação"
@@ -192,7 +192,7 @@ export default function CadastrarRegistro() {
         fechar={() => setVisibilidadePopupRegras(false)}
       />
 
-      {/*titulo*/}
+      {/* ---------------------- titulo ---------------------- */}
       <div className="row mt-3">
         <div className="col-12">
           <h2>Crie um novo registro</h2>
@@ -202,7 +202,7 @@ export default function CadastrarRegistro() {
 
       <div className="row mb-5 flex-row-reverse flex-lg-row">
 
-        {/*formulário*/}
+        {/* ---------------------- formulário ---------------------- */}
         <div className="col-lg-6 mt-3">
           <Form>
 
@@ -291,9 +291,9 @@ export default function CadastrarRegistro() {
         </div>
 
 
-        {/*mapa*/}
+        {/* ---------------------- mapa ---------------------- */}
         <div className="col-lg-6 mt-3">
-          <Form.Label>Clique no mapa para inserir um marcador</Form.Label>
+          <Form.Label>Clique no mapa para inserir um marcador ou use o campo Localização</Form.Label>
           <div className="rounded border overflow-hidden">
             <MapContainer
               center={centroMapa}
@@ -342,7 +342,7 @@ export default function CadastrarRegistro() {
                 // versão com spinner
                 <Button variant="warning" disabled className="d-flex gap-2 align-items-center">
                   <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
-                  <div>Cadastrar</div>
+                  <div>Cadastrando</div>
                 </Button>
               ) : (
                 // versão sem spinner

@@ -97,3 +97,12 @@ export const registroPrototype = {
   "interacoesRelevante": 0,
   "interacoesConcluido": 0
 }
+
+export const ORDENACOES_PERMITIDAS = [
+  {value: 'dt_criacao DESC', label: 'Mais recentes'},
+  {value: 'dt_criacao ASC', label: 'Mais antigos'},
+  {value: 'interacoesRelevante DESC', label: 'Mais relevantes'},
+  {value: 'interacoesRelevante ASC', label: 'Menos relevantes'},
+  {value: 'distancia_do_centro ASC', label: 'Mais próximos do centro do mapa'},
+  {value: 'distancia_do_centro DESC', label: 'Mais distantes do centro do mapa'},
+]
