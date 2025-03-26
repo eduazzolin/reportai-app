@@ -12,7 +12,7 @@ export class RegistroService extends ApiService {
     const p_lat = `latitude=${latitude}`;
     const p_long = `longitude=${longitude}`;
     const p_dist = `distancia=${distancia}`;
-    const p_filtro = `filtro=${filtro || '0=0'}`;
+    const p_filtro = `filtro=${filtro || 'AND 0=0'}`;
     const p_ordenacao = `ordenacao=${ordenacao || 'dt_criacao DESC'}`;
 
     const url = `/distancia?${p_lat}&${p_long}&${p_dist}&${p_filtro}&${p_ordenacao}`;

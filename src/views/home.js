@@ -3,14 +3,13 @@ import {MapContainer, Marker, TileLayer, useMapEvents} from "react-leaflet";
 import L from 'leaflet';
 import osm from '../app/service/osm-providers';
 import 'leaflet/dist/leaflet.css';
-import {RegistroService, ORDENACOES_PERMITIDAS} from "../app/service/registroService";
+import {ORDENACOES_PERMITIDAS, RegistroService} from "../app/service/registroService";
 import CardRegistroLateral from "../components/cardRegistroLateral/cardRegistroLateral";
-import {Button} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {COORDENADAS_CENTRO} from "../app/service/appService";
 import {mensagemErro} from "../components/toastr";
 import Form from "react-bootstrap/Form";
-import {categoriaPrototype} from "../app/service/categoriaService";
+import {categoriaPrototype, CategoriaService} from "../app/service/categoriaService";
 
 export default function Home() {
 
@@ -22,21 +21,28 @@ export default function Home() {
   const [distanciaVisivel, setdistanciaVisivel] = useState(calcularDistanciaComBaseNoZoom(13));
 
   const [ordenacaoSelecionada, setOrdenacaoSelecionada] = useState(ORDENACOES_PERMITIDAS[0]);
+  const [filtros, setFiltros] = useState(['AND 0=0', 'AND 0=0']);
   const [categorias, setCategorias] = useState([categoriaPrototype])
   const [registros, setRegistros] = useState([]);
   const cardRefs = useRef([]);
 
   const navigate = useNavigate();
   const registroService = new RegistroService();
-
+  const categoriaService = new CategoriaService();
+  const FILTRO_STATUS_REGISTRO = [
+    {label: 'Qualquer status', value: 'AND 0=0'},
+    {label: 'Ativos', value: 'AND NOT is_concluido'},
+    {label: 'Concluídos', value: 'AND is_concluido'}
+  ]
 
   // a cada mudança de zoom ou no centro do mapa, atualiza os registros
   useEffect(() => {
 
+    console.log(filtros)
     setdistanciaVisivel(calcularDistanciaComBaseNoZoom(zoom));
 
     registroService
-      .consultar(centroMapa[0], centroMapa[1], distanciaVisivel, '', ordenacaoSelecionada.value)
+      .consultar(centroMapa[0], centroMapa[1], distanciaVisivel, filtros.join(' '), ordenacaoSelecionada.value)
       .then(response => {
         setRegistros(response.data);
         console.log(response.data);
@@ -44,7 +50,19 @@ export default function Home() {
       mensagemErro(error.response.data.descricao);
     });
 
-  }, [zoom, centroMapa, ordenacaoSelecionada]);
+  }, [zoom, centroMapa, ordenacaoSelecionada, filtros]);
+
+  // a cada inicialização
+  useEffect(() => {
+
+    categoriaService
+      .consultar()
+      .then(response => {
+        setCategorias(response.data)
+      }).catch(error => {
+      mensagemErro(error.response.data.descricao)
+    });
+  }, []);
 
   function calcularDistanciaComBaseNoZoom(zoomLevel) {
     const baseDistancia = 50000;
@@ -53,7 +71,7 @@ export default function Home() {
 
   const focarMapaNoRegistro = (registro) => {
     console.log([registro.latitude, registro.longitude]);
-    mapRef.current.setView([registro.latitude, registro.longitude], 20);
+    mapRef.current.setView([registro.latitude, registro.longitude], zoomSelecao);
   }
 
   const highlightRegistro = (id) => {
@@ -75,8 +93,6 @@ export default function Home() {
       },
     });
   }
-
-
 
   return (
     <div className={'container-fluid'}>
@@ -101,11 +117,6 @@ export default function Home() {
                 setCentroMapa([lat, lng]);
               }}
             />
-
-            {/* ponteiro no centro para dev */}
-            {/*<Marker*/}
-            {/*  position={centroMapa}*/}
-            {/*/>*/}
 
             {registros.map((registro, index) => (
               <Marker
@@ -137,17 +148,34 @@ export default function Home() {
           {/*filtros*/}
           <div className="row">
 
-            <div className="col-lg-4 col-6 mt-2">
-              <Form.Select
-                className=''
-                aria-label="Categoria">
-              </Form.Select>
-            </div>
-
+            {/*categoria*/}
             <div className="col-lg-4 col-6 mt-2">
               <Form.Select
                 aria-label="Categoria"
-                className=''>
+                onChange={event => {
+                  setFiltros([event.target.value, filtros[1]]);
+                  console.log(filtros)
+                }}>
+
+                {/*opções*/}
+                <option key={1} value={'AND 0=0'}>Todas as categorias</option>
+                {categorias.map((categoria, index) => (
+                  <option key={index + 1} value={'AND categoria_id = ' + categoria.id}>{categoria.nome}</option>
+                ))}
+              </Form.Select>
+            </div>
+
+            {/*status*/}
+            <div className="col-lg-4 col-6 mt-2">
+              <Form.Select
+                aria-label="status"
+                onChange={event => {
+                  setFiltros([filtros[0], event.target.value]);
+                }}>
+                {/*opções*/}
+                {FILTRO_STATUS_REGISTRO.map((status, index) => (
+                  <option key={index} value={status.value}>{status.label}</option>
+                ))}
               </Form.Select>
             </div>
 
@@ -180,6 +208,18 @@ export default function Home() {
               ))
             }
           </div>
+
+          {
+            registros.length > 0 ? '' :
+              <div className={'row p-3 h-50'}>
+                <div className="col-12 justify-content-center align-items-center d-flex text-center">
+                  ℹ️ <br/>
+                  Nenhum registro encontrado! <br/>
+                  Experimente navegar no mapa ou alterar os filtros.
+                </div>
+              </div>
+          }
+
 
         </div>
 
