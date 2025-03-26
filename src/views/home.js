@@ -146,7 +146,7 @@ export default function Home() {
         <div className='col-lg-7 scrollable-lg'>
 
           {/*filtros*/}
-          <div className="row">
+          <div className="row  p-2 pb-1">
 
             {/*categoria*/}
             <div className="col-lg-4 col-6 mt-2">
@@ -158,7 +158,7 @@ export default function Home() {
                 }}>
 
                 {/*opções*/}
-                <option key={1} value={'AND 0=0'}>Todas as categorias</option>
+                <option key={1} value={'AND 0=0'}>Qualquer categoria</option>
                 {categorias.map((categoria, index) => (
                   <option key={index + 1} value={'AND categoria_id = ' + categoria.id}>{categoria.nome}</option>
                 ))}
@@ -199,7 +199,7 @@ export default function Home() {
           <div className={'row p-3'}>
             {
               registros.map((registro, index) => (
-                <div ref={(el) => cardRefs.current[registro.id] = el} key={index} className={'p-1 col-6 overflow-hidden'}>
+                <div ref={(el) => cardRefs.current[registro.id] = el} key={index} className={'p-1 col-12'}>
                   <CardRegistroLateral
                     key={index}
                     focarMapaNoRegistro={focarMapaNoRegistro}
