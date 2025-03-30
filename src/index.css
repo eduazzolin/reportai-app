@@ -6,19 +6,18 @@
 }
 
 .custom-map-container {
-  /* Altura padrão para telas menores */
-  height: calc(100vh - 250px);
-  border-radius: 8px;
+    /* Altura padrão para telas menores */
+    height: calc(100vh - 250px);
+    border-radius: 8px;
 }
 
 /* A partir de lg: altura mudada e sem border-radius */
 @media (min-width: 992px) {
-  .custom-map-container {
-    height: calc(100vh - 60px);
-    border-radius: 0;
-  }
+    .custom-map-container {
+        height: calc(100vh - 60px);
+        border-radius: 0;
+    }
 }
-
 
 
 .placeholder_adicionar {
@@ -31,30 +30,7 @@
     &:hover {
         color: rgba(0, 7, 14, 0.59);
     }
-}
 
-.clicavel-vermelho {
-    cursor: pointer;
-
-    &:hover {
-        color: rgba(14, 0, 0, 0.59);
-    }
-}
-
-.clicavel-azul {
-    cursor: pointer;
-
-    &:hover {
-        color: rgba(1, 51, 74, 0.63);
-    }
-}
-
-.clicavel-verde {
-    cursor: pointer;
-
-    &:hover {
-        color: rgba(1, 35, 10, 0.59);
-    }
 }
 
 .link {

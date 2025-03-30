@@ -10,11 +10,12 @@ import {COORDENADAS_CENTRO} from "../app/service/appService";
 import {mensagemErro} from "../components/toastr";
 import Form from "react-bootstrap/Form";
 import {categoriaPrototype, CategoriaService} from "../app/service/categoriaService";
+import {InteracaoService} from "../app/service/interacaoService";
 
 export default function Home() {
 
-  const zoomSelecao = 16;
-  const mapRef = useRef();
+  const ZOOM_SELECAO = 16;
+  const FILTRO_STATUS_REGISTRO = [{label: 'Qualquer status', value: 'AND 0=0'}, {label: 'Ativos', value: 'AND NOT is_concluido'}, {label: 'Concluídos', value: 'AND is_concluido'}]
 
   const [zoom, setZoom] = useState(13); // 11 = 50 km  12 = 25 km  13 = 12 km  14 = 6 km  15 = 3 km  16 = 1.5 km  17 = 750 m  18 = 375 m  19 = 187 m  20 = 93 m
   const [centroMapa, setCentroMapa] = useState(COORDENADAS_CENTRO);
@@ -24,21 +25,20 @@ export default function Home() {
   const [filtros, setFiltros] = useState(['AND 0=0', 'AND 0=0']);
   const [categorias, setCategorias] = useState([categoriaPrototype])
   const [registros, setRegistros] = useState([]);
-  const cardRefs = useRef([]);
 
+  const cardRefs = useRef([]);
+  const mapRef = useRef();
   const navigate = useNavigate();
+
   const registroService = new RegistroService();
   const categoriaService = new CategoriaService();
-  const FILTRO_STATUS_REGISTRO = [
-    {label: 'Qualquer status', value: 'AND 0=0'},
-    {label: 'Ativos', value: 'AND NOT is_concluido'},
-    {label: 'Concluídos', value: 'AND is_concluido'}
-  ]
+  const interacaoService = new InteracaoService();
+
+
 
   // a cada mudança de zoom ou no centro do mapa, atualiza os registros
   useEffect(() => {
 
-    console.log(filtros)
     setdistanciaVisivel(calcularDistanciaComBaseNoZoom(zoom));
 
     registroService
@@ -71,7 +71,7 @@ export default function Home() {
 
   const focarMapaNoRegistro = (registro) => {
     console.log([registro.latitude, registro.longitude]);
-    mapRef.current.setView([registro.latitude, registro.longitude], zoomSelecao);
+    mapRef.current.setView([registro.latitude, registro.longitude], ZOOM_SELECAO);
   }
 
   const highlightRegistro = (id) => {
@@ -203,7 +203,8 @@ export default function Home() {
                   <CardRegistroLateral
                     key={index}
                     focarMapaNoRegistro={focarMapaNoRegistro}
-                    registro={registro}/>
+                    registro={registro}
+                    interacaoService={interacaoService}/>
                 </div>
               ))
             }

@@ -99,10 +99,10 @@ export const registroPrototype = {
 }
 
 export const ORDENACOES_PERMITIDAS = [
-  {value: 'dt_criacao DESC', label: 'Mais recentes'},
-  {value: 'dt_criacao ASC', label: 'Mais antigos'},
-  {value: 'interacoesRelevante DESC', label: 'Mais relevantes'},
-  {value: 'interacoesRelevante ASC', label: 'Menos relevantes'},
-  {value: 'distancia_do_centro ASC', label: 'Mais próximos do centro do mapa'},
-  {value: 'distancia_do_centro DESC', label: 'Mais distantes do centro do mapa'},
+  {value: 'R.dt_criacao DESC', label: 'Mais recentes'},
+  {value: 'R.dt_criacao ASC', label: 'Mais antigos'},
+  {value: 'I.interacoesRelevante DESC', label: 'Mais relevantes'},
+  {value: 'I.interacoesRelevante ASC', label: 'Menos relevantes'},
+  {value: 'R.distancia_do_centro ASC', label: 'Mais próximos do centro do mapa'},
+  {value: 'R.distancia_do_centro DESC', label: 'Mais distantes do centro do mapa'},
 ]
