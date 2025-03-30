@@ -51,7 +51,7 @@ export default function CadastrarRegistro() {
         setIconeCategoriaSelecionada(response.data[0].icone);
         setRegistro({...registro, categoria: response.data[0]});
       }).catch(error => {
-      mensagemErro(error.response.data.descricao)
+      console.log(error);
     });
 
 

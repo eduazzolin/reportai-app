@@ -47,7 +47,7 @@ export default function Home() {
         setRegistros(response.data);
         console.log(response.data);
       }).catch(error => {
-      mensagemErro(error.response.data.descricao);
+      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar registros');
     });
 
   }, [zoom, centroMapa, ordenacaoSelecionada, filtros]);
@@ -60,7 +60,7 @@ export default function Home() {
       .then(response => {
         setCategorias(response.data)
       }).catch(error => {
-      mensagemErro(error.response.data.descricao)
+      console.log(error);
     });
   }, []);
 

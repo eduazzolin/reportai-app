@@ -33,6 +33,30 @@
     }
 }
 
+.clicavel-vermelho {
+    cursor: pointer;
+
+    &:hover {
+        color: rgba(14, 0, 0, 0.59);
+    }
+}
+
+.clicavel-azul {
+    cursor: pointer;
+
+    &:hover {
+        color: rgba(1, 51, 74, 0.63);
+    }
+}
+
+.clicavel-verde {
+    cursor: pointer;
+
+    &:hover {
+        color: rgba(1, 35, 10, 0.59);
+    }
+}
+
 .link {
     color: #000;
 

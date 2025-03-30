@@ -1,9 +1,7 @@
 import React from 'react';
 import './cardRegistroLateralStyle.css'
-import {FaSquareCheck} from "react-icons/fa6";
 import {FaMap, FaUserCircle} from "react-icons/fa";
-import {AiFillLike} from "react-icons/ai";
-import {ReactSVG} from "react-svg";
+import {BsArrowDownSquareFill, BsArrowUpSquareFill, BsCheckSquareFill} from "react-icons/bs";
 
 export default function CardRegistroLateral({registro, focarMapaNoRegistro}) {
 
@@ -13,7 +11,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro}) {
 
   return (
 
-    <div className={"container card_container bg-light border rounded"}>
+    <div className={"container bg-light border rounded"}>
 
       <div className="row p-2 overflow-hidden">
 
@@ -27,47 +25,49 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro}) {
         {/*texto*/}
         <div className="col-8 ps-3">
 
-          <div className="row ">
+          {/*titulo e localização*/}
+          <div className="row">
 
             {/*cabeçalho*/}
             <div onClick={goToRegistro} className="col-12 d-flex mb-3 mt-3 gap-2 clicavel div_titulo   overflow-hidden ">
 
               {/*icone*/}
-              <img src={registro.categoria.icone} className="clicavel" alt="..."/>
+              <img src={registro.categoria.icone} className="clicavel img_localizacao flex-shrink-0" alt="..."/>
 
               {/*titulo e localização*/}
               <div>
-                <h5 className={"text_titulo mb-0"}>{registro.titulo}</h5>
-                <div className={"text_localizacao"}>{registro.localizacao}</div>
+                <h5 className={"mb-0 text-nowrap text-truncate"}>{registro.titulo}</h5>
+                <div className={"text_localizacao text-nowrap text-truncate"}>{registro.localizacao}</div>
               </div>
 
             </div>
+          </div>
 
-            {/*body*/}
-            <div className="col-12 div_body">
+          {/*descrição*/}
+          <div className="row div_descricao">
+            <p className={"text_descricao"}>{registro.descricao}</p>
+          </div>
 
-              {/*descrição*/}
-              <p className={"text_descricao"}>{registro.descricao}</p>
 
-              <div className="col-12 gap-2 d-flex justify-content-between align-items-center">
+          <div className="row div_rodape align-items-end">
 
-                {/*usuario*/}
-                <div className={"div_usuario"}>
-                  <FaUserCircle className="img_usuario" size="26px"/>
-                  <span className={"text_usuario"}>{registro.usuario.nome}</span>
-                </div>
+            {/*usuario*/}
+            <div className="col-md-8 d-flex gap-1">
+              <FaUserCircle size="26px" className="flex-shrink-0"/>
+              <span className={"text-nowrap text-truncate"}>{registro.usuario.nome}</span>
+            </div>
 
-                {/*botões*/}
-                <div className='gap-2 d-flex'>
-                  <FaMap className='clicavel' onClick={() => focarMapaNoRegistro(registro)} size={"26px"}/>
-                  <AiFillLike size={"26px"}/>
-                  <FaSquareCheck size={"26px"}/>
-                </div>
-
-              </div>
+            {/*botões*/}{/*https://react-icons.github.io/react-icons/*/}
+            <div className="col-md-4 d-flex justify-content-center justify-content-md-end gap-1">
+              <FaMap className='clicavel flex-shrink-0' onClick={() => focarMapaNoRegistro(registro)} size={"26px"}/>
+              <BsArrowUpSquareFill className='flex-shrink-0 clicavel-azul' size={"26px"}/>
+              <BsArrowDownSquareFill className='flex-shrink-0 clicavel-vermelho' size={"26px"}/>
+              <BsCheckSquareFill className='flex-shrink-0 clicavel-verde' size={"26px"}/>
             </div>
 
           </div>
+
+
         </div>
       </div>
 
