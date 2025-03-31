@@ -22,5 +22,5 @@
     justify-content: center;
     font-size: 12px;
     font-weight: bold;
-    z-index: 1; /* Garante que fique acima do ícone */
+    z-index: 1;
 }

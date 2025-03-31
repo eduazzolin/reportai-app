@@ -5,7 +5,6 @@ import Tooltip from 'react-bootstrap/Tooltip';
 
 export default function IconeContagem({icone: Icone, contagem, isClicado, tooltip, setClicado, cor, acao1, acao2}) {
 
-
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       {tooltip}
@@ -19,10 +18,7 @@ export default function IconeContagem({icone: Icone, contagem, isClicado, toolti
       delay={{show: 50, hide: 50}}
       overlay={renderTooltip}
     >
-      <div
-        className="d-inline-block position-relative icon-hover"
-        style={{'--hover-color': cor, 'color': isClicado ? cor : ''}}
-      >
+      <div className="d-inline-block position-relative">
 
         {
           contagem > 0 ?
@@ -33,8 +29,9 @@ export default function IconeContagem({icone: Icone, contagem, isClicado, toolti
         }
 
         <Icone
-          className={`flex-shrink-0`}
+          className={`flex-shrink-0  icon-hover`}
           size={"26px"}
+          style={{'--hover-color': cor, 'color': isClicado ? cor : ''}}
 
         />
       </div>

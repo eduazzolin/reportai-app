@@ -88,9 +88,9 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
             {/*botões*/}{/*https://react-icons.github.io/react-icons/*/}
             <div className="col-md-4 d-flex justify-content-center justify-content-md-end gap-1">
               <IconeMapa registro={registro} focarMapaNoRegistro={focarMapaNoRegistro}/>
-              <IconeContagem icone={BsArrowUpSquareFill} contagem={qtRelevante} cor={'#01334AA0'} isClicado={usuarioMarcouRelevante} tooltip={'Relevante'}/>
-              <IconeContagem icone={BsArrowDownSquareFill} contagem={qtIrrelevante} cor={'#0E000096'} isClicado={usuarioMarcouIrrelevante} tooltip={'Não relevante'}/>
-              <IconeContagem icone={BsCheckSquareFill} contagem={qtConcluido} cor={'#01230A96'} isClicado={usuarioMarcouConcluido} tooltip={'Concluído'}/>
+              <IconeContagem icone={BsArrowUpSquareFill} contagem={qtRelevante} cor={'#e6b000'} isClicado={usuarioMarcouRelevante} tooltip={'Relevante'}/>
+              <IconeContagem icone={BsArrowDownSquareFill} contagem={qtIrrelevante} cor={'#CC1F00D0'} isClicado={usuarioMarcouIrrelevante} tooltip={'Não relevante'}/>
+              <IconeContagem icone={BsCheckSquareFill} contagem={qtConcluido} cor={'#2AA301D1'} isClicado={usuarioMarcouConcluido} tooltip={'Concluído'}/>
             </div>
 
           </div>
