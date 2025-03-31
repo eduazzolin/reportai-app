@@ -86,7 +86,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
             </div>
 
             {/*botões*/}{/*https://react-icons.github.io/react-icons/*/}
-            <div className="col-md-4 d-flex justify-content-center justify-content-md-end gap-1">
+            <div className="col-md-4 d-flex justify-content-center justify-content-md-end gap-2">
               <IconeMapa registro={registro} focarMapaNoRegistro={focarMapaNoRegistro}/>
               <IconeContagem icone={BsArrowUpSquareFill} contagem={qtRelevante} cor={'#e6b000'} isClicado={usuarioMarcouRelevante} tooltip={'Relevante'}/>
               <IconeContagem icone={BsArrowDownSquareFill} contagem={qtIrrelevante} cor={'#CC1F00D0'} isClicado={usuarioMarcouIrrelevante} tooltip={'Não relevante'}/>
