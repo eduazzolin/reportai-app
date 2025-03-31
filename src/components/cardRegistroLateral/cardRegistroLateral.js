@@ -4,6 +4,7 @@ import {FaMap, FaUserCircle} from "react-icons/fa";
 import {BsArrowDownSquareFill, BsArrowUpSquareFill, BsCheckSquareFill} from "react-icons/bs";
 import IconeContagem from "../iconeContagem/iconeContagem";
 import {mensagemErro} from "../toastr";
+import IconeMapa from "../iconeMapa/iconeMapa";
 
 export default function CardRegistroLateral({registro, focarMapaNoRegistro, interacaoService}) {
 
@@ -86,10 +87,10 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
 
             {/*botões*/}{/*https://react-icons.github.io/react-icons/*/}
             <div className="col-md-4 d-flex justify-content-center justify-content-md-end gap-1">
-              <FaMap className='clicavel flex-shrink-0' onClick={() => focarMapaNoRegistro(registro)} size={"26px"}/>
-              <IconeContagem icone={BsArrowUpSquareFill} contagem={qtRelevante} cor={'#01334AA0'}/>
-              <IconeContagem icone={BsArrowDownSquareFill} contagem={qtIrrelevante} cor={'#0E000096'}/>
-              <IconeContagem icone={BsCheckSquareFill} contagem={qtConcluido} cor={'#01230A96'}/>
+              <IconeMapa registro={registro} focarMapaNoRegistro={focarMapaNoRegistro}/>
+              <IconeContagem icone={BsArrowUpSquareFill} contagem={qtRelevante} cor={'#01334AA0'} isClicado={usuarioMarcouRelevante} tooltip={'Relevante'}/>
+              <IconeContagem icone={BsArrowDownSquareFill} contagem={qtIrrelevante} cor={'#0E000096'} isClicado={usuarioMarcouIrrelevante} tooltip={'Não relevante'}/>
+              <IconeContagem icone={BsCheckSquareFill} contagem={qtConcluido} cor={'#01230A96'} isClicado={usuarioMarcouConcluido} tooltip={'Concluído'}/>
             </div>
 
           </div>

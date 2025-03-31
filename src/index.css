@@ -26,6 +26,7 @@
 
 .clicavel {
     cursor: pointer;
+    transition: color 0.2s;
 
     &:hover {
         color: rgba(0, 7, 14, 0.59);
