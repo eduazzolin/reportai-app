@@ -18,43 +18,20 @@ export default function IconeContagem({icone: Icone, contagem, isClicado, toolti
       delay={{show: 50, hide: 50}}
       overlay={renderTooltip}
     >
-      <div className="d-flex botaoa flex-shrink-0 border p-1 rounded bg-danger-subtle" style={{'--hover-color': cor, 'background': isClicado ? cor : ''}}>
-
+      <div className="d-flex container-botao flex-shrink-0 border p-1 rounded">
 
         <Icone
-          className={`flex-shrink-0  icon-hover`}
+          className={`flex-shrink-0  icon-hover `}
           size={"26px"}
+          style={{ '--hover-color': cor, 'color': isClicado ? cor : '' }}
         />
 
-        <div className="ms-1 contagem-text ">
+        <div className="mx-auto contagem-text text-white ">
           {contagem}
         </div>
 
       </div>
     </OverlayTrigger>
-    // <OverlayTrigger
-    //   placement="bottom"
-    //   delay={{show: 50, hide: 50}}
-    //   overlay={renderTooltip}
-    // >
-    //   <div className="d-inline-block position-relative">
-    //
-    //     {
-    //       contagem > 0 ?
-    //         <div className="contagem-circulo">
-    //           {contagem}
-    //         </div>
-    //         : null
-    //     }
-    //
-    //     <Icone
-    //       className={`flex-shrink-0  icon-hover`}
-    //       size={"26px"}
-    //       style={{'--hover-color': cor, 'color': isClicado ? cor : ''}}
-    //
-    //     />
-    //   </div>
-    // </OverlayTrigger>
   )
     ;
 }

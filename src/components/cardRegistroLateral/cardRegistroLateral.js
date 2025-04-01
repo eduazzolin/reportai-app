@@ -76,21 +76,21 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
             <p className={"text_descricao"}>{registro.descricao}</p>
           </div>
 
-
-          <div className="row div_rodape align-items-end">
-
-            {/*usuario*/}
-            <div className="col-md-8 d-flex gap-1">
-              <FaUserCircle size="26px" className="flex-shrink-0"/>
-              <span className={"text-nowrap text-truncate"}>{registro.usuario.nome}</span>
+          {/*usuario*/}
+          <div className="row ">
+            <div className="col-12 d-flex gap-1">
+              <span className={"text-nowrap text-truncate fst-italic"}>- {registro.usuario.nome}</span>
             </div>
+          </div>
+
 
             {/*botões*/}{/*https://react-icons.github.io/react-icons/*/}
-            <div className="col-md-4 d-flex justify-content-center justify-content-md-end gap-2">
+          <div className="row div_rodape align-items-end">
+            <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-2 ">
               <IconeMapa registro={registro} focarMapaNoRegistro={focarMapaNoRegistro}/>
               <IconeContagem icone={BsArrowUpSquareFill} contagem={qtRelevante} cor={'#e6b000'} isClicado={usuarioMarcouRelevante} tooltip={'Relevante'}/>
-              <IconeContagem icone={BsArrowDownSquareFill} contagem={qtIrrelevante} cor={'#CC1F00D0'} isClicado={usuarioMarcouIrrelevante} tooltip={'Não relevante'}/>
-              <IconeContagem icone={BsCheckSquareFill} contagem={qtConcluido} cor={'#2AA301D1'} isClicado={usuarioMarcouConcluido} tooltip={'Concluído'}/>
+              <IconeContagem icone={BsArrowDownSquareFill} contagem={qtIrrelevante} cor={'rgba(243,93,63,0.82)'} isClicado={usuarioMarcouIrrelevante} tooltip={'Não relevante'}/>
+              <IconeContagem icone={BsCheckSquareFill} contagem={qtConcluido} cor={'rgba(65,195,20,0.82)'} isClicado={usuarioMarcouConcluido} tooltip={'Concluído'}/>
             </div>
 
           </div>
