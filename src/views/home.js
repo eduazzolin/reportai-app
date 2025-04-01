@@ -35,6 +35,18 @@ export default function Home() {
   const interacaoService = new InteracaoService();
 
 
+// a cada inicialização
+  useEffect(() => {
+
+    categoriaService
+      .consultar()
+      .then(response => {
+        setCategorias(response.data)
+      }).catch(error => {
+      console.log(error);
+    });
+  }, []);
+
 
   // a cada mudança de zoom ou no centro do mapa, atualiza os registros
   useEffect(() => {
@@ -52,17 +64,6 @@ export default function Home() {
 
   }, [zoom, centroMapa, ordenacaoSelecionada, filtros]);
 
-  // a cada inicialização
-  useEffect(() => {
-
-    categoriaService
-      .consultar()
-      .then(response => {
-        setCategorias(response.data)
-      }).catch(error => {
-      console.log(error);
-    });
-  }, []);
 
   function calcularDistanciaComBaseNoZoom(zoomLevel) {
     const baseDistancia = 50000;

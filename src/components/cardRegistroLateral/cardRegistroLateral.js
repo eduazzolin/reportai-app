@@ -37,15 +37,28 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
     });
   }, [registro]);
 
+  function interagirRelevante() {
+    setUsuarioMarcouRelevante(!usuarioMarcouRelevante);
+    setQtRelevante(usuarioMarcouRelevante ? qtRelevante - 1 : qtRelevante + 1);
+  }
+  function interagirIrrelevante() {
+    setUsuarioMarcouIrrelevante(!usuarioMarcouIrrelevante);
+    setQtIrrelevante(usuarioMarcouIrrelevante ? qtIrrelevante - 1 : qtIrrelevante + 1);
+  }
+  function interagirConcluido() {
+    setUsuarioMarcouConcluido(!usuarioMarcouConcluido);
+    setQtConcluido(usuarioMarcouConcluido ? qtConcluido - 1 : qtConcluido + 1);
+  }
+
   return (
 
-    <div className={"container bg-light border rounded"}>
+    <div className={"container bg-light border rounded "}>
 
       <div className="row p-2 overflow-hidden">
 
         {/*imagem*/}
-        <div className="col-4 p-0">
-          <div>
+        <div className="col-4 p-0 " >
+          <div >
             {registro.imagens[0]?.caminho && <img src={registro.imagens[0].caminho} className="img_thumb rounded clicavel" onClick={goToRegistro} alt="..."/>}
           </div>
         </div>
@@ -84,13 +97,37 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
           </div>
 
 
-            {/*botões*/}{/*https://react-icons.github.io/react-icons/*/}
+          {/*botões*/}{/*https://react-icons.github.io/react-icons/*/}
           <div className="row div_rodape align-items-end">
             <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-2 ">
               <IconeMapa registro={registro} focarMapaNoRegistro={focarMapaNoRegistro}/>
-              <IconeContagem icone={BsArrowUpSquareFill} contagem={qtRelevante} cor={'#e6b000'} isClicado={usuarioMarcouRelevante} tooltip={'Relevante'}/>
-              <IconeContagem icone={BsArrowDownSquareFill} contagem={qtIrrelevante} cor={'rgba(243,93,63,0.82)'} isClicado={usuarioMarcouIrrelevante} tooltip={'Não relevante'}/>
-              <IconeContagem icone={BsCheckSquareFill} contagem={qtConcluido} cor={'rgba(65,195,20,0.82)'} isClicado={usuarioMarcouConcluido} tooltip={'Concluído'}/>
+              <IconeContagem
+                icone={BsArrowUpSquareFill}
+                contagem={qtRelevante}
+                cor={'#e6b000'}
+                isClicado={usuarioMarcouRelevante}
+                interagir={interagirRelevante}
+                tooltip={'Relevante'}
+                tipo={'RELEVANTE'}
+              />
+              <IconeContagem
+                icone={BsArrowDownSquareFill}
+                contagem={qtIrrelevante}
+                cor={'rgba(243,93,63,0.82)'}
+                isClicado={usuarioMarcouIrrelevante}
+                interagir={interagirIrrelevante}
+                tooltip={'Não relevante'}
+                tipo={'IRRELEVANTE'}
+              />
+              <IconeContagem
+                icone={BsCheckSquareFill}
+                contagem={qtConcluido}
+                cor={'rgba(65,195,20,0.82)'}
+                isClicado={usuarioMarcouConcluido}
+                interagir={interagirConcluido}
+                tooltip={'Concluído'}
+                tipo={'CONCLUIDO'}
+              />
             </div>
 
           </div>

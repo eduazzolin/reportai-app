@@ -3,14 +3,13 @@ import './iconeContagem.css';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 
-export default function IconeContagem({icone: Icone, contagem, isClicado, tooltip, setClicado, cor, acao1, acao2}) {
+export default function IconeContagem({icone: Icone, contagem, tooltip, isClicado, tipo, cor, interagir}) {
 
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       {tooltip}
     </Tooltip>
   );
-
 
   return (
     <OverlayTrigger
@@ -22,8 +21,9 @@ export default function IconeContagem({icone: Icone, contagem, isClicado, toolti
 
         <Icone
           className={`flex-shrink-0  icon-hover `}
+          onClick={() => interagir(tipo)}
           size={"26px"}
-          style={{ '--hover-color': cor, 'color': isClicado ? cor : '' }}
+          style={{'--hover-color': cor, 'color': isClicado ? cor : ''}}
         />
 
         <div className="mx-auto contagem-text text-white ">
