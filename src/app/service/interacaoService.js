@@ -9,4 +9,12 @@ export class InteracaoService extends ApiService {
     return this.get(`/${registroId}`);
   }
 
+  interagir(interacao) {
+    return this.post('', interacao);
+  }
+
+  removerInteracao(registroId) {
+    return this.delete(`/${registroId}`);
+  }
+
 }

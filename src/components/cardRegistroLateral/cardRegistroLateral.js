@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import './cardRegistroLateralStyle.css'
-import {FaMap, FaUserCircle} from "react-icons/fa";
 import {BsArrowDownSquareFill, BsArrowUpSquareFill, BsCheckSquareFill} from "react-icons/bs";
 import IconeContagem from "../iconeContagem/iconeContagem";
 import {mensagemErro} from "../toastr";
@@ -15,9 +14,9 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
   const [qtRelevante, setQtRelevante] = useState(0);
   const [qtIrrelevante, setQtIrrelevante] = useState(0);
   const [qtConcluido, setQtConcluido] = useState(0);
-  const [usuarioMarcouRelevante, setUsuarioMarcouRelevante] = useState(false);
-  const [usuarioMarcouIrrelevante, setUsuarioMarcouIrrelevante] = useState(false);
-  const [usuarioMarcouConcluido, setUsuarioMarcouConcluido] = useState(false);
+  const [usuarioInteracaoIdRelevante, setUsuarioInteracaoIdRelevante] = useState();
+  const [usuarioInteracaoIdIrrelevante, setUsuarioInteracaoIdIrrelevante] = useState();
+  const [usuarioInteracaoIdConcluido, setUsuarioInteracaoIdConcluido] = useState();
 
   // a cada inicialização
   useEffect(() => {
@@ -29,25 +28,84 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
         setQtRelevante(response.data.qtRelevante);
         setQtIrrelevante(response.data.qtIrrelevante);
         setQtConcluido(response.data.qtConcluido);
-        setUsuarioMarcouRelevante(response.data.usuarioMarcouRelevante);
-        setUsuarioMarcouIrrelevante(response.data.usuarioMarcouIrrelevante);
-        setUsuarioMarcouConcluido(response.data.usuarioMarcouConcluido);
+        setUsuarioInteracaoIdRelevante(response.data.usuarioInteracaoIdRelevante);
+        setUsuarioInteracaoIdIrrelevante(response.data.usuarioInteracaoIdIrrelevante);
+        setUsuarioInteracaoIdConcluido(response.data.usuarioInteracaoIdConcluido);
       }).catch(error => {
       mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar interações.');
     });
   }, [registro]);
 
   function interagirRelevante() {
-    setUsuarioMarcouRelevante(!usuarioMarcouRelevante);
-    setQtRelevante(usuarioMarcouRelevante ? qtRelevante - 1 : qtRelevante + 1);
+
+    if (usuarioInteracaoIdRelevante) {
+      interacaoService
+        .removerInteracao(usuarioInteracaoIdRelevante)
+        .then(response => {
+          setUsuarioInteracaoIdRelevante(null);
+          setQtRelevante(qtRelevante - 1);
+        }).catch(error => {
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao interagir.');
+      });
+    } else {
+      interacaoService
+        .interagir({tipo: 'RELEVANTE', registro})
+        .then(response => {
+          setUsuarioInteracaoIdRelevante(response.data.id);
+          setQtRelevante(qtRelevante + 1);
+        }).catch(error => {
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao interagir.');
+      });
+    }
+
+
   }
+
   function interagirIrrelevante() {
-    setUsuarioMarcouIrrelevante(!usuarioMarcouIrrelevante);
-    setQtIrrelevante(usuarioMarcouIrrelevante ? qtIrrelevante - 1 : qtIrrelevante + 1);
+
+    if (usuarioInteracaoIdIrrelevante) {
+      interacaoService
+        .removerInteracao(usuarioInteracaoIdIrrelevante)
+        .then(response => {
+          setUsuarioInteracaoIdIrrelevante(null);
+          setQtIrrelevante(qtIrrelevante - 1);
+        }).catch(error => {
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao interagir.');
+      });
+    } else {
+      interacaoService
+        .interagir({tipo: 'IRRELEVANTE', registro})
+        .then(response => {
+          setUsuarioInteracaoIdIrrelevante(response.data.id);
+          setQtIrrelevante(qtIrrelevante + 1);
+        }).catch(error => {
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao interagir.');
+      });
+    }
   }
+
   function interagirConcluido() {
-    setUsuarioMarcouConcluido(!usuarioMarcouConcluido);
-    setQtConcluido(usuarioMarcouConcluido ? qtConcluido - 1 : qtConcluido + 1);
+
+    console.log(usuarioInteracaoIdConcluido, registro, qtConcluido);
+    if (usuarioInteracaoIdConcluido) {
+      interacaoService
+        .removerInteracao(usuarioInteracaoIdConcluido)
+        .then(response => {
+          setUsuarioInteracaoIdConcluido(null);
+          setQtConcluido(qtConcluido - 1);
+        }).catch(error => {
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao interagir.');
+      });
+    } else {
+      interacaoService
+        .interagir({tipo: 'CONCLUIDO', registro})
+        .then(response => {
+          setUsuarioInteracaoIdConcluido(response.data.id);
+          setQtConcluido(qtConcluido + 1);
+        }).catch(error => {
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao interagir.');
+      });
+    }
   }
 
   return (
@@ -57,8 +115,8 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
       <div className="row p-2 overflow-hidden">
 
         {/*imagem*/}
-        <div className="col-4 p-0 " >
-          <div >
+        <div className="col-4 p-0 ">
+          <div>
             {registro.imagens[0]?.caminho && <img src={registro.imagens[0].caminho} className="img_thumb rounded clicavel" onClick={goToRegistro} alt="..."/>}
           </div>
         </div>
@@ -105,7 +163,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
                 icone={BsArrowUpSquareFill}
                 contagem={qtRelevante}
                 cor={'#e6b000'}
-                isClicado={usuarioMarcouRelevante}
+                isClicado={usuarioInteracaoIdRelevante}
                 interagir={interagirRelevante}
                 tooltip={'Relevante'}
                 tipo={'RELEVANTE'}
@@ -114,7 +172,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
                 icone={BsArrowDownSquareFill}
                 contagem={qtIrrelevante}
                 cor={'rgba(243,93,63,0.82)'}
-                isClicado={usuarioMarcouIrrelevante}
+                isClicado={usuarioInteracaoIdIrrelevante}
                 interagir={interagirIrrelevante}
                 tooltip={'Não relevante'}
                 tipo={'IRRELEVANTE'}
@@ -123,7 +181,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
                 icone={BsCheckSquareFill}
                 contagem={qtConcluido}
                 cor={'rgba(65,195,20,0.82)'}
-                isClicado={usuarioMarcouConcluido}
+                isClicado={usuarioInteracaoIdConcluido}
                 interagir={interagirConcluido}
                 tooltip={'Concluído'}
                 tipo={'CONCLUIDO'}
