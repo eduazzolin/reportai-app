@@ -79,6 +79,10 @@ export class RegistroService extends ApiService {
   deletar(id) {
     return this.delete(`/${id}`);
   }
+
+  concluir(id) {
+    return this.put(`/${id}/concluir`);
+  }
 }
 
 export const registroPrototype = {

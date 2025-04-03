@@ -7,7 +7,7 @@ import IconeMapa from "../iconeMapa/iconeMapa";
 import {MdDeleteForever, MdEditSquare, MdModeEdit} from "react-icons/md";
 import TextConcluido from "../textConcluido/textConcluido";
 
-export default function CardRegistroMeusRegistros({registro, focarMapaNoRegistro, interacaoService}) {
+export default function CardRegistroMeusRegistros({registro, funcaoRemover, funcaoConcluir}) {
 
   const goToRegistro = () => {
     window.open(`/registro/${registro.id}`, '_blank');
@@ -72,6 +72,7 @@ export default function CardRegistroMeusRegistros({registro, focarMapaNoRegistro
                 icone={BsFillXSquareFill}
                 texto={'Remover'}
                 cor={'rgba(243,93,63,0.82)'}
+                funcao={() => funcaoRemover(registro.id)}
               />
             </div>
           </div>
@@ -90,11 +91,13 @@ export default function CardRegistroMeusRegistros({registro, focarMapaNoRegistro
                 icone={BsFillXSquareFill}
                 texto={'Remover'}
                 cor={'rgba(243,93,63,0.82)'}
+                funcao={() => funcaoRemover(registro.id)}
               />
               <IconeCrud
                 icone={BsCheckSquareFill}
                 texto={'Concluir'}
                 cor={'rgba(65,195,20,0.82)'}
+                funcao={() => funcaoConcluir(registro.id)}
               />
             </div>
           </div>

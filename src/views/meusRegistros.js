@@ -17,24 +17,59 @@ export default function MeusRegistros() {
   const [usuario, setUsuario] = useState(usuarioPrototype);
   const [pagina, setPagina] = useState(0);
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
+  const [visibilidadePopupConclusao, setVisibilidadePopupConclusao] = useState(false);
   const [registros, setRegistros] = useState([]);
+  const [registroSelecionado, setRegistroSelecionado] = useState(null);
   const navigate = useNavigate();
-  const service = new UsuarioService();
-  const registroService = new RegistroService();
 
-  const abrirPopupRemocao = () => {
+  const service = new RegistroService();
+
+  const abrirPopupRemocao = (idRegistro) => {
     setVisibilidadePopupRemocao(true)
+    setRegistroSelecionado(idRegistro)
   }
 
   const fecharPopupRemocao = () => {
     setVisibilidadePopupRemocao(false)
   }
 
-  const handleDelete = () => {
+
+  const abrirPopupConclusao = (idRegistro) => {
+    setVisibilidadePopupConclusao(true)
+    setRegistroSelecionado(idRegistro)
   }
 
-  useEffect(() => {
-    registroService
+  const fecharPopupConclusao = () => {
+    setVisibilidadePopupConclusao(false)
+
+  }
+
+  const handleRemover = () => {
+    setVisibilidadePopupRemocao(false);
+    service
+      .deletar(registroSelecionado)
+      .then(response => {
+        mensagemSucesso("Registro removido com sucesso!");
+        loadRegistros()
+      }).catch(error => {
+      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao remover registro');
+    });
+  }
+
+  const handleConcluir = () => {
+    setVisibilidadePopupConclusao(false);
+    service
+      .concluir(registroSelecionado)
+      .then(response => {
+        mensagemSucesso("Registro concluído com sucesso!");
+        loadRegistros()
+      }).catch(error => {
+      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao concluir registro');
+    });
+  }
+
+  const loadRegistros = () => {
+    service
       .consultarMeusRegistros(pagina)
       .then(response => {
         setRegistros(response.data.registros);
@@ -42,17 +77,29 @@ export default function MeusRegistros() {
       }).catch(error => {
       mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar registros');
     });
+  }
+
+  useEffect(() => {
+    loadRegistros()
   }, [pagina]);
 
   return (
     <div className='container'>
 
+      {/* ---------------------- popups ---------------------- */}
       <PopupConfirmacao
         visivel={visibilidadePopupRemocao}
-        titulo="Remover conta"
-        mensagem="Tem certeza que deseja remover sua conta? Todos os seus registros continuarão publicados, mas você não poderá mais acessar o sistema."
-        onConfirm={handleDelete}
+        titulo="Remover registro"
+        mensagem="Tem certeza que deseja remover o registro? Não é possível desfazer esta ação."
+        onConfirm={handleRemover}
         onCancel={fecharPopupRemocao}
+      />
+      <PopupConfirmacao
+        visivel={visibilidadePopupConclusao}
+        titulo="Concluir registro"
+        mensagem="Tem certeza que deseja concluir o registro? Não é possível desfazer esta ação."
+        onConfirm={handleConcluir}
+        onCancel={fecharPopupConclusao}
       />
 
       {/* ---------------------- titulo ---------------------- */}
@@ -71,6 +118,8 @@ export default function MeusRegistros() {
               <CardRegistroMeusRegistros
                 key={index}
                 registro={registro}
+                funcaoRemover={abrirPopupRemocao}
+                funcaoConcluir={abrirPopupConclusao}
               />
             </div>
           ))
