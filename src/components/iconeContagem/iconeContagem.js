@@ -22,7 +22,7 @@ export default function IconeContagem({icone: Icone, contagem, tooltip, isClicad
         <Icone
           className={`flex-shrink-0  icon-hover `}
           onClick={() => interagir(tipo)}
-          size={"26px"}
+          size={"25px"}
           style={{'--hover-color': cor, 'color': isClicado ? cor : ''}}
         />
 
