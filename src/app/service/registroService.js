@@ -8,8 +8,8 @@ export class RegistroService extends ApiService {
     super('/registros');
   }
 
-  consultarMeusRegistros(pagina) {
-    return this.get(`/meus-registros?pagina=${pagina}&limite=18`);
+  consultarMeusRegistros(pagina, limite) {
+    return this.get(`/meus-registros?pagina=${pagina}&limite=${limite}`);
   }
 
   consultar(latitude, longitude, distancia, filtro, ordenacao) {

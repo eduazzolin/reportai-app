@@ -46,3 +46,7 @@
 .texto_justificado {
     text-align: justify;
 }
+
+.mr_div_registros {
+    height: calc(100vh - 200px);
+}

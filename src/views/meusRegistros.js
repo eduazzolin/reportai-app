@@ -11,11 +11,13 @@ import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import {RegistroService} from "../app/service/registroService";
 import CardRegistroLateral from "../components/cardRegistroLateral/cardRegistroLateral";
 import CardRegistroMeusRegistros from "../components/cardRegistroMeusRegistros/cardRegistroMeusRegistros";
+import Pagination from 'react-bootstrap/Pagination';
 
 export default function MeusRegistros() {
 
   const [usuario, setUsuario] = useState(usuarioPrototype);
   const [pagina, setPagina] = useState(0);
+  const [totalPaginas, setTotalPaginas] = useState(0);
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
   const [visibilidadePopupConclusao, setVisibilidadePopupConclusao] = useState(false);
   const [registros, setRegistros] = useState([]);
@@ -70,9 +72,11 @@ export default function MeusRegistros() {
 
   const loadRegistros = () => {
     service
-      .consultarMeusRegistros(pagina)
+      .consultarMeusRegistros(pagina, 9)
       .then(response => {
         setRegistros(response.data.registros);
+        setTotalPaginas(response.data.totalPaginas);
+        setPagina(response.data.pagina);
         console.log(response.data);
       }).catch(error => {
       mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar registros');
@@ -110,8 +114,7 @@ export default function MeusRegistros() {
       </div>
 
       {/* ---------------------- cards ---------------------- */}
-      <div className="row">
-
+      <div className="row mr_div_registros overflow-y-scroll">
         {
           registros.map((registro, index) => (
             <div key={index} className={'p-2 col-md-6 col-xl-4'}>
@@ -124,9 +127,38 @@ export default function MeusRegistros() {
             </div>
           ))
         }
-
-
       </div>
+
+      {/* ---------------------- paginação ---------------------- */}
+      <div className="row">
+        <div className='col-12 d-flex justify-content-center pt-3'>
+          <Pagination>
+
+            {/*botão voltar*/}
+            {
+              pagina > 0 &&
+              <Pagination.Prev onClick={() => setPagina(pagina - 1)}/>
+            }
+
+            {/*páginas*/}
+            {
+              [...Array(totalPaginas)].map((_, index) => (
+                <Pagination.Item key={index} active={index === pagina} onClick={() => setPagina(index)}>
+                  {index + 1}
+                </Pagination.Item>
+              ))
+            }
+
+            {/*botão avançar*/}
+            {
+              pagina < totalPaginas - 1 &&
+              <Pagination.Next onClick={() => setPagina(pagina + 1)}/>
+            }
+          </Pagination>
+
+        </div>
+      </div>
+
     </div>
 
   )
