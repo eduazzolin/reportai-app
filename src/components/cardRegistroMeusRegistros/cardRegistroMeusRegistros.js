@@ -6,17 +6,26 @@ import {mensagemErro} from "../toastr";
 import IconeMapa from "../iconeMapa/iconeMapa";
 import {MdDeleteForever, MdEditSquare, MdModeEdit} from "react-icons/md";
 import TextConcluido from "../textConcluido/textConcluido";
+import {useNavigate} from "react-router-dom";
+import {registroPrototype} from "../../app/service/registroService";
+import {Button} from "react-bootstrap";
 
 export default function CardRegistroMeusRegistros({registro, funcaoRemover, funcaoConcluir}) {
+
+  const navigate = useNavigate();
 
   const goToRegistro = () => {
     window.open(`/registro/${registro.id}`, '_blank');
   };
 
+  const handleEditarRegistro = () => {
+    navigate('/cadastrar-registro', {state: {registro}});
+  }
 
   return (
 
     <div className={"container bg-light border rounded shadow-sm"}>
+
 
       <div className="row p-2 overflow-hidden">
 
@@ -86,6 +95,7 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
                 icone={MdEditSquare}
                 texto={'Editar'}
                 cor={'#e6b000'}
+                funcao={handleEditarRegistro}
               />
               <IconeCrud
                 icone={BsFillXSquareFill}

@@ -10,10 +10,13 @@ import {mensagemErro, mensagemSucesso} from "../components/toastr";
 import {ImagemService} from "../app/service/imagemService";
 import {COORDENADAS_CENTRO} from "../app/service/appService";
 import InputEndereco from "../components/inputEndereco/inputEndereco";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from 'react-router-dom';
+
 import PopupSimples from "../components/popupSimples/PopupSimples";
 import IaService from "../app/service/iaService";
 import PopupCorrecao from "../components/popupCorrecao/popupCorrecao";
+import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
+import BlocoImagem from "../components/blocoImagem/blocoImagem";
 
 export default function CadastrarRegistro() {
 
@@ -22,34 +25,44 @@ export default function CadastrarRegistro() {
   const centroMapa = COORDENADAS_CENTRO;
   const mapRef = useRef();
 
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [categorias, setCategorias] = useState([categoriaPrototype])
   const [registro, setRegistro] = useState(registroPrototype)
-  const [iconeCategoriaSelecionada, setIconeCategoriaSelecionada] = useState('')
+  const registroRecebido = location.state?.registro;
+  const [iconeCategoriaSelecionada, setIconeCategoriaSelecionada] = useState('/markers/general.svg')
   const [imagens, setImagens] = useState([null, null, null])
+  const [imagemIdxParaRemover, setImagemIdxParaRemover] = useState(null)
   const [checkRegras, setCheckRegras] = useState(true)
   const [visibilidadePopupRegras, setVisibilidadePopupRegras] = useState(false)
   const [visibilidadePopupCorrecao, setVisibilidadePopupCorrecao] = useState(false)
+  const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false)
   const [correcaoTextoCorrigido, setCorrecaoTextoCorrigido] = useState('')
   const [correcaoTipo, setCorrecaoTipo] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-
-
-  const navigate = useNavigate();
 
   const registroService = new RegistroService();
   const categoriaService = new CategoriaService();
   const imagemService = new ImagemService();
   const iaService = new IaService();
 
+  /* Carrega o registro recebido, se houver */
+  useEffect(() => {
+    if (registroRecebido) {
+      setRegistro(registroRecebido);
+      setCheckRegras(true);
+      setIconeCategoriaSelecionada(registroRecebido.categoria.icone)
+    }
+  }, [registroRecebido]);
+
+  /* Carrega as categorias */
   useEffect(() => {
 
     categoriaService
       .consultar()
       .then(response => {
         setCategorias(response.data)
-        setIconeCategoriaSelecionada(response.data[0].icone);
-        setRegistro({...registro, categoria: response.data[0]});
       }).catch(error => {
       console.log(error);
     });
@@ -57,7 +70,7 @@ export default function CadastrarRegistro() {
 
   }, []);
 
-  // Atualiza o mapa para a posição do registro
+  /* Atualiza o mapa para a posição do registro */
   useEffect(() => {
     if (registro.latitude || registro.longitude) {
       mapRef.current.setView([registro.latitude, registro.longitude], zoomSelecao);
@@ -65,8 +78,10 @@ export default function CadastrarRegistro() {
   }, [registro.latitude, registro.longitude]);
 
 
-  // Função que captura o click no mapa
   const MapClickHandler = () => {
+    /**
+     * Função que captura o click no mapa e atualiza a localização do registro
+     */
     useMapEvents({
       click(e) {
         const {lat, lng} = e.latlng;
@@ -81,6 +96,9 @@ export default function CadastrarRegistro() {
   }
 
   const cadastrar = async () => {
+    /**
+     * Função que cadastra o registro
+     */
 
     if (checkRegras) {
       try {
@@ -118,9 +136,11 @@ export default function CadastrarRegistro() {
           return false;
         }
 
-
+        // registro
         const {data} = await registroService.salvar(registro);
 
+
+        // imagens
         for (const imagem of imagens) {
           if (!imagem) continue;
 
@@ -151,6 +171,9 @@ export default function CadastrarRegistro() {
   };
 
   const aceitarCorrecao = () => {
+    /**
+     * Função que aceita a correção da IA
+     */
     const correcaoTextoCorrigidoTratado = correcaoTextoCorrigido.replaceAll('<correcao>', '').replaceAll('</correcao>', '');
     if (correcaoTipo === 'titulo') {
       setRegistro({...registro, titulo: correcaoTextoCorrigidoTratado});
@@ -161,10 +184,37 @@ export default function CadastrarRegistro() {
     setVisibilidadePopupCorrecao(false);
   }
 
+  const handleRemoverImagem = (imagemIdx) => {
+    /**
+     * Função que abre o popup de remoção de imagem
+     * @imagemIdx índice da imagem a ser removida
+     */
+    setVisibilidadePopupRemocao(true);
+    setImagemIdxParaRemover(imagemIdx);
+  }
+
+  const removerImagem = () => {
+    /**
+     * Função que remove a imagem do registro
+     */
+    setVisibilidadePopupRemocao(false);
+
+    imagemService
+      .remover(registro.imagens[imagemIdxParaRemover].id)
+      .then(response => {
+        setRegistro({
+          ...registro,
+          imagens: registro.imagens.filter((_, index) => index !== imagemIdxParaRemover)
+        });
+        mensagemSucesso("Imagem removida com sucesso!");
+      }).catch(error => {
+      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao remover imagem');
+    });
+
+  }
 
   return (
     <div className='container'>
-
 
       {/* ---------------------- popup com as correções de IA ---------------------- */}
       <PopupCorrecao
@@ -190,6 +240,15 @@ export default function CadastrarRegistro() {
             </ul>
         "
         fechar={() => setVisibilidadePopupRegras(false)}
+      />
+
+      {/* ---------------------- popup de confirmação de remoção de imagem ---------------------- */}
+      <PopupConfirmacao
+        visivel={visibilidadePopupRemocao}
+        titulo="Remover Imagem"
+        mensagem="Tem certeza que deseja remover a imagem? Não é possível desfazer esta ação."
+        onConfirm={removerImagem}
+        onCancel={() => setVisibilidadePopupRemocao(false)}
       />
 
       {/* ---------------------- titulo ---------------------- */}
@@ -261,31 +320,42 @@ export default function CadastrarRegistro() {
                 onChange={event => setRegistro({...registro, descricao: event.target.value})}/>
             </Form.Group>
 
-            {/*imagens*/}
+            {/* -------------------- imagens ----------------- */}
             <Form.Group className="mb-3">
               <Form.Label>Imagens</Form.Label>
-              <div className="d-flex gap-1 flex-column">
+              <div className="row d-flex gap-1">
 
-                <Form.Control
-                  type="file"
-                  onChange={event => {
-                    setImagens([event.target.files[0], imagens[1], imagens[2]]);
-                  }}/>
+                {registro.imagens[0] ?
+                  <BlocoImagem imagem={registro.imagens[0].caminho} onClick={() => handleRemoverImagem(0)}/> :
+                  <Form.Control
+                    type="file"
+                    onChange={event => {
+                      setImagens([event.target.files[0], imagens[1], imagens[2]]);
+                    }}/>
+                }
 
-                <Form.Control
-                  type="file"
-                  onChange={event => {
-                    setImagens([imagens[0], event.target.files[0], imagens[2]]);
-                  }}/>
+                {registro.imagens[1] ?
+                  <BlocoImagem imagem={registro.imagens[1].caminho} onClick={() => handleRemoverImagem(1)}/> :
+                  <Form.Control
+                    type="file"
+                    onChange={event => {
+                      setImagens([imagens[0], event.target.files[0], imagens[2]]);
+                    }}/>
+                }
 
-                <Form.Control
-                  type="file"
-                  onChange={event => {
-                    setImagens([imagens[0], imagens[1], event.target.files[0]]);
-                  }}/>
+                {registro.imagens[2] ?
+                  <BlocoImagem imagem={registro.imagens[2].caminho} onClick={() => handleRemoverImagem(2)}/> :
+                  <Form.Control
+                    type="file"
+                    onChange={event => {
+                      setImagens([imagens[0], imagens[1], event.target.files[0]]);
+                    }}/>
+                }
+
 
               </div>
             </Form.Group>
+
 
           </Form>
         </div>
@@ -342,12 +412,12 @@ export default function CadastrarRegistro() {
                 // versão com spinner
                 <Button variant="warning" disabled className="d-flex gap-2 align-items-center">
                   <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
-                  <div>Cadastrando</div>
+                  <div> {registroRecebido ? 'Editando' : 'Cadastrando'}</div>
                 </Button>
               ) : (
                 // versão sem spinner
                 <Button variant="warning" onClick={cadastrar}>
-                  Cadastrar
+                  {registroRecebido ? 'Editar' : 'Cadastrar'}
                 </Button>
               )
             }
