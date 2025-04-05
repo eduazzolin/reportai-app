@@ -28,6 +28,10 @@ export default class UsuarioService extends ApiService {
     return this.delete(`/${id}`);
   }
 
+  buscarTodos() {
+    return this.get('/admin');
+  }
+
   validar(usuario) {
     const erros = []
 
