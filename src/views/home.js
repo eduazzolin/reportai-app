@@ -3,106 +3,109 @@ import {MapContainer, Marker, TileLayer, useMapEvents} from "react-leaflet";
 import L from 'leaflet';
 import osm from '../app/service/osm-providers';
 import 'leaflet/dist/leaflet.css';
-import {RegistroService} from "../app/service/registroService";
+import {ORDENACOES_PERMITIDAS, RegistroService} from "../app/service/registroService";
 import CardRegistroLateral from "../components/cardRegistroLateral/cardRegistroLateral";
-import {Button} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {COORDENADAS_CENTRO} from "../app/service/appService";
-
-function MapEventsHandler({onZoomChange, onCenterChange}) {
-  // Esse hook permite "ouvir" eventos do mapa
-  const map = useMapEvents({
-    zoomend: () => {
-      onZoomChange(map.getZoom());
-    },
-    moveend: () => {
-      const center = map.getCenter();
-      onCenterChange(center.lat, center.lng);
-    },
-  });
-
-  return null; // Esse componente não renderiza nada visível
-}
+import {mensagemErro} from "../components/toastr";
+import Form from "react-bootstrap/Form";
+import {categoriaPrototype, CategoriaService} from "../app/service/categoriaService";
+import {InteracaoService} from "../app/service/interacaoService";
 
 export default function Home() {
-  const [registros, setRegistros] = useState([]);
-  const mapRef = useRef();
-  const cardRefs = useRef([]);
-  const [activeRegistroId, setActiveRegistroId] = useState(null);
+
+  const ZOOM_SELECAO = 16;
+  const FILTRO_STATUS_REGISTRO = [{label: 'Qualquer status', value: 'AND 0=0'}, {label: 'Ativos', value: 'AND NOT is_concluido'}, {label: 'Concluídos', value: 'AND is_concluido'}]
+
   const [zoom, setZoom] = useState(13); // 11 = 50 km  12 = 25 km  13 = 12 km  14 = 6 km  15 = 3 km  16 = 1.5 km  17 = 750 m  18 = 375 m  19 = 187 m  20 = 93 m
-  const [latitude, setLatitude] = useState(COORDENADAS_CENTRO[0]);
-  const [longitude, setLongitude] = useState(COORDENADAS_CENTRO[1]);
-  const [distancia, setDistancia] = useState(calculateDistance(13));
+  const [centroMapa, setCentroMapa] = useState(COORDENADAS_CENTRO);
+  const [distanciaVisivel, setdistanciaVisivel] = useState(calcularDistanciaComBaseNoZoom(13));
 
-  // Função para calcular a distância com base no zoom
-  function calculateDistance(zoomLevel) {
-    const baseDistance = 50000; // Distância para zoom 11
-    return (baseDistance * Math.pow(2, -(zoomLevel - 11))) / 1000;
-  }
+  const [ordenacaoSelecionada, setOrdenacaoSelecionada] = useState(ORDENACOES_PERMITIDAS[0]);
+  const [filtros, setFiltros] = useState(['AND 0=0', 'AND 0=0']);
+  const [categorias, setCategorias] = useState([categoriaPrototype])
+  const [registros, setRegistros] = useState([]);
 
-
+  const cardRefs = useRef([]);
+  const mapRef = useRef();
   const navigate = useNavigate();
+
   const registroService = new RegistroService();
+  const categoriaService = new CategoriaService();
+  const interacaoService = new InteracaoService();
 
 
+// a cada inicialização
   useEffect(() => {
-    setDistancia(calculateDistance(zoom));
-    registroService.consultar(latitude, longitude, distancia).then(response => {
-      setRegistros(response.data);
-    }).catch(error => {
-      console.log('Erro ao buscar projetos');
+
+    categoriaService
+      .consultar()
+      .then(response => {
+        setCategorias(response.data)
+      }).catch(error => {
+      console.log(error);
+    });
+  }, []);
+
+
+  // a cada mudança de zoom ou no centro do mapa, atualiza os registros
+  useEffect(() => {
+
+    setdistanciaVisivel(calcularDistanciaComBaseNoZoom(zoom));
+
+    registroService
+      .consultar(centroMapa[0], centroMapa[1], distanciaVisivel, filtros.join(' '), ordenacaoSelecionada.value)
+      .then(response => {
+        setRegistros(response.data);
+        console.log(response.data);
+      }).catch(error => {
+      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar registros');
     });
 
+  }, [zoom, centroMapa, ordenacaoSelecionada, filtros]);
 
-  }, [zoom, latitude, longitude]);
+
+  function calcularDistanciaComBaseNoZoom(zoomLevel) {
+    const baseDistancia = 50000;
+    return (baseDistancia * Math.pow(2, -(zoomLevel - 11))) / 1000;
+  }
 
   const focarMapaNoRegistro = (registro) => {
     console.log([registro.latitude, registro.longitude]);
-    mapRef.current.setView([registro.latitude, registro.longitude], 20);
+    mapRef.current.setView([registro.latitude, registro.longitude], ZOOM_SELECAO);
   }
 
   const highlightRegistro = (id) => {
-    setActiveRegistroId(id);
     const card = cardRefs.current[id];
     if (card) {
       card.scrollIntoView({behavior: 'smooth', block: 'center'});
     }
   };
 
+  function MapEventsHandler({onZoomChange, onCenterChange}) {
+    // Esse hook permite "ouvir" eventos do mapa
+    const map = useMapEvents({
+      zoomend: () => {
+        onZoomChange(map.getZoom());
+      },
+      moveend: () => {
+        const center = map.getCenter();
+        onCenterChange(center.lat, center.lng);
+      },
+    });
+  }
+
   return (
     <div className={'container-fluid'}>
-      <div className={'row'}>
-
-        {/* ---------------------- SIDEBAR ------------------------*/}
-
-        <div className={'col-lg-5 col-8 sidebar'}>
-          <div className={'row p-3 gap-3'}>
-            <div className={'col-12'}>
-              <Button variant="warning" className={'w-100'} onClick={() => navigate('/novo-registro')}>Adicionar
-                Registro</Button>
-            </div>
-            {
-              registros.map((registro, index) => (
-                <div ref={(el) => cardRefs.current[registro.id] = el} key={index} className={'p-0'}>
-                  <CardRegistroLateral
-                    key={index}
-                    focarMapaNoRegistro={focarMapaNoRegistro}
-                    registro={registro}/>
-                </div>
-              ))
-            }
-          </div>
-        </div>
-
+      <div className={'row flex-row-reverse'}>
 
         {/* ---------------------- MAPA ------------------------*/}
-
-        <div className={'col-lg-7 col-4 p-0'}>
+        <div className="col-11 col-lg-5 p-0 mx-auto overflow-hidden custom-map-container">
           <MapContainer
-            center={[latitude, longitude]}
+            center={centroMapa}
             zoom={zoom}
             ref={mapRef}
-            style={{height: 'calc(100vh - 60px)', width: '100%'}}
+            style={{width: '100%', height: '100%'}}
           >
             <TileLayer
               url={osm.maptiler.url}
@@ -112,10 +115,10 @@ export default function Home() {
             <MapEventsHandler
               onZoomChange={(novoZoom) => setZoom(novoZoom)}
               onCenterChange={(lat, lng) => {
-                setLatitude(lat);
-                setLongitude(lng);
+                setCentroMapa([lat, lng]);
               }}
             />
+
             {registros.map((registro, index) => (
               <Marker
                 key={index}
@@ -140,7 +143,91 @@ export default function Home() {
         </div>
 
 
+        {/* ---------------------- TIMELINE ------------------------*/}
+        <div className='col-lg-7 scrollable-lg'>
+
+          {/*filtros*/}
+          <div className="row  p-2 pb-1">
+
+            {/*categoria*/}
+            <div className="col-lg-4 col-6 mt-2">
+              <Form.Select
+                aria-label="Categoria"
+                onChange={event => {
+                  setFiltros([event.target.value, filtros[1]]);
+                  console.log(filtros)
+                }}>
+
+                {/*opções*/}
+                <option key={1} value={'AND 0=0'}>Qualquer categoria</option>
+                {categorias.map((categoria, index) => (
+                  <option key={index + 1} value={'AND categoria_id = ' + categoria.id}>{categoria.nome}</option>
+                ))}
+              </Form.Select>
+            </div>
+
+            {/*status*/}
+            <div className="col-lg-4 col-6 mt-2">
+              <Form.Select
+                aria-label="status"
+                onChange={event => {
+                  setFiltros([filtros[0], event.target.value]);
+                }}>
+                {/*opções*/}
+                {FILTRO_STATUS_REGISTRO.map((status, index) => (
+                  <option key={index} value={status.value}>{status.label}</option>
+                ))}
+              </Form.Select>
+            </div>
+
+            {/*ordenação*/}
+            <div className="col-lg-4 mt-2">
+              <Form.Select
+                aria-label="Ordenacao"
+                onChange={event => {
+                  setOrdenacaoSelecionada(ORDENACOES_PERMITIDAS.find(ordenacao => ordenacao.value === event.target.value));
+                }}>
+                {/*opções*/}
+                {ORDENACOES_PERMITIDAS.map((ordenacao, index) => (
+                  <option key={index} value={ordenacao.value}>{ordenacao.label}</option>
+                ))}
+              </Form.Select>
+            </div>
+
+          </div>
+
+
+          <div className={'row p-3'}>
+            {
+              registros.map((registro, index) => (
+                <div ref={(el) => cardRefs.current[registro.id] = el} key={index} className={'p-1 col-12'}>
+                  <CardRegistroLateral
+                    key={index}
+                    focarMapaNoRegistro={focarMapaNoRegistro}
+                    registro={registro}
+                    interacaoService={interacaoService}/>
+                </div>
+              ))
+            }
+          </div>
+
+          {
+            registros.length > 0 ? '' :
+              <div className={'row p-3 h-50'}>
+                <div className="col-12 justify-content-center align-items-center d-flex text-center">
+                  ℹ️ <br/>
+                  Nenhum registro encontrado! <br/>
+                  Experimente navegar no mapa ou alterar os filtros.
+                </div>
+              </div>
+          }
+
+
+        </div>
+
+
       </div>
     </div>
-  );
+  )
+    ;
 }

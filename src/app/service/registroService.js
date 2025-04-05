@@ -8,12 +8,18 @@ export class RegistroService extends ApiService {
     super('/registros');
   }
 
-  consultar(latitude, longitude, distancia) {
-    let url = `/distancia?latitude=${latitude}&longitude=${longitude}`;
-    if (distancia) {
-      url += `&distancia=${distancia}`;
-    }
-    url += `&pagina=1`;
+  consultarMeusRegistros(pagina, limite) {
+    return this.get(`/meus-registros?pagina=${pagina}&limite=${limite}`);
+  }
+
+  consultar(latitude, longitude, distancia, filtro, ordenacao) {
+    const p_lat = `latitude=${latitude}`;
+    const p_long = `longitude=${longitude}`;
+    const p_dist = `distancia=${distancia}`;
+    const p_filtro = `filtro=${filtro || 'AND 0=0'}`;
+    const p_ordenacao = `ordenacao=${ordenacao || 'dt_criacao DESC'}`;
+
+    const url = `/distancia?${p_lat}&${p_long}&${p_dist}&${p_filtro}&${p_ordenacao}`;
     return this.get(url);
   }
 
@@ -73,6 +79,10 @@ export class RegistroService extends ApiService {
   deletar(id) {
     return this.delete(`/${id}`);
   }
+
+  concluir(id) {
+    return this.put(`/${id}/concluir`);
+  }
 }
 
 export const registroPrototype = {
@@ -95,3 +105,12 @@ export const registroPrototype = {
   "interacoesRelevante": 0,
   "interacoesConcluido": 0
 }
+
+export const ORDENACOES_PERMITIDAS = [
+  {value: 'R.dt_criacao DESC', label: 'Mais recentes'},
+  {value: 'R.dt_criacao ASC', label: 'Mais antigos'},
+  {value: 'I.interacoesRelevante DESC', label: 'Mais relevantes'},
+  {value: 'I.interacoesRelevante ASC', label: 'Menos relevantes'},
+  {value: 'R.distancia_do_centro ASC', label: 'Mais próximos do centro do mapa'},
+  {value: 'R.distancia_do_centro DESC', label: 'Mais distantes do centro do mapa'},
+]

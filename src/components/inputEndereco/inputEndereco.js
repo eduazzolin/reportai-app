@@ -52,7 +52,7 @@ export default function InputEndereco  ({registro, setRegistro})  {
       <Form.Control
         type="search"
         placeholder="Digite o endereço ou ponto de referência"
-        value={query}
+        value={query || registro.localizacao}
         onChange={(e) => {
           setQuery(e.target.value);
           setShowSuggestions(true);

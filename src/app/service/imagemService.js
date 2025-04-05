@@ -13,6 +13,10 @@ export class ImagemService extends ApiService {
     return this.post('', formData);
   }
 
+  remover(id) {
+    return this.delete(`/${id}`);
+  }
+
   validar(listaImagens) {
     const erros = []
 
