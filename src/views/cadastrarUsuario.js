@@ -15,6 +15,8 @@ export default function CadastrarUsuario() {
 
   const cadastrar = () => {
 
+    usuario.role = 'USUARIO';
+
     try {
       service.validar(usuario);
     } catch (erro) {
@@ -22,6 +24,7 @@ export default function CadastrarUsuario() {
       msgs.forEach(msg => mensagemErro(msg));
       return false;
     }
+
 
     service
       .salvar(usuario)

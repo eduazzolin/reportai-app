@@ -3,7 +3,15 @@ import MD5 from "crypto-js/md5";
 import ErroValidacao from "../exception/erroValidacao";
 
 export const usuarioPrototype = {
-  "id": null, "cpf": "", "dt_criacao": null, "dt_mofidicacao": null, "email": "", "is_deleted": false, "nome": "", "role": "", "senha": "",
+  "id": null,
+  "cpf": "",
+  "dt_criacao": null,
+  "dt_mofidicacao": null,
+  "email": "",
+  "is_deleted": false,
+  "nome": "",
+  "role": "USUARIO",
+  "senha": "",
 }
 
 export default class UsuarioService extends ApiService {
