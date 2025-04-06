@@ -9,6 +9,7 @@ import IconeCrud from "../components/iconeCrud/iconeCrud";
 import {MdEditSquare} from "react-icons/md";
 import IconeCrudSemTexto from "../components/iconeCrudSemTexto/iconeCrudSemTexto";
 import {BsFillXSquareFill, BsFolderFill} from "react-icons/bs";
+import {useNavigate} from "react-router-dom";
 
 export default function AdminUsuarios() {
   /**
@@ -17,6 +18,8 @@ export default function AdminUsuarios() {
    * https://www.npmjs.com/package/jspdf-autotable
    *
    */
+
+  const navigate = useNavigate();
 
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
@@ -27,6 +30,11 @@ export default function AdminUsuarios() {
   const [termo, setTermo] = useState('');
 
   const service = new UsuarioService();
+
+  const handleEditar = (linha) => {
+    navigate('/minha-conta', {state: {idUsuario: linha.id}});
+  }
+
 
   const handleRemover = (linha) => {
     setVisibilidadePopupRemocao(true);
@@ -42,9 +50,9 @@ export default function AdminUsuarios() {
         buscarUsuarios();
         mensagemSucesso('Usuário removido com sucesso');
       }).catch(error => {
-        setVisibilidadePopupRemocao(false);
-        setLinhaSelecionada(null);
-        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao remover usuário');
+      setVisibilidadePopupRemocao(false);
+      setLinhaSelecionada(null);
+      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao remover usuário');
     });
   }
 
@@ -107,8 +115,7 @@ export default function AdminUsuarios() {
       cell: (row) => (
         <div className="d-flex gap-1">
           <IconeCrudSemTexto icone={BsFillXSquareFill} cor={'#D3310ED1'} funcao={() => handleRemover(row)} tooltip='Remover'/>
-          <IconeCrudSemTexto icone={MdEditSquare} cor={'#bf9600'} funcao={() => {
-          }} tooltip='Editar'/>
+          <IconeCrudSemTexto icone={MdEditSquare} cor={'#bf9600'} funcao={() => handleEditar(row)} tooltip='Editar'/>
           <IconeCrudSemTexto icone={BsFolderFill} cor={'rgba(0,93,151,0.82)'} funcao={() => {
           }} tooltip='Registros'/>
 

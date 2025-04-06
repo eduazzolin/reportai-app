@@ -1,14 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import './cardRegistroMeusRegistros.css'
-import {BsArrowDownSquareFill, BsArrowUpSquareFill, BsCheckSquareFill, BsFillXSquareFill} from "react-icons/bs";
+import {BsCheckSquareFill, BsFillXSquareFill} from "react-icons/bs";
 import IconeCrud from "../iconeCrud/iconeCrud";
-import {mensagemErro} from "../toastr";
-import IconeMapa from "../iconeMapa/iconeMapa";
-import {MdDeleteForever, MdEditSquare, MdModeEdit} from "react-icons/md";
+import {MdEditSquare} from "react-icons/md";
 import TextConcluido from "../textConcluido/textConcluido";
 import {useNavigate} from "react-router-dom";
-import {registroPrototype} from "../../app/service/registroService";
-import {Button} from "react-bootstrap";
 
 export default function CardRegistroMeusRegistros({registro, funcaoRemover, funcaoConcluir}) {
 

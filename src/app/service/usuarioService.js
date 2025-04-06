@@ -41,7 +41,7 @@ export default class UsuarioService extends ApiService {
     return this.get('/admin?pagina=' + pagina + '&limite=' + limite + '&termo=' + termo);
   }
 
-  validar(usuario) {
+  validar(usuario, isEdicao = false) {
     const erros = []
 
     // nome
@@ -59,14 +59,16 @@ export default class UsuarioService extends ApiService {
     }
 
     // senha
-    if (!usuario.senha || !usuario.senhaRepeticao) {
-      erros.push("O campo senha é obrigatório.")
-    } else if (usuario.senha.length < 6) {
-      erros.push("A senha deve ter pelo menos 6 caracteres.")
-    } else if (usuario.senha.length > 255) {
-      erros.push("A senha deve ter no máximo 255 caracteres.")
-    } else if (usuario.senha !== usuario.senhaRepeticao) {
-      erros.push("As senhas devem ser iguais.")
+    if(!isEdicao) {
+      if (!usuario.senha || !usuario.senhaRepeticao) {
+        erros.push("O campo senha é obrigatório.")
+      } else if (usuario.senha.length < 6) {
+        erros.push("A senha deve ter pelo menos 6 caracteres.")
+      } else if (usuario.senha.length > 255) {
+        erros.push("A senha deve ter no máximo 255 caracteres.")
+      } else if (usuario.senha !== usuario.senhaRepeticao) {
+        erros.push("As senhas devem ser iguais.")
+      }
     }
 
     // cpf
