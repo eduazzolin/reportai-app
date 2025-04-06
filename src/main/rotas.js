@@ -10,7 +10,7 @@ import MinhaConta from "../views/minhaConta";
 import EntrarUsuario from "../views/entrarUsuario";
 import {AuthContext} from "./provedorAutenticacao";
 import MeusRegistros from "../views/meusRegistros";
-import AdminUsuarios from "../views/adminUsuarios/adminUsuarios";
+import AdminUsuarios from "../views/adminUsuarios";
 
 const PrivateRoute = ({isUsuarioAutenticado, element}) => {
   return isUsuarioAutenticado ? element : <Navigate to="/login"/>;

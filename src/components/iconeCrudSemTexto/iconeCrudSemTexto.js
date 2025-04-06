@@ -1,0 +1,39 @@
+import React, {useState} from 'react';
+import '../iconeCrud/iconeCrud.css';
+import Tooltip from "react-bootstrap/Tooltip";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+
+export default function IconeCrudSemTexto({icone: Icone, cor, funcao, tooltip}) {
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      {tooltip}
+    </Tooltip>
+  );
+
+  return (
+    <OverlayTrigger
+      placement="bottom"
+      delay={{show: 50, hide: 50}}
+      overlay={renderTooltip}
+    >
+      <div
+        className="d-flex clicavel border rounded bg-dark-subtle p-1 my-1"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onClick={funcao}
+      >
+
+        <Icone
+          className={`flex-shrink-0 icon-hover`}
+
+          size={"20px"}
+          style={{'color': `${isHovered ? cor : 'black'}`}}
+        />
+
+      </div>
+    </OverlayTrigger>
+  );
+}

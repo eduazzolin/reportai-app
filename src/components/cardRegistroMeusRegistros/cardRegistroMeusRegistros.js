@@ -94,19 +94,19 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
               <IconeCrud
                 icone={MdEditSquare}
                 texto={'Editar'}
-                cor={'#e6b000'}
+                cor={'#bf9600'}
                 funcao={handleEditarRegistro}
               />
               <IconeCrud
                 icone={BsFillXSquareFill}
                 texto={'Remover'}
-                cor={'rgba(243,93,63,0.82)'}
+                cor={'rgba(211,49,14,0.82)'}
                 funcao={() => funcaoRemover(registro.id)}
               />
               <IconeCrud
                 icone={BsCheckSquareFill}
                 texto={'Concluir'}
-                cor={'rgba(65,195,20,0.82)'}
+                cor={'rgba(39,151,0,0.82)'}
                 funcao={() => funcaoConcluir(registro.id)}
               />
             </div>

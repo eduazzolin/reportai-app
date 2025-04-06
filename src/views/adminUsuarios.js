@@ -1,15 +1,21 @@
 import React, {useEffect, useState} from "react";
-import PopupConfirmacao from "../../components/popupConfirmacao/popupConfirmacao";
-import {mensagemErro} from "../../components/toastr";
-import UsuarioService from "../../app/service/usuarioService";
+import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
+import {mensagemErro} from "../components/toastr";
+import UsuarioService from "../app/service/usuarioService";
 import DataTable from "react-data-table-component";
 import {jsPDF} from 'jspdf'
 import {autoTable} from 'jspdf-autotable'
+import IconeCrud from "../components/iconeCrud/iconeCrud";
+import {MdEditSquare} from "react-icons/md";
+import IconeCrudSemTexto from "../components/iconeCrudSemTexto/iconeCrudSemTexto";
+import {BsFillXSquareFill, BsFolderFill} from "react-icons/bs";
 
 export default function AdminUsuarios() {
   /**
    * https://www.npmjs.com/package/react-data-table-component
    * https://www.youtube.com/watch?v=3oHUtG0cjfY&ab_channel=CodeWithYousaf
+   * https://www.npmjs.com/package/jspdf-autotable
+   *
    */
 
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
@@ -25,26 +31,55 @@ export default function AdminUsuarios() {
     {
       name: 'ID',
       selector: row => row.id,
+      reorder: true,
+      grow: 1,
     },
     {
       name: 'Nome',
       selector: row => row.nome,
+      reorder: true,
+      wrap: true,
+      grow: 3,
     },
     {
       name: 'Email',
       selector: row => row.email,
+      reorder: true,
+      wrap: true,
+      grow: 3,
     },
     {
       name: 'CPF',
       selector: row => row.cpf,
+      reorder: true,
+      wrap: true,
+      grow: 2,
     },
     {
       name: 'Data de Criação',
       selector: row => new Date(row.dtCriacao).toLocaleString(),
+      reorder: true,
+      wrap: true,
+      grow: 2,
     },
     {
       name: 'Data de Modificação',
       selector: row => new Date(row.dtModificacao).toLocaleString(),
+      reorder: true,
+      wrap: true,
+      grow: 2,
+    },
+    {
+      name: 'Ações',
+      cell: (row) => (
+        <div className="d-flex gap-1">
+          <IconeCrudSemTexto icone={BsFillXSquareFill} cor={'#D3310ED1'} funcao={()=>{}} tooltip='Remover'/>
+          <IconeCrudSemTexto icone={MdEditSquare} cor={'#bf9600'} funcao={()=>{}} tooltip='Editar'/>
+          <IconeCrudSemTexto icone={BsFolderFill } cor={'rgba(0,93,151,0.82)'} funcao={()=>{}} tooltip='Registros'/>
+
+        </div>
+      ),
+      grow: 1,
     },
   ]
 
@@ -64,13 +99,7 @@ export default function AdminUsuarios() {
     });
   }
 
-  useEffect(() => {
-    buscarUsuarios();
-  }, [termo, pagina, limite]);
-
   const exportarPDF = async () => {
-    // https://www.npmjs.com/package/jspdf-autotable
-
     try {
       const response = await service.buscarTodos(0, totalUsuarios, termo);
       const usuariosCompletos = response.data.usuarios;
@@ -79,7 +108,7 @@ export default function AdminUsuarios() {
       const titulo = 'Relatório de Usuários';
 
       // itens da tabela
-      const headers = colunas.map(coluna => coluna.name);
+      const headers = colunas.filter(coluna => coluna.name !== 'Ações').map(coluna => coluna.name);
       const dados = usuariosCompletos.map(usuario => [
         usuario.id,
         usuario.nome,
@@ -104,7 +133,11 @@ export default function AdminUsuarios() {
         body: dados,
         startY: 31,
         theme: 'grid',
-        styles: {textColor: 0, overflow: 'linebreak', fontSize: 9},
+        styles: {
+          textColor: 0,
+          overflow: 'linebreak',
+          fontSize: 9
+        },
         headStyles: {
           fillColor: [241, 197, 83],
           textColor: 0,
@@ -140,6 +173,10 @@ export default function AdminUsuarios() {
     }
   };
 
+  useEffect(() => {
+    buscarUsuarios();
+  }, [termo, pagina, limite]);
+
 
   return (
     <div className='container'>
@@ -161,7 +198,7 @@ export default function AdminUsuarios() {
       </div>
 
       {/* ---------------------- tabela ---------------------- */}
-      <div className="row mb-5">
+      <div className="row">
 
         {/*pesquisa e exportar*/}
         <div className="col-12 my-2 d-flex gap-2">
@@ -173,12 +210,16 @@ export default function AdminUsuarios() {
         </div>
 
         {/*tabela*/}
+        {/* #todo add text wrap and reduce the cell height */}
         <DataTable
           columns={colunas}
           data={usuarios}
           fixedHeader
           pagination
+          responsive
+          dense
           paginationServer
+          fixedHeaderScrollHeight={'calc(100vh - 260px)'}
           paginationTotalRows={totalUsuarios}
           paginationPerPage={limite}
           paginationDefaultPage={pagina + 1}
@@ -194,7 +235,6 @@ export default function AdminUsuarios() {
           }}
           highlightOnHover
         />
-
       </div>
 
 
