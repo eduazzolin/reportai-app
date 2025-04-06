@@ -28,8 +28,9 @@ export default class UsuarioService extends ApiService {
     return this.delete(`/${id}`);
   }
 
-  buscarTodos() {
-    return this.get('/admin');
+  buscarTodos(pagina, limite, termo) {
+    termo = termo || '';
+    return this.get('/admin?pagina=' + pagina + '&limite=' + limite + '&termo=' + termo);
   }
 
   validar(usuario) {
