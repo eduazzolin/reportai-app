@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
-import {mensagemErro} from "../components/toastr";
+import {mensagemErro, mensagemSucesso} from "../components/toastr";
 import UsuarioService from "../app/service/usuarioService";
 import DataTable from "react-data-table-component";
 import {jsPDF} from 'jspdf'
@@ -20,12 +20,45 @@ export default function AdminUsuarios() {
 
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
+  const [linhaSelecionada, setLinhaSelecionada] = useState();
   const [pagina, setPagina] = useState(0);
   const [limite, setLimite] = useState(10);
   const [totalUsuarios, setTotalUsuarios] = useState(0);
   const [termo, setTermo] = useState('');
 
   const service = new UsuarioService();
+
+  const handleRemover = (linha) => {
+    setVisibilidadePopupRemocao(true);
+    setLinhaSelecionada(linha);
+  }
+
+  function removerUsuario() {
+    service
+      .deletar(linhaSelecionada.id)
+      .then(response => {
+        setVisibilidadePopupRemocao(false);
+        setLinhaSelecionada(null);
+        buscarUsuarios();
+        mensagemSucesso('Usuário removido com sucesso');
+      }).catch(error => {
+        setVisibilidadePopupRemocao(false);
+        setLinhaSelecionada(null);
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao remover usuário');
+    });
+  }
+
+  function buscarUsuarios() {
+    service.buscarTodos(pagina, limite, termo)
+      .then(response => {
+        setUsuarios(response.data.usuarios);
+        setTotalUsuarios(response.data.totalUsuarios);
+        setPagina(response.data.pagina);
+        console.log(response.data);
+      }).catch(error => {
+      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao carregar usuários');
+    });
+  }
 
   const colunas = [
     {
@@ -73,9 +106,11 @@ export default function AdminUsuarios() {
       name: 'Ações',
       cell: (row) => (
         <div className="d-flex gap-1">
-          <IconeCrudSemTexto icone={BsFillXSquareFill} cor={'#D3310ED1'} funcao={()=>{}} tooltip='Remover'/>
-          <IconeCrudSemTexto icone={MdEditSquare} cor={'#bf9600'} funcao={()=>{}} tooltip='Editar'/>
-          <IconeCrudSemTexto icone={BsFolderFill } cor={'rgba(0,93,151,0.82)'} funcao={()=>{}} tooltip='Registros'/>
+          <IconeCrudSemTexto icone={BsFillXSquareFill} cor={'#D3310ED1'} funcao={() => handleRemover(row)} tooltip='Remover'/>
+          <IconeCrudSemTexto icone={MdEditSquare} cor={'#bf9600'} funcao={() => {
+          }} tooltip='Editar'/>
+          <IconeCrudSemTexto icone={BsFolderFill} cor={'rgba(0,93,151,0.82)'} funcao={() => {
+          }} tooltip='Registros'/>
 
         </div>
       ),
@@ -83,21 +118,6 @@ export default function AdminUsuarios() {
     },
   ]
 
-  const handleRemover = () => {
-    setVisibilidadePopupRemocao(false);
-  }
-
-  function buscarUsuarios() {
-    service.buscarTodos(pagina, limite, termo)
-      .then(response => {
-        setUsuarios(response.data.usuarios);
-        setTotalUsuarios(response.data.totalUsuarios);
-        setPagina(response.data.pagina);
-        console.log(response.data);
-      }).catch(error => {
-      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao carregar usuários');
-    });
-  }
 
   const exportarPDF = async () => {
     try {
@@ -105,7 +125,6 @@ export default function AdminUsuarios() {
       const usuariosCompletos = response.data.usuarios;
 
       const doc = new jsPDF()
-      const titulo = 'Relatório de Usuários';
 
       // itens da tabela
       const headers = colunas.filter(coluna => coluna.name !== 'Ações').map(coluna => coluna.name);
@@ -125,13 +144,14 @@ export default function AdminUsuarios() {
       const img = new Image();
       img.src = '/logo.png';
       doc.addImage(img, 'PNG', 14, 8, w, h, undefined, 'FAST');
-
-      doc.text(titulo, 14, 26);
+      doc.text('Relatório de Usuários', 14, 26);
+      doc.setFontSize(10);
+      doc.text(`Relatório gerado em ${new Date().toLocaleString()}.`, 14, 32)
 
       autoTable(doc, {
         head: [headers],
         body: dados,
-        startY: 31,
+        startY: 37,
         theme: 'grid',
         styles: {
           textColor: 0,
@@ -185,8 +205,8 @@ export default function AdminUsuarios() {
       <PopupConfirmacao
         visivel={visibilidadePopupRemocao}
         titulo="Remover usuário"
-        mensagem="Tem certeza que deseja remover o usuário?"
-        onConfirm={handleRemover}
+        mensagem={`Tem certeza que deseja remover o usuário "${linhaSelecionada?.nome ?? ''}"? os registros associados a ele não serão removidos.`}
+        onConfirm={removerUsuario}
         onCancel={() => setVisibilidadePopupRemocao(false)}
       />
 
