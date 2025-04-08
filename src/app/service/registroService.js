@@ -89,6 +89,7 @@ export const registroPrototype = {
   "id": null,
   "titulo": "",
   "descricao": "",
+  "bairro": "",
   "localizacao": "",
   "latitude": null,
   "longitude": null,

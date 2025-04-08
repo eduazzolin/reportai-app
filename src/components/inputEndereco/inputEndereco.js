@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {OpenStreetMapProvider} from 'leaflet-geosearch';
 import {Form, ListGroup} from 'react-bootstrap';
+import {obterBairroLocalizacaoPorLatLong} from "../../app/service/mapService";
 
 export default function InputEndereco  ({registro, setRegistro})  {
   const [query, setQuery] = useState('');
@@ -39,10 +40,11 @@ export default function InputEndereco  ({registro, setRegistro})  {
   }, [handleClickOutside]);
 
   // ao selecionar uma sugestão, atualizar o input e atuaalizar o registro
-  const handleSelect = (result) => {
+  const handleSelect = async (result) => {
     setQuery(result.label);
     setShowSuggestions(false);
-    setRegistro({...registro, latitude: result.y, longitude: result.x, localizacao: result.label});
+    const [bairro] = await obterBairroLocalizacaoPorLatLong(result.y, result.x);
+    setRegistro({...registro, latitude: result.y, longitude: result.x, localizacao: result.label, bairro: bairro});
   };
 
   return (
