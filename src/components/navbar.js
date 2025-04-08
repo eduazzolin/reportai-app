@@ -2,13 +2,15 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Dropdown from 'react-bootstrap/Dropdown';
-import {Link, NavLink} from 'react-router-dom';
+import {Link, NavLink, useLocation} from 'react-router-dom';
 import {useContext} from "react";
 import {AuthContext} from "../main/provedorAutenticacao";
 
 function AppNavbar() {
 
   const authContext = useContext(AuthContext);
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith('/admin');
 
   return (
 
@@ -30,12 +32,19 @@ function AppNavbar() {
         <Navbar.Collapse id="basic-navbar-nav">
 
           {/*links*/}
-          <Nav className="me-auto">
-            <Nav.Link as={NavLink} to="/home">Home</Nav.Link>
-            <Nav.Link as={NavLink} to="/cadastrar-registro">Novo Registro</Nav.Link>
-            <Nav.Link as={NavLink} to="/relatorios">Relatórios Públicos</Nav.Link>
-            <Nav.Link as={NavLink} to="/sobre">Sobre</Nav.Link>
-          </Nav>
+          {isAdminPage ? (
+            <Nav className="me-auto">
+              <Nav.Link as={NavLink} to="/admin/usuarios">Usuários</Nav.Link>
+              <Nav.Link as={NavLink} to="/admin/registros">Registros</Nav.Link>
+            </Nav>
+          ) : (
+            <Nav className="me-auto">
+              <Nav.Link as={NavLink} to="/home">Home</Nav.Link>
+              <Nav.Link as={NavLink} to="/cadastrar-registro">Novo Registro</Nav.Link>
+              <Nav.Link as={NavLink} to="/relatorios">Relatórios Públicos</Nav.Link>
+              <Nav.Link as={NavLink} to="/sobre">Sobre</Nav.Link>
+            </Nav>
+          )}
 
 
           {/*usuário*/}
@@ -58,7 +67,11 @@ function AppNavbar() {
 
               <Dropdown.Menu>
                 <Dropdown.Item as={NavLink} to="/minha-conta">Minha Conta</Dropdown.Item>
-                <Dropdown.Item as={NavLink} to="/meus-registros">Meus Registros</Dropdown.Item>
+                {!isAdminPage ?
+                  <Dropdown.Item as={NavLink} to="/meus-registros">Meus Registros</Dropdown.Item>
+                  :
+                  <></>
+                }
                 <Dropdown.Item as={NavLink} onClick={authContext.encerrarSessao} to="/">Sair</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
@@ -68,7 +81,8 @@ function AppNavbar() {
 
       </Container>
     </Navbar>
-  );
+  )
+    ;
 }
 
 export default AppNavbar;

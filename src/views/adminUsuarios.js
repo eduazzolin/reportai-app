@@ -28,6 +28,7 @@ export default function AdminUsuarios() {
   const [limite, setLimite] = useState(10);
   const [totalUsuarios, setTotalUsuarios] = useState(0);
   const [termo, setTermo] = useState('');
+  const [ordenacao, setOrdenacao] = useState('nome ASC');
 
   const service = new UsuarioService();
 
@@ -57,7 +58,8 @@ export default function AdminUsuarios() {
   }
 
   function buscarUsuarios() {
-    service.buscarTodos(pagina, limite, termo)
+    console.log(pagina, limite, termo, ordenacao)
+    service.buscarTodos(pagina, limite, termo, ordenacao)
       .then(response => {
         setUsuarios(response.data.usuarios);
         setTotalUsuarios(response.data.totalUsuarios);
@@ -74,6 +76,8 @@ export default function AdminUsuarios() {
       selector: row => row.id,
       reorder: true,
       grow: 1,
+      sortable: true,
+      sortField: 'id',
     },
     {
       name: 'Nome',
@@ -81,6 +85,8 @@ export default function AdminUsuarios() {
       reorder: true,
       wrap: true,
       grow: 3,
+      sortable: true,
+      sortField: 'nome',
     },
     {
       name: 'Email',
@@ -88,6 +94,8 @@ export default function AdminUsuarios() {
       reorder: true,
       wrap: true,
       grow: 3,
+      sortable: true,
+      sortField: 'email',
     },
     {
       name: 'CPF',
@@ -97,11 +105,22 @@ export default function AdminUsuarios() {
       grow: 2,
     },
     {
+      name: 'Qtd. registros',
+      selector: row => row.totalRegistros,
+      reorder: true,
+      wrap: true,
+      grow: 2,
+      sortable: true,
+      sortField: 'totalRegistros',
+    },
+    {
       name: 'Data de Criação',
       selector: row => new Date(row.dtCriacao).toLocaleString(),
       reorder: true,
       wrap: true,
       grow: 2,
+      sortable: true,
+      sortField: 'dtCriacao',
     },
     {
       name: 'Data de Modificação',
@@ -109,6 +128,8 @@ export default function AdminUsuarios() {
       reorder: true,
       wrap: true,
       grow: 2,
+      sortable: true,
+      sortField: 'dtModificacao',
     },
     {
       name: 'Ações',
@@ -121,7 +142,7 @@ export default function AdminUsuarios() {
 
         </div>
       ),
-      grow: 1,
+      grow: 2,
     },
   ]
 
@@ -202,7 +223,7 @@ export default function AdminUsuarios() {
 
   useEffect(() => {
     buscarUsuarios();
-  }, [termo, pagina, limite]);
+  }, [termo, pagina, limite, ordenacao]);
 
 
   return (
@@ -228,12 +249,15 @@ export default function AdminUsuarios() {
       <div className="row">
 
         {/*pesquisa e exportar*/}
-        <div className="col-12 my-2 d-flex gap-2">
-          <input type="text"
-                 className="form-control w-100"
-                 placeholder="Pesquisar por ID, nome, email ou CPF"
-                 onKeyUp={(event) => setTimeout(() => setTermo(event.target.value), 1000)}/>
-          <button className="btn btn-warning text-nowrap" onClick={exportarPDF}>Exportar PDF</button>
+        <div className="col-12 my-2">
+          <label className="form-label">Pesquisar usuários por ID, nome, email ou CPF</label>
+          <div className='d-flex gap-2'>
+            <input type="text"
+                   className="form-control w-100"
+                   placeholder="Pesquisar por ID, nome, email ou CPF"
+                   onKeyUp={(event) => setTimeout(() => setTermo(event.target.value), 1000)}/>
+            <button className="btn btn-warning text-nowrap" onClick={exportarPDF}>Exportar PDF</button>
+          </div>
         </div>
 
         {/*tabela*/}
@@ -246,7 +270,7 @@ export default function AdminUsuarios() {
           responsive
           dense
           paginationServer
-          fixedHeaderScrollHeight={'calc(100vh - 260px)'}
+          fixedHeaderScrollHeight={'calc(100vh - 284px)'}
           paginationTotalRows={totalUsuarios}
           paginationPerPage={limite}
           paginationDefaultPage={pagina + 1}
@@ -261,6 +285,9 @@ export default function AdminUsuarios() {
             setPagina(page - 1);
           }}
           highlightOnHover
+          onSort={(column, sortDirection) => {
+            setOrdenacao(`${column.sortField ?? 'nome'} ${sortDirection}`);
+          }}
         />
       </div>
 
