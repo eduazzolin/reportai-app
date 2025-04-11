@@ -1,15 +1,9 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom';
-import Form from "react-bootstrap/Form";
-import UsuarioService, {usuarioPrototype} from "../app/service/usuarioService";
-import {Button} from "react-bootstrap";
+import {usuarioPrototype} from "../app/service/usuarioService";
 import {mensagemErro, mensagemSucesso} from "../components/toastr";
-import {AuthContext} from "../main/provedorAutenticacao";
-import LocalStorageService from "../app/service/localStorageService";
-import {USUARIO_LOGADO} from "../app/service/authService";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import {RegistroService} from "../app/service/registroService";
-import CardRegistroLateral from "../components/cardRegistroLateral/cardRegistroLateral";
 import CardRegistroMeusRegistros from "../components/cardRegistroMeusRegistros/cardRegistroMeusRegistros";
 import Pagination from 'react-bootstrap/Pagination';
 
@@ -25,6 +19,10 @@ export default function MeusRegistros() {
   const navigate = useNavigate();
 
   const service = new RegistroService();
+
+  useEffect(() => {
+    document.title = 'Reportaí - Meus Registros';
+  }, []);
 
   const abrirPopupRemocao = (idRegistro) => {
     setVisibilidadePopupRemocao(true)

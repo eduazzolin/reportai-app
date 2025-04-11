@@ -9,7 +9,7 @@ import IconeCrud from "../components/iconeCrud/iconeCrud";
 import {MdEditSquare} from "react-icons/md";
 import IconeCrudSemTexto from "../components/iconeCrudSemTexto/iconeCrudSemTexto";
 import {BsFillXSquareFill, BsFolderFill} from "react-icons/bs";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 export default function AdminUsuarios() {
   /**
@@ -31,6 +31,11 @@ export default function AdminUsuarios() {
   const [ordenacao, setOrdenacao] = useState('nome ASC');
 
   const service = new UsuarioService();
+
+  useEffect(() => {
+    document.title = 'Reportaí - Administração de Usuários';
+  }, []);
+
 
   const handleEditar = (linha) => {
     navigate('/minha-conta', {state: {idUsuario: linha.id}});
@@ -135,11 +140,9 @@ export default function AdminUsuarios() {
       name: 'Ações',
       cell: (row) => (
         <div className="d-flex gap-1">
-          <IconeCrudSemTexto icone={BsFillXSquareFill} cor={'#D3310ED1'} funcao={() => handleRemover(row)} tooltip='Remover'/>
           <IconeCrudSemTexto icone={MdEditSquare} cor={'#bf9600'} funcao={() => handleEditar(row)} tooltip='Editar'/>
-          <IconeCrudSemTexto icone={BsFolderFill} cor={'rgba(0,93,151,0.82)'} funcao={() => {
-          }} tooltip='Registros'/>
-
+          <IconeCrudSemTexto icone={BsFillXSquareFill} cor={'#D3310ED1'} funcao={() => handleRemover(row)} tooltip='Remover'/>
+          <IconeCrudSemTexto icone={BsFolderFill} cor={'rgba(0,93,151,0.82)'} funcao={() => {navigate('/admin/registros', {state: {usuarioFiltro: row.id}});}} tooltip='Registros'/>
         </div>
       ),
       grow: 2,

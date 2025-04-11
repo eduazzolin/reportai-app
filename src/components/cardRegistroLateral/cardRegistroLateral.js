@@ -9,7 +9,7 @@ import IconeCrud from "../iconeCrud/iconeCrud";
 
 export default function CardRegistroLateral({registro, focarMapaNoRegistro, interacaoService}) {
 
-  const goToRegistro = () => {
+  const irParaRegistro = () => {
     window.open(`/registro/${registro.id}`, '_blank');
   };
 
@@ -119,7 +119,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
         {/*imagem*/}
         <div className="col-4 p-0 ">
           <div>
-            {registro.imagens[0]?.caminho && <img src={registro.imagens[0].caminho} className="img_thumb rounded clicavel" onClick={goToRegistro} alt="..."/>}
+            {registro.imagens[0]?.caminho && <img src={registro.imagens[0].caminho} className="img_thumb rounded clicavel" onClick={irParaRegistro} alt="..."/>}
           </div>
         </div>
 
@@ -130,7 +130,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
           <div className="row">
 
             {/*cabeçalho*/}
-            <div onClick={goToRegistro} className="col-12 d-flex mb-3 mt-3 gap-2 clicavel div_titulo   overflow-hidden ">
+            <div onClick={irParaRegistro} className="col-12 d-flex mb-3 mt-3 gap-2 clicavel div_titulo   overflow-hidden ">
 
               {/*icone*/}
               <img src={registro.categoria.icone} className="clicavel img_localizacao flex-shrink-0" alt="..."/>

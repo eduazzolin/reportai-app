@@ -29,7 +29,7 @@ export default function IconeCrudSemTexto({icone: Icone, cor, funcao, tooltip}) 
         <Icone
           className={`flex-shrink-0 icon-hover`}
 
-          size={"20px"}
+          size={"16px"}
           style={{'color': `${isHovered ? cor : 'black'}`}}
         />
 

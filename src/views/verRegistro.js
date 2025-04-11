@@ -11,6 +11,11 @@ import L from "leaflet";
 
 
 export default function VerRegistro() {
+
+  //   useEffect(() => {
+  //   document.title = 'Reportaí - Administração de Registros';
+  // }, []);
+
   // const {id} = useParams();
   // const [registro, setRegistro] = useState(null);
   //

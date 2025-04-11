@@ -48,6 +48,10 @@ export default function CadastrarRegistro() {
   const imagemService = new ImagemService();
   const iaService = new IaService();
 
+  useEffect(() => {
+    document.title = 'Reportaí - Cadastrar Registro';
+  }, []);
+
   /* Carrega o registro recebido, se houver */
   useEffect(() => {
     if (registroRecebido) {

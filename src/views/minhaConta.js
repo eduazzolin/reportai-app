@@ -21,6 +21,9 @@ export default function MinhaConta() {
 
   const service = new UsuarioService();
 
+  useEffect(() => {
+    document.title = 'Reportaí - Minha Conta';
+  }, []);
 
   const cadastrar = () => {
 

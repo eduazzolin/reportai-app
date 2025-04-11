@@ -34,8 +34,11 @@ export default function Home() {
   const categoriaService = new CategoriaService();
   const interacaoService = new InteracaoService();
 
+  useEffect(() => {
+    document.title = 'Reportaí';
+  }, []);
 
-// a cada inicialização
+  // a cada inicialização
   useEffect(() => {
 
     categoriaService
