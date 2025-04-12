@@ -4,12 +4,13 @@ import {mensagemErro, mensagemSucesso} from "../components/toastr";
 import DataTable from "react-data-table-component";
 import {jsPDF} from 'jspdf'
 import {autoTable} from 'jspdf-autotable'
-import IconeCrud from "../components/iconeCrud/iconeCrud";
 import {MdEditSquare} from "react-icons/md";
 import IconeCrudSemTexto from "../components/iconeCrudSemTexto/iconeCrudSemTexto";
-import {BsCheckSquareFill, BsFillXSquareFill, BsFolderFill} from "react-icons/bs";
+import {BsCheckSquareFill, BsFillXSquareFill} from "react-icons/bs";
 import {useLocation, useNavigate} from "react-router-dom";
 import {RegistroService} from "../app/service/registroService";
+import Form from "react-bootstrap/Form";
+import {categoriaPrototype, CategoriaService} from "../app/service/categoriaService";
 
 export default function AdminRegistros() {
   /**
@@ -22,6 +23,7 @@ export default function AdminRegistros() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const statusPermitidos = [{id: '', nome: 'Todos'}, {id: 'ATIVO', nome: 'Ativos'}, {id: 'CONCLUIDO', nome: 'Concluído'}];
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
   const [visibilidadePopupConclusao, setVisibilidadePopupConclusao] = useState(false);
   const [registros, setRegistros] = useState([]);
@@ -34,16 +36,16 @@ export default function AdminRegistros() {
   const [pesquisaIdUsuario, setPesquisaIdUsuario] = useState(location.state?.usuarioFiltro);
   const [pesquisaCategoria, setPesquisaCategoria] = useState('');
   const [pesquisaBairro, setPesquisaBairro] = useState('');
-  const [pesquisaStatus, setPesquisaStatus] = useState('');
-
-
+  const [pesquisaStatus, setPesquisaStatus] = useState(statusPermitidos[0].id);
+  const [categorias, setCategorias] = useState([categoriaPrototype])
+  const categoriaService = new CategoriaService();
   const service = new RegistroService();
 
   useEffect(() => {
     document.title = 'Reportaí - Administração de Registros';
   }, []);
 
-  const handleEditar = (linha) => {
+  function handleEditar(linha) {
     service
       .consultarPorId(linha.id)
       .then(response => {
@@ -54,21 +56,20 @@ export default function AdminRegistros() {
     })
   }
 
-  const irParaUsuario = (linha) => {
+  function irParaUsuario(linha) {
     navigate('/minha-conta', {state: {idUsuario: linha.usuarioId}});
   }
 
-  const irParaRegistro = (linha) => {
+  function irParaRegistro(linha) {
     window.open(`/registro/${linha.id}`, '_blank');
   };
 
-
-  const handleRemover = (linha) => {
+  function handleRemover(linha) {
     setVisibilidadePopupRemocao(true);
     setLinhaSelecionada(linha);
   }
 
-  const handleConcluir = (linha) => {
+  function handleConcluir(linha) {
     setVisibilidadePopupConclusao(true);
     setLinhaSelecionada(linha);
   }
@@ -111,6 +112,93 @@ export default function AdminRegistros() {
       mensagemErro(error?.response?.data?.descricao ?? 'Erro ao carregar registros');
     });
   }
+
+  async function exportarPDF() {
+    try {
+      const response = await service.buscarTodos(pesquisaIdNome, pesquisaIdUsuario, pesquisaCategoria, pesquisaBairro, pesquisaStatus, 0, totalRegistros, ordenacao);
+      const registrosCompletos = response.data.registros;
+
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm'
+      });
+
+      // itens da tabela
+      // const headers = colunas.filter(coluna => coluna.name !== 'Ações').map(coluna => coluna.name);
+      const headers = ['ID', 'Título', 'ID Usuário', 'Data de\nCriação', 'Data de\nModificação', 'Data de\nConclusão', 'Categoria', 'Bairro', 'Data Conclusão Programada', 'Qtd.\nRelevante', 'Qtd.\nIrrelevante', 'Qtd.\nConcluído'];
+      const dados = registrosCompletos.map(registro => [
+        registro.id,
+        registro.titulo,
+        registro.usuarioId,
+        new Date(registro.dtCriacao).toLocaleString(),
+        new Date(registro.dtModificacao).toLocaleString(),
+        registro.dtConclusao ? new Date(registro.dtConclusao).toLocaleString() : '',
+        registro.categoria,
+        registro.bairro,
+        registro.dtAteConclusao,
+        registro.qtRelevante,
+        registro.qtIrrelevante,
+        registro.qtConcluido
+      ]);
+
+      // cabeçalhlo do documento
+      doc.setFontSize(16);
+      const w = (4598 / 100);
+      const h = (1169 / 100);
+      const img = new Image();
+      img.src = '/logo.png';
+      doc.addImage(img, 'PNG', 14, 8, w, h, undefined, 'FAST');
+      doc.text('Relatório de Registros', 14, 26);
+      doc.setFontSize(10);
+      doc.text(`Relatório gerado em ${new Date().toLocaleString()}.`, 14, 32)
+
+      autoTable(doc, {
+        head: [headers],
+        body: dados,
+        startY: 37,
+        theme: 'grid',
+        styles: {
+          textColor: 0,
+          overflow: 'linebreak',
+          fontSize: 8
+        },
+        headStyles: {
+          fillColor: [241, 197, 83],
+          textColor: 0,
+          fontStyle: 'bold',
+          fontSize: 8,
+          lineWidth: 0.2,
+        },
+        columnStyles: {
+          0: {cellWidth: 10},
+          1: {cellWidth: 42},
+          2: {cellWidth: 16},
+          3: {cellWidth: 21},
+          4: {cellWidth: 22},
+          5: {cellWidth: 21},
+          6: {cellWidth: 27},
+          7: {cellWidth: 30},
+          8: {cellWidth: 27},
+        }
+      })
+
+      // rodapé
+      const totalPaginas = doc.internal.getNumberOfPages()
+      for (let i = 1; i <= totalPaginas; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.text(`Página ${i} de ${totalPaginas}`, 15, 205);
+      }
+
+      // salva o PDF
+      // doc.save('registros.pdf');
+      window.open(doc.output('bloburl'), '_blank');
+
+    } catch (error) {
+      console.log(error);
+      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao exportar registros');
+    }
+  };
 
   const colunas = [
     {
@@ -243,81 +331,19 @@ export default function AdminRegistros() {
     },
   ]
 
-
-  const exportarPDF = async () => {
-    //TODO
-    // try {
-    //   const response = await service.buscarTodos(0, totalRegistros, termo);
-    //   const registrosCompletos = response.data.registros;
-    //
-    //   const doc = new jsPDF()
-    //
-    //   // itens da tabela
-    //   const headers = colunas.filter(coluna => coluna.name !== 'Ações').map(coluna => coluna.name);
-    //   const dados = registrosCompletos.map(registro => [
-    //     registro.id,
-    //     registro.nome,
-    //     registro.email,
-    //     registro.cpf,
-    //     new Date(registro.dtCriacao).toLocaleString(),
-    //     new Date(registro.dtModificacao).toLocaleString()
-    //   ]);
-    //
-    //   // cabeçalhlo do documento
-    //   doc.setFontSize(16);
-    //   const w = (4598 / 100);
-    //   const h = (1169 / 100);
-    //   const img = new Image();
-    //   img.src = '/logo.png';
-    //   doc.addImage(img, 'PNG', 14, 8, w, h, undefined, 'FAST');
-    //   doc.text('Relatório de Registros', 14, 26);
-    //   doc.setFontSize(10);
-    //   doc.text(`Relatório gerado em ${new Date().toLocaleString()}.`, 14, 32)
-    //
-    //   autoTable(doc, {
-    //     head: [headers],
-    //     body: dados,
-    //     startY: 37,
-    //     theme: 'grid',
-    //     styles: {
-    //       textColor: 0,
-    //       overflow: 'linebreak',
-    //       fontSize: 9
-    //     },
-    //     headStyles: {
-    //       fillColor: [241, 197, 83],
-    //       textColor: 0,
-    //       fontStyle: 'bold',
-    //       fontSize: 9,
-    //       lineWidth: 0.2,
-    //     },
-    //     columnStyles: {
-    //       0: {cellWidth: 13}, // Width for the first column
-    //       1: {cellWidth: 39}, // Width for the second column
-    //       2: {cellWidth: 37},
-    //       3: {cellWidth: 26},
-    //     }
-    //   })
-    //
-    //   // rodapé
-    //   const totalPaginas = doc.internal.getNumberOfPages()
-    //   for (let i = 1; i <= totalPaginas; i++) {
-    //     if (i == 1) {
-    //       continue
-    //     }
-    //     doc.setPage(i);
-    //     doc.setFontSize(10);
-    //     doc.text(`Página ${i} de ${totalPaginas}`, 15, 285);
-    //   }
-    //
-    //   // salva o PDF
-    //   doc.save('registros.pdf');
-    //
-    // } catch (error) {
-    //   console.log(error);
-    //   mensagemErro(error?.response?.data?.descricao ?? 'Erro ao exportar registros');
-    // }
-  };
+  /* Carrega as categorias */
+  useEffect(() => {
+    categoriaService
+      .consultar()
+      .then(response => {
+        const categoriasResponse = response.data;
+        const opcaoTodas = {id: '', nome: 'Todas'};
+        setCategorias([opcaoTodas, ...categoriasResponse]);
+        setPesquisaCategoria(opcaoTodas.id)
+      }).catch(error => {
+      console.log(error);
+    });
+  }, []);
 
   useEffect(() => {
     buscarRegistros();
@@ -346,8 +372,9 @@ export default function AdminRegistros() {
 
       {/* ---------------------- titulo ---------------------- */}
       <div className="row mt-3">
-        <div className="col-12">
+        <div className="col-12 d-flex justify-content-between">
           <h2>Gerenciar registros</h2>
+          <button className="btn btn-warning text-nowrap flex-grow-0 my-auto" onClick={exportarPDF}>Exportar PDF</button>
         </div>
       </div>
 
@@ -355,19 +382,69 @@ export default function AdminRegistros() {
       <div className="row">
 
         {/*pesquisa e exportar*/}
-        {/*<div className="col-12 my-2">*/}
-        {/*  <label className="form-label">Pesquisar registros por ID, nome, email ou CPF</label>*/}
-        {/*  <div className='d-flex gap-2'>*/}
-        {/*    <input type="text"*/}
-        {/*           className="form-control w-100"*/}
-        {/*           placeholder="Pesquisar por ID, nome, email ou CPF"*/}
-        {/*           onKeyUp={(event) => setTimeout(() => setTermo(event.target.value), 1000)}/>*/}
-        {/*    <button className="btn btn-warning text-nowrap" onClick={exportarPDF}>Exportar PDF</button>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
+        <div className="col-12 my-2 d-flex gap-2 p-2">
+          <Form.Group className="mb-3 flex-grow-1">
+            <Form.Label>ID ou Título do registro</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Digite o ID ou Título do registro"
+              onKeyUp={(event) => setTimeout(() => setPesquisaIdNome(event.target.value), 1000)}/>
+          </Form.Group>
+
+          <Form.Group className="mb-3 flex-grow-0">
+            <Form.Label>ID do usuário</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Digite o ID do usuário"
+              onKeyUp={(event) => setTimeout(() => setPesquisaIdUsuario(event.target.value), 1000)}/>
+          </Form.Group>
+
+          <Form.Group className="mb-3 flex-grow-0">
+            <Form.Label>Bairro</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Digite o bairro"
+              onKeyUp={(event) => setTimeout(() => setPesquisaBairro(event.target.value), 1000)}/>
+          </Form.Group>
+
+          <Form.Group className="mb-3 flex-grow-0">
+            <Form.Label>Categoria</Form.Label>
+            <Form.Select
+              aria-label="Categoria"
+              value={pesquisaCategoria}
+              onChange={event => {
+                const categoriaSelecionada = categorias.find(cat => cat.id == event.target.value);
+                setPesquisaCategoria(categoriaSelecionada.id)
+              }}>
+
+              {/*opções*/}
+              {categorias.map((categoria, index) => (
+                <option key={index} value={categoria.id}>{categoria.nome}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+
+          <Form.Group className="mb-3 flex-grow-0">
+            <Form.Label>Status</Form.Label>
+            <Form.Select
+              aria-label="Status"
+              value={pesquisaStatus}
+              onChange={event => {
+                const statusSelecionado = statusPermitidos.find(cat => cat.id == event.target.value);
+                setPesquisaStatus(statusSelecionado.id)
+                console.log(statusSelecionado.id)
+              }}>
+
+              {/*opções*/}
+              {statusPermitidos.map((status, index) => (
+                <option key={index} value={status.id}>{status.nome}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+
+        </div>
 
         {/*tabela*/}
-        {/* #todo add text wrap and reduce the cell height */}
         <DataTable
           columns={colunas}
           data={registros}
