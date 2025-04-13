@@ -50,3 +50,71 @@
 .mr_div_registros {
     height: calc(100vh - 200px);
 }
+
+.vr_imagem {
+    max-height: 600px;
+}
+
+.page-break {
+    page-break-before: always;
+}
+
+@media print {
+    @page {
+        size: auto;
+        margin: 20mm;
+    }
+
+    .print-map {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    * {
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 80%;
+    }
+
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .no-print,
+    header,
+    .leaflet-control-container {
+        display: none !important;
+    }
+
+    .vr_imagem_row {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        display: block !important;
+
+    }
+
+    .vr_imagem {
+        max-height: 290px !important;
+        margin-bottom: 16px !important;
+    }
+
+    /* Melhora a legibilidade do texto */
+    .texto_justificado {
+        font-size: 12pt;
+        line-height: 1.5;
+    }
+
+    /* Ajustes de layout geral */
+    .container {
+        padding: 0 20px !important;
+        max-width: 100% !important;
+    }
+
+}

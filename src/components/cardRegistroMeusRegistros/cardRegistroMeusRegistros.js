@@ -28,7 +28,11 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
         {/* ---------------------- imagens ---------------------- */}
         <div className="col-4 p-0 ">
           <div>
-            {registro.imagens[0]?.caminho && <img src={registro.imagens[0].caminho} className="mr_img_thumb rounded clicavel" onClick={goToRegistro} alt="..."/>}
+            {registro.imagens[0]?.caminho ? (
+              <img src={registro.imagens[0].caminho} className="mr_img_thumb  rounded clicavel border" onClick={goToRegistro} alt="..."/>
+            ) : (
+              <img src="/placeholder_registro.png" className="mr_img_thumb  rounded clicavel border" onClick={goToRegistro} alt="..."/>
+            )}
           </div>
         </div>
 

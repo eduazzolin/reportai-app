@@ -119,7 +119,11 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
         {/*imagem*/}
         <div className="col-4 p-0 ">
           <div>
-            {registro.imagens[0]?.caminho && <img src={registro.imagens[0].caminho} className="img_thumb rounded clicavel" onClick={irParaRegistro} alt="..."/>}
+            {registro.imagens[0]?.caminho ? (
+              <img src={registro.imagens[0].caminho} className="img_thumb rounded clicavel border" onClick={irParaRegistro} alt="..."/>
+            ) : (
+              <img src="/placeholder_registro.png" className="img_thumb rounded clicavel border" onClick={irParaRegistro} alt="..."/>
+            )}
           </div>
         </div>
 

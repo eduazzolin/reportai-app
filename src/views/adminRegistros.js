@@ -191,8 +191,7 @@ export default function AdminRegistros() {
       }
 
       // salva o PDF
-      // doc.save('registros.pdf');
-      window.open(doc.output('bloburl'), '_blank');
+      doc.save('registros.pdf');
 
     } catch (error) {
       console.log(error);

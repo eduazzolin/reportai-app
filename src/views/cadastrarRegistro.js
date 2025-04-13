@@ -68,6 +68,10 @@ export default function CadastrarRegistro() {
       .consultar()
       .then(response => {
         setCategorias(response.data)
+        if (!registroRecebido) {
+          setRegistro({...registro, categoria: response.data[0]})
+          setIconeCategoriaSelecionada(response.data[0].icone)
+        }
       }).catch(error => {
       console.log(error);
     });
@@ -164,7 +168,7 @@ export default function CadastrarRegistro() {
           }
         }
 
-        mensagemSucesso('Registro cadastrado com sucesso!');
+        mensagemSucesso(registroRecebido ? 'Registro editado com sucesso!' : 'Registro cadastrado com sucesso!');
         navigate('/')
       } catch (error) {
         mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar registro');

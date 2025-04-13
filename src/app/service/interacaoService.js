@@ -17,4 +17,8 @@ export class InteracaoService extends ApiService {
     return this.delete(`/${registroId}`);
   }
 
+  buscarRelevantes(registroId) {
+    return this.get(`/relevantes/${registroId}`);
+  }
+
 }

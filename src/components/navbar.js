@@ -14,7 +14,7 @@ function AppNavbar() {
 
   return (
 
-    <Navbar expand="md" className="bg-body-tertiary">
+    <Navbar expand="md" className="bg-body-tertiary no-print">
       <Container>
 
         {/*logo*/}

@@ -62,6 +62,7 @@ export default function EntrarUsuario() {
               <Form.Control
                 type="text"
                 placeholder="Digite seu email"
+                maxLength={255}
                 value={usuario.email}
                 onChange={event => setUsuario({...usuario, email: event.target.value})}/>
             </Form.Group>
@@ -71,6 +72,7 @@ export default function EntrarUsuario() {
               <Form.Label>Senha</Form.Label>
               <Form.Control
                 type="password"
+                maxLength={255}
                 placeholder="Crie uma senha"
                 value={usuario.senha}
                 onChange={event => setUsuario({...usuario, senha: event.target.value})}/>
