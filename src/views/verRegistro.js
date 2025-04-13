@@ -19,10 +19,28 @@ export default function VerRegistro() {
   const {id} = useParams();
   const [registro, setRegistro] = useState(null);
   const [interacoes, setInteracoes] = useState([]);
+  const [mensagemCentral, setMensagemCentral] = useState('ℹ️ Carregando registro...');
 
   const service = new RegistroService();
   const interacaoService = new InteracaoService();
   const mapRef = useRef();
+
+  useEffect(() => {
+
+    service.consultarPorId(id).then((response) => {
+      setRegistro(response.data);
+      interacaoService.buscarRelevantes(id).then((response) => {
+        setInteracoes(response.data);
+      }).catch((error) => {
+        setMensagemCentral('❌ ' + error?.response?.data?.descricao ?? 'Erro ao buscar interações.');
+      })
+    }).catch((error) => {
+      setMensagemCentral('❌ ' + error?.response?.data?.descricao ?? 'Erro ao buscar registro.');
+    })
+
+    document.title = `Reportaí - ${registro?.titulo ?? 'Registro'}`;
+
+  }, [id]);
 
 
   const handlePrint = () => {
@@ -42,31 +60,11 @@ export default function VerRegistro() {
     }
 
   };
-
-
-  useEffect(() => {
-
-    service.consultarPorId(id).then((response) => {
-      setRegistro(response.data);
-      console.log(response.data);
-    }).catch((error) => {
-      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar registro.');
-    })
-
-    interacaoService.buscarRelevantes(id).then((response) => {
-      setInteracoes(response.data);
-      console.log(response.data);
-    }).catch((error) => {
-      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar interações.');
-    })
-
-    document.title = `Reportaí - ${registro?.titulo ?? 'Registro'}`;
-
-
-  }, [id]);
-
   if (!registro) {
-    return <div></div>;
+    return (
+      <div className="justify-content-center align-items-center d-flex text-center mt-5">
+        {mensagemCentral}
+      </div>);
   }
 
 
