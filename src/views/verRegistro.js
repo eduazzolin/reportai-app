@@ -3,8 +3,7 @@ import {useParams} from 'react-router-dom';
 import {FaMapMarkerAlt, FaUserCircle} from "react-icons/fa";
 import {MdDateRange} from "react-icons/md";
 import {formatarDataHora, formatarDescricao} from "../app/service/appService";
-import {AiFillLike} from "react-icons/ai";
-import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
+import {MapContainer, Marker, TileLayer} from "react-leaflet";
 import osm from "../app/service/osm-providers";
 import L from "leaflet";
 import {RegistroService} from "../app/service/registroService";
@@ -12,7 +11,6 @@ import {mensagemErro} from "../components/toastr";
 import {BsArrowUpSquareFill, BsCheckSquareFill} from "react-icons/bs";
 import {FaTreeCity} from "react-icons/fa6";
 import {InteracaoService} from "../app/service/interacaoService";
-import {forEach} from "react-bootstrap/ElementChildren";
 import {Button} from "react-bootstrap";
 
 
@@ -207,7 +205,7 @@ export default function VerRegistro() {
           {
             interacoes.map((interacao, index) => (
               <div key={index} className="col-12 d-flex gap-2 mb-2 align-items-center">
-                <AiFillLike size={24}/>
+                <BsArrowUpSquareFill size={24}/>
                 <span className=''>{interacao.usuario}</span>
                 <span className='text-black-50'>{formatarDataHora(interacao.dtCriacao)} </span>
               </div>
