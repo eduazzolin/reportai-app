@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {RegistroService} from "../app/service/registroService";
 import Form from "react-bootstrap/Form";
+import {RelatorioService} from "../app/service/relatorioService";
 
 
 export default function RelatoriosPublicos() {
@@ -51,16 +52,46 @@ export default function RelatoriosPublicos() {
 
 
   const [pesquisaPeriodo, setPesquisaPeriodo] = React.useState(periodos[0]);
+  const [datasetBairros, setDatasetBairros] = React.useState([]);
+  const [datasetCategorias, setDatasetCategorias] = React.useState([]);
+  const [datasetStatus, setDatasetStatus] = React.useState([]);
 
 
-  const service = new RegistroService();
+  const service = new RelatorioService();
+  useEffect(() => {
+    document.title = `Reportaí - Relatórios Públicos`;
+  }, []);
 
   useEffect(() => {
 
-    document.title = `Reportaí - Relatórios Públicos`;
+    const dataInicio = pesquisaPeriodo.dataInicio ? pesquisaPeriodo.dataInicio.toISOString().split('T')[0] : null;
+    const dataFim = pesquisaPeriodo.dataFim ? pesquisaPeriodo.dataFim.toISOString().split('T')[0] : null;
 
+    service
+      .gerarRelatorioBairros(dataInicio, dataFim)
+      .then(response => {
+        setDatasetBairros(response.data);
+      }).catch(error => {
+      console.error(error);
+    });
 
-  }, []);
+    service
+      .gerarRelatorioCategorias(dataInicio, dataFim)
+      .then(response => {
+        setDatasetCategorias(response.data);
+      }).catch(error => {
+      console.error(error);
+    });
+
+    service
+      .gerarRelatorioStatus(dataInicio, dataFim)
+      .then(response => {
+        setDatasetStatus(response.data);
+      }).catch(error => {
+      console.error(error);
+    });
+
+  }, [pesquisaPeriodo]);
 
 
   return (
@@ -85,8 +116,6 @@ export default function RelatoriosPublicos() {
               onChange={event => {
                 const periodoSelecionado = periodos.find(periodo => periodo.value === event.target.value);
                 setPesquisaPeriodo(periodoSelecionado);
-                console.log(periodoSelecionado.dataInicio.toISOString().split('T')[0]);
-                console.log(periodoSelecionado.dataFim.toISOString().split('T')[0]);
               }}>
 
               {/*opções*/}
@@ -98,6 +127,19 @@ export default function RelatoriosPublicos() {
 
         </div>
       </div>
+
+
+      {/* ---------------------- gráficos ---------------------- */}
+      <div className="row mt-4">
+
+        {datasetBairros && datasetBairros.length > 0 && (
+          <div className="col-12">
+          </div>
+        )}
+
+      </div>
+
+
     </div>
   );
 }
