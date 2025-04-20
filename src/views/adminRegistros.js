@@ -135,7 +135,7 @@ export default function AdminRegistros() {
         registro.dtConclusao ? new Date(registro.dtConclusao).toLocaleString() : '',
         registro.categoria,
         registro.bairro,
-        registro.dtAteConclusao,
+        registro.dtAteConclusao? new Date(registro.dtAteConclusao).toLocaleString() : '',
         registro.qtRelevante,
         registro.qtIrrelevante,
         registro.qtConcluido
@@ -279,7 +279,7 @@ export default function AdminRegistros() {
     },
     {
       name: 'Data de Conclusão Programada',
-      selector: row => row.dtAteConclusao,
+      selector: row => row.dtAteConclusao? new Date(row.dtAteConclusao).toLocaleString() : '',
       reorder: true,
       wrap: true,
       sortable: true,

@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function TextConcluido({data}) {
   return (
-    <div className='border rounded p-1 px-2 bg-dark-subtle'>
+    <div className='border rounded p-1 px-2 bg-dark-subtle flex-grow-1'>
       ✅ Concluído em {new Date(data).toLocaleDateString()}
     </div>
   )

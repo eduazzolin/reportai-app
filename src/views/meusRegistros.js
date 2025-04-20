@@ -44,6 +44,17 @@ export default function MeusRegistros() {
 
   }
 
+  const handleIgnorarConclusao = (idRegistro) => {
+    service
+      .ignorarConclusao(idRegistro)
+      .then(response => {
+        mensagemSucesso("Conclusão programada ignorada com sucesso!");
+        loadRegistros()
+      }).catch(error => {
+      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao ignorar conclusão');
+    });
+  }
+
   const handleRemover = () => {
     setVisibilidadePopupRemocao(false);
     service
@@ -67,6 +78,7 @@ export default function MeusRegistros() {
       mensagemErro(error?.response?.data?.descricao ?? 'Erro ao concluir registro');
     });
   }
+
 
   const loadRegistros = () => {
     service
@@ -115,12 +127,13 @@ export default function MeusRegistros() {
       <div className="row mr_div_registros overflow-y-scroll">
         {
           registros.map((registro, index) => (
-            <div key={index} className={'p-2 col-md-6 col-xl-4'}>
+            <div key={index} className={'p-2 col-md-6'}>
               <CardRegistroMeusRegistros
                 key={index}
                 registro={registro}
                 funcaoRemover={abrirPopupRemocao}
                 funcaoConcluir={abrirPopupConclusao}
+                funcaoIgnorarConclusao={handleIgnorarConclusao}
               />
             </div>
           ))

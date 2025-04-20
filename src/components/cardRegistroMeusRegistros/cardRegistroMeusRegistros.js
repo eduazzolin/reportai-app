@@ -2,11 +2,14 @@ import React from 'react';
 import './cardRegistroMeusRegistros.css'
 import {BsCheckSquareFill, BsFillXSquareFill} from "react-icons/bs";
 import IconeCrud from "../iconeCrud/iconeCrud";
-import {MdEditSquare} from "react-icons/md";
+import {MdEditSquare, MdHelpCenter} from "react-icons/md";
 import TextConcluido from "../textConcluido/textConcluido";
 import {useNavigate} from "react-router-dom";
+import TextConclusaoProgramada from "../textConclusaoProgramada/textConclusaoProgramada";
+import {FaCalendarXmark} from "react-icons/fa6";
+import IconeCrudSemTexto from "../iconeCrudSemTexto/iconeCrudSemTexto";
 
-export default function CardRegistroMeusRegistros({registro, funcaoRemover, funcaoConcluir}) {
+export default function CardRegistroMeusRegistros({registro, funcaoRemover, funcaoConcluir, funcaoIgnorarConclusao}) {
 
   const navigate = useNavigate();
 
@@ -73,7 +76,7 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
 
           // CONCLUÍDO
           <div className="row pb-2">
-            <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-2 ">
+            <div className="col-12 d-flex align-items-center justify-content-between gap-2">
 
               <TextConcluido data={registro.dtConclusao}/>
 
@@ -89,28 +92,64 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
           :
 
           // ATIVO
-          <div className="row pb-2">
-            <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-2 ">
-              <IconeCrud
-                icone={MdEditSquare}
-                texto={'Editar'}
-                cor={'#bf9600'}
-                funcao={handleEditarRegistro}
-              />
-              <IconeCrud
-                icone={BsFillXSquareFill}
-                texto={'Remover'}
-                cor={'rgba(211,49,14,0.82)'}
-                funcao={() => funcaoRemover(registro.id)}
-              />
-              <IconeCrud
-                icone={BsCheckSquareFill}
-                texto={'Concluir'}
-                cor={'rgba(39,151,0,0.82)'}
-                funcao={() => funcaoConcluir(registro.id)}
-              />
+
+          registro.dtConclusaoProgramada ?
+
+            <div className="row pb-2">
+              <div className="col-12">
+              </div>
+              <div className="col-12 d-flex align-items-center justify-content-between gap-2 ">
+
+                <TextConclusaoProgramada data={registro.dtConclusaoProgramada}/>
+
+                <IconeCrudSemTexto
+                  icone={MdHelpCenter}
+                  size='25px'
+                  tooltip='Quando alguém marca seu registro como concluído, você tem 30 dias para confirmar a conclusão ou ignorá-la.'
+                />
+
+                <IconeCrud
+                  icone={FaCalendarXmark}
+                  texto={'Ignorar'}
+                  cor={'rgba(0,53,151,0.82)'}
+                  funcao={() => funcaoIgnorarConclusao(registro.id)}
+                />
+
+                <IconeCrud
+                  icone={BsCheckSquareFill}
+                  texto={'Concluir'}
+                  cor={'rgba(39,151,0,0.82)'}
+                  funcao={() => funcaoConcluir(registro.id)}
+                />
+
+
+              </div>
             </div>
-          </div>
+
+            :
+
+            <div className="row pb-2">
+              <div className="col-12 d-flex align-items-center justify-content-between  gap-2 ">
+                <IconeCrud
+                  icone={MdEditSquare}
+                  texto={'Editar'}
+                  cor={'#bf9600'}
+                  funcao={handleEditarRegistro}
+                />
+                <IconeCrud
+                  icone={BsFillXSquareFill}
+                  texto={'Remover'}
+                  cor={'rgba(211,49,14,0.82)'}
+                  funcao={() => funcaoRemover(registro.id)}
+                />
+                <IconeCrud
+                  icone={BsCheckSquareFill}
+                  texto={'Concluir'}
+                  cor={'rgba(39,151,0,0.82)'}
+                  funcao={() => funcaoConcluir(registro.id)}
+                />
+              </div>
+            </div>
 
       }
 

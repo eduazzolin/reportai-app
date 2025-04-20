@@ -101,6 +101,11 @@ export class RegistroService extends ApiService {
   concluir(id) {
     return this.put(`/${id}/concluir`);
   }
+
+  ignorarConclusao(id) {
+    return this.put(`/${id}/ignorar-conclusao`);
+  }
+
 }
 
 export const registroPrototype = {
