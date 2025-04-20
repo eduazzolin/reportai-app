@@ -74,11 +74,13 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
       {
         registro.isConcluido ?
 
-          // CONCLUÍDO
+          // -------> registros concluídos
           <div className="row pb-2">
             <div className="col-12 d-flex align-items-center justify-content-between gap-2">
 
-              <TextConcluido data={registro.dtConclusao}/>
+              <div className="flex-grow-1">
+                <TextConcluido data={registro.dtConclusao}/>
+              </div>
 
               <IconeCrud
                 icone={BsFillXSquareFill}
@@ -91,10 +93,9 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
 
           :
 
-          // ATIVO
-
           registro.dtConclusaoProgramada ?
 
+            // -------> registros com conclusão programada
             <div className="row pb-2">
               <div className="col-12">
               </div>
@@ -128,6 +129,7 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
 
             :
 
+            // -------> registros ativos sem conclusão programada
             <div className="row pb-2">
               <div className="col-12 d-flex align-items-center justify-content-between  gap-2 ">
                 <IconeCrud
