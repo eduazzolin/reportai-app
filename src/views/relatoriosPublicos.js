@@ -1,12 +1,13 @@
 import React, {useEffect} from 'react';
-import {RegistroService} from "../app/service/registroService";
 import Form from "react-bootstrap/Form";
 import {RelatorioService} from "../app/service/relatorioService";
+import {BarChart} from '@mui/x-charts/BarChart';
+import {PieChart} from "@mui/x-charts";
 
 
 export default function RelatoriosPublicos() {
-  const hoje = new Date();
 
+  const hoje = new Date();
   const periodos = [
     {
       value: "Todos os registros",
@@ -55,9 +56,12 @@ export default function RelatoriosPublicos() {
   const [datasetBairros, setDatasetBairros] = React.useState([]);
   const [datasetCategorias, setDatasetCategorias] = React.useState([]);
   const [datasetStatus, setDatasetStatus] = React.useState([]);
-
+  const [totalRegistros, setTotalRegistros] = React.useState(0);
+  const [totalRegistrosAtivos, setTotalRegistrosAtivos] = React.useState(0);
 
   const service = new RelatorioService();
+
+
   useEffect(() => {
     document.title = `Reportaí - Relatórios Públicos`;
   }, []);
@@ -71,6 +75,7 @@ export default function RelatoriosPublicos() {
       .gerarRelatorioBairros(dataInicio, dataFim)
       .then(response => {
         setDatasetBairros(response.data);
+        setTotalRegistrosAtivos(response.data.reduce((acc, item) => acc + item.quantidade, 0));
       }).catch(error => {
       console.error(error);
     });
@@ -87,9 +92,11 @@ export default function RelatoriosPublicos() {
       .gerarRelatorioStatus(dataInicio, dataFim)
       .then(response => {
         setDatasetStatus(response.data);
+        setTotalRegistros(response.data.reduce((acc, item) => acc + item.quantidade, 0));
       }).catch(error => {
       console.error(error);
     });
+
 
   }, [pesquisaPeriodo]);
 
@@ -130,12 +137,98 @@ export default function RelatoriosPublicos() {
 
 
       {/* ---------------------- gráficos ---------------------- */}
-      <div className="row mt-4">
+      {/*https://mui.com/x/react-charts/bars/*/}
+      <div className="row">
 
+
+        {/* ---------------------- bairros ---------------------- */}
         {datasetBairros && datasetBairros.length > 0 && (
-          <div className="col-12">
+          <div className="col-lg-12 p-1 ">
+            <div className=" border rounded p-3">
+              <h4>Registros por Bairro</h4>
+              <div style={{maxHeight: 500, overflowY: 'auto'}}>
+                <BarChart
+                  dataset={datasetBairros}
+                  xAxis={[{scaleType: 'linear', dataKey: 'quantidade', tickMinStep: 1}]}
+                  yAxis={[{scaleType: 'band', dataKey: 'bairro', width: 130, barSize: 35}]}
+                  height={datasetBairros.length * 40}
+                  series={[
+                    {
+                      dataKey: 'quantidade',
+                      valueFormatter: v => `${v} registro${v > 1 ? 's' : ''} (${((v / totalRegistrosAtivos) * 100).toFixed(0)}%)`,
+                      color: '#f1c553',
+                    },
+                  ]}
+                  layout="horizontal"
+                  grid={{vertical: true}}
+                  barLabel="value"
+                />
+              </div>
+
+            </div>
           </div>
         )}
+
+
+        {/* ---------------------- categorias ---------------------- */}
+        {datasetBairros && datasetBairros.length > 0 && (
+          <div className="col-lg-6 p-1">
+            <div className=" border rounded p-3">
+              <h4>Registros por Categorias</h4>
+              <BarChart
+                dataset={datasetCategorias}
+                height={450}
+                xAxis={[{scaleType: 'linear', dataKey: 'quantidade', tickMinStep: 1}]}
+                yAxis={[{scaleType: 'band', dataKey: 'categoria', width: 130}]}
+                series={[
+                  {
+                    dataKey: 'quantidade',
+                    valueFormatter: v => `${v} registro${v > 1 ? 's' : ''} (${((v / totalRegistrosAtivos) * 100).toFixed(0)}%)`,
+                    color: '#f1c553',
+                  }
+                ]}
+                layout="horizontal"
+                grid={{vertical: true}}
+                barLabel="value"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* ---------------------- status ---------------------- */}
+        {datasetStatus && datasetStatus.length > 0 && (
+          <div className="col-lg-6 p-1">
+            <div className=" border rounded p-3">
+              <h4>Registros por Status</h4>
+              <PieChart
+                series={[
+                  {
+                    arcLabel: (item) => `${item.value} (${(item.value / totalRegistros * 100).toFixed(0)}%)`,
+                    arcLabelMinAngle: 35,
+                    arcLabelRadius: '60%',
+                    innerRadius: '40%',
+                    data: [
+                      {id: 0, value: datasetStatus[0].quantidade, label: datasetStatus[0].status, color: '#5378f1'},
+                      {id: 1, value: datasetStatus[1].quantidade, label: datasetStatus[1].status, color: '#279700D1'},
+                    ],
+                  },
+                ]}
+                height={450}
+
+              />
+            </div>
+          </div>
+        )}
+
+        {
+          totalRegistros == 0 && (
+            <div className="col-12 mt-5 justify-content-center align-items-center d-flex text-center">
+              ℹ️ <br/>
+              Nenhum registro encontrado! <br/>
+              Verifique se o período selecionado possui registros cadastrados.
+            </div>
+          )
+        }
 
       </div>
 
