@@ -164,6 +164,7 @@ export default function VerRegistro() {
                     iconAnchor: [16, 40]
                   })
                 }
+                interactive={false}
               >
               </Marker>
             </MapContainer>

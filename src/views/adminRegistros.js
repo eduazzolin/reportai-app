@@ -31,7 +31,7 @@ export default function AdminRegistros() {
   const [pagina, setPagina] = useState(0);
   const [limite, setLimite] = useState(10);
   const [totalRegistros, setTotalRegistros] = useState(0);
-  const [ordenacao, setOrdenacao] = useState('nome ASC');
+  const [ordenacao, setOrdenacao] = useState('id ASC');
   const [pesquisaIdNome, setPesquisaIdNome] = useState('');
   const [pesquisaIdUsuario, setPesquisaIdUsuario] = useState(location.state?.usuarioFiltro);
   const [pesquisaCategoria, setPesquisaCategoria] = useState('');

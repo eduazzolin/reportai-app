@@ -6,7 +6,7 @@ export default function PopupCorrecao({visivel, tipo, textoCorrigido, abrirRegra
   const textoCorrigidoTratado = textoCorrigido.replaceAll(/\n/g, '<br />').replaceAll('<correcao>', '<mark>').replaceAll('</correcao>', '</mark>');
   return (
     <div className="modal-overlay">
-      <div className="modal shadow mt-5 show" style={{display: 'block'}} tabIndex="-1">
+      <div className="modal shadow mt-2 show" style={{display: 'block'}} tabIndex="-1">
         <div className="modal-dialog modal-lg">
           <div className="modal-content">
 

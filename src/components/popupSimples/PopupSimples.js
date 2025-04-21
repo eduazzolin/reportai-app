@@ -6,7 +6,7 @@ export default function PopupSimples({ visivel, titulo, mensagem, fechar }) {
 
     return (
         <div className="modal-overlay">
-            <div className="modal shadow mt-5 show" style={{ display: 'block' }} tabIndex="-1">
+            <div className="modal shadow mt-0 show" style={{ display: 'block' }} tabIndex="-1">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
