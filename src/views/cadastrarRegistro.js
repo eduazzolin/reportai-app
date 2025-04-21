@@ -17,6 +17,7 @@ import IaService from "../app/service/iaService";
 import PopupCorrecao from "../components/popupCorrecao/popupCorrecao";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import BlocoImagem from "../components/blocoImagem/blocoImagem";
+import {obterBairroLocalizacaoPorLatLong, obterNomeBairro} from "../app/service/mapService";
 
 export default function CadastrarRegistro() {
 
@@ -47,6 +48,10 @@ export default function CadastrarRegistro() {
   const imagemService = new ImagemService();
   const iaService = new IaService();
 
+  useEffect(() => {
+    document.title = 'Reportaí - Cadastrar Registro';
+  }, []);
+
   /* Carrega o registro recebido, se houver */
   useEffect(() => {
     if (registroRecebido) {
@@ -63,6 +68,10 @@ export default function CadastrarRegistro() {
       .consultar()
       .then(response => {
         setCategorias(response.data)
+        if (!registroRecebido) {
+          setRegistro({...registro, categoria: response.data[0]})
+          setIconeCategoriaSelecionada(response.data[0].icone)
+        }
       }).catch(error => {
       console.log(error);
     });
@@ -83,12 +92,13 @@ export default function CadastrarRegistro() {
      * Função que captura o click no mapa e atualiza a localização do registro
      */
     useMapEvents({
-      click(e) {
+      async click(e) {
         const {lat, lng} = e.latlng;
         if (registroService.calcularDistanciaDoCentro(lat, lng) > 30) {
           mensagemErro('O local do registro deve estar a menos de 30 km do centro');
         } else {
-          setRegistro({...registro, latitude: lat, longitude: lng})
+          const [bairro, localizacao] = await obterBairroLocalizacaoPorLatLong(lat, lng);
+          setRegistro({...registro, latitude: lat, longitude: lng, bairro, localizacao});
         }
       }
     });
@@ -158,7 +168,7 @@ export default function CadastrarRegistro() {
           }
         }
 
-        mensagemSucesso('Registro cadastrado com sucesso!');
+        mensagemSucesso(registroRecebido ? 'Registro editado com sucesso!' : 'Registro cadastrado com sucesso!');
         navigate('/')
       } catch (error) {
         mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar registro');
@@ -363,7 +373,7 @@ export default function CadastrarRegistro() {
 
         {/* ---------------------- mapa ---------------------- */}
         <div className="col-lg-6 mt-3">
-          <Form.Label>Clique no mapa para inserir um marcador ou use o campo Localização</Form.Label>
+          <Form.Label>{registro.bairro ? 'Bairro selecionado: ' + registro.bairro : 'Clique no mapa para inserir um marcador ou use o campo Localização'}</Form.Label>
           <div className="rounded border overflow-hidden">
             <MapContainer
               center={centroMapa}

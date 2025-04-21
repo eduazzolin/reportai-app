@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom';
 import Form from "react-bootstrap/Form";
 import UsuarioService, {usuarioPrototype} from "../app/service/usuarioService";
@@ -13,7 +13,13 @@ export default function CadastrarUsuario() {
   const navigate = useNavigate();
   const service = new UsuarioService();
 
+  useEffect(() => {
+    document.title = 'Reportaí - Cadastro de Usuário';
+  }, []);
+
   const cadastrar = () => {
+
+    usuario.role = 'USUARIO';
 
     try {
       service.validar(usuario);
@@ -22,6 +28,7 @@ export default function CadastrarUsuario() {
       msgs.forEach(msg => mensagemErro(msg));
       return false;
     }
+
 
     service
       .salvar(usuario)

@@ -1,16 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import './cardRegistroMeusRegistros.css'
-import {BsArrowDownSquareFill, BsArrowUpSquareFill, BsCheckSquareFill, BsFillXSquareFill} from "react-icons/bs";
+import {BsCheckSquareFill, BsFillXSquareFill} from "react-icons/bs";
 import IconeCrud from "../iconeCrud/iconeCrud";
-import {mensagemErro} from "../toastr";
-import IconeMapa from "../iconeMapa/iconeMapa";
-import {MdDeleteForever, MdEditSquare, MdModeEdit} from "react-icons/md";
+import {MdEditSquare, MdHelpCenter} from "react-icons/md";
 import TextConcluido from "../textConcluido/textConcluido";
 import {useNavigate} from "react-router-dom";
-import {registroPrototype} from "../../app/service/registroService";
-import {Button} from "react-bootstrap";
+import TextConclusaoProgramada from "../textConclusaoProgramada/textConclusaoProgramada";
+import {FaCalendarXmark} from "react-icons/fa6";
+import IconeCrudSemTexto from "../iconeCrudSemTexto/iconeCrudSemTexto";
 
-export default function CardRegistroMeusRegistros({registro, funcaoRemover, funcaoConcluir}) {
+export default function CardRegistroMeusRegistros({registro, funcaoRemover, funcaoConcluir, funcaoIgnorarConclusao}) {
 
   const navigate = useNavigate();
 
@@ -32,7 +31,11 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
         {/* ---------------------- imagens ---------------------- */}
         <div className="col-4 p-0 ">
           <div>
-            {registro.imagens[0]?.caminho && <img src={registro.imagens[0].caminho} className="mr_img_thumb rounded clicavel" onClick={goToRegistro} alt="..."/>}
+            {registro.imagens[0]?.caminho ? (
+              <img src={registro.imagens[0].caminho} className="mr_img_thumb  rounded clicavel border" onClick={goToRegistro} alt="..."/>
+            ) : (
+              <img src="/placeholder_registro.png" className="mr_img_thumb  rounded clicavel border" onClick={goToRegistro} alt="..."/>
+            )}
           </div>
         </div>
 
@@ -71,11 +74,13 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
       {
         registro.isConcluido ?
 
-          // CONCLUÍDO
+          // -------> registros concluídos
           <div className="row pb-2">
-            <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-2 ">
+            <div className="col-12 d-flex align-items-center justify-content-between gap-2">
 
-              <TextConcluido data={registro.dtConclusao}/>
+              <div className="flex-grow-1">
+                <TextConcluido data={registro.dtConclusao}/>
+              </div>
 
               <IconeCrud
                 icone={BsFillXSquareFill}
@@ -88,29 +93,65 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
 
           :
 
-          // ATIVO
-          <div className="row pb-2">
-            <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-2 ">
-              <IconeCrud
-                icone={MdEditSquare}
-                texto={'Editar'}
-                cor={'#e6b000'}
-                funcao={handleEditarRegistro}
-              />
-              <IconeCrud
-                icone={BsFillXSquareFill}
-                texto={'Remover'}
-                cor={'rgba(243,93,63,0.82)'}
-                funcao={() => funcaoRemover(registro.id)}
-              />
-              <IconeCrud
-                icone={BsCheckSquareFill}
-                texto={'Concluir'}
-                cor={'rgba(65,195,20,0.82)'}
-                funcao={() => funcaoConcluir(registro.id)}
-              />
+          registro.dtConclusaoProgramada ?
+
+            // -------> registros com conclusão programada
+            <div className="row pb-2">
+              <div className="col-12">
+              </div>
+              <div className="col-12 d-flex align-items-center justify-content-between gap-2 ">
+
+                <TextConclusaoProgramada data={registro.dtConclusaoProgramada}/>
+
+                <IconeCrudSemTexto
+                  icone={MdHelpCenter}
+                  size='25px'
+                  tooltip='Quando alguém marca seu registro como concluído, você tem 30 dias para confirmar a conclusão ou ignorá-la.'
+                />
+
+                <IconeCrud
+                  icone={FaCalendarXmark}
+                  texto={'Ignorar'}
+                  cor={'rgba(0,53,151,0.82)'}
+                  funcao={() => funcaoIgnorarConclusao(registro.id)}
+                />
+
+                <IconeCrud
+                  icone={BsCheckSquareFill}
+                  texto={'Concluir'}
+                  cor={'rgba(39,151,0,0.82)'}
+                  funcao={() => funcaoConcluir(registro.id)}
+                />
+
+
+              </div>
             </div>
-          </div>
+
+            :
+
+            // -------> registros ativos sem conclusão programada
+            <div className="row pb-2">
+              <div className="col-12 d-flex align-items-center justify-content-between  gap-2 ">
+                <IconeCrud
+                  icone={MdEditSquare}
+                  texto={'Editar'}
+                  cor={'#bf9600'}
+                  funcao={handleEditarRegistro}
+                />
+                <IconeCrud
+                  icone={BsFillXSquareFill}
+                  texto={'Remover'}
+                  cor={'rgba(211,49,14,0.82)'}
+                  funcao={() => funcaoRemover(registro.id)}
+                />
+                <IconeCrud
+                  icone={BsCheckSquareFill}
+                  texto={'Concluir'}
+                  cor={'rgba(39,151,0,0.82)'}
+                  funcao={() => funcaoConcluir(registro.id)}
+                />
+              </div>
+            </div>
 
       }
 

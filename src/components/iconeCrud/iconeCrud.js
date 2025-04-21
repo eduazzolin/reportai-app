@@ -5,20 +5,20 @@ export default function IconeCrud({icone: Icone, texto, cor, funcao}) {
 const [isHovered, setIsHovered] = useState(false);
   return (
     <div
-      className="d-flex icone-container clicavel border p-1 rounded bg-dark"
+      className="d-flex icone-container clicavel border p-1 rounded bg-dark-subtle flex-grow-1"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={funcao}
     >
 
       <Icone
-        className={`flex-shrink-0 icon-hover`}
+        className={`flex-shrink-0  icon-hover`}
 
         size={"25px"}
-        style={{'color': `${isHovered ? cor : 'white'}`}}
+        style={{'color': `${isHovered ? cor : 'black'}`}}
       />
 
-      <div className="mx-auto contagem-text text-white px-1">
+      <div className="mx-auto contagem-text  px-1">
         {texto}
       </div>
 

@@ -8,8 +8,26 @@ export class RegistroService extends ApiService {
     super('/registros');
   }
 
+  buscarTodos(idNome, idUsuario, idCategoria, bairro, status, pagina, limite, ordenacao) {
+    const p_idNome = `idNome=${idNome || ''}`;
+    const p_idUsuario = `idUsuario=${idUsuario || 0}`;
+    const p_idCategoria = `idCategoria=${idCategoria || 0}`;
+    const p_bairro = `bairro=${bairro || ''}`;
+    const p_status = `status=${status || ''}`;
+    const p_pagina = `pagina=${pagina || 0}`;
+    const p_limite = `limite=${limite || 10}`;
+    const p_ordenacao = `ordenacao=${ordenacao || 'dtCriacao'}`;
+
+    const url = `/admin?${p_idNome}&${p_idUsuario}&${p_idCategoria}&${p_bairro}&${p_status}&${p_pagina}&${p_limite}&${p_ordenacao}`;
+    return this.get(url);
+  }
+
   consultarMeusRegistros(pagina, limite) {
     return this.get(`/meus-registros?pagina=${pagina}&limite=${limite}`);
+  }
+
+  consultarPorId(id) {
+    return this.get(`/${id}`);
   }
 
   consultar(latitude, longitude, distancia, filtro, ordenacao) {
@@ -83,12 +101,18 @@ export class RegistroService extends ApiService {
   concluir(id) {
     return this.put(`/${id}/concluir`);
   }
+
+  ignorarConclusao(id) {
+    return this.put(`/${id}/ignorar-conclusao`);
+  }
+
 }
 
 export const registroPrototype = {
   "id": null,
   "titulo": "",
   "descricao": "",
+  "bairro": "",
   "localizacao": "",
   "latitude": null,
   "longitude": null,

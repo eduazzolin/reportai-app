@@ -10,7 +10,9 @@ import MinhaConta from "../views/minhaConta";
 import EntrarUsuario from "../views/entrarUsuario";
 import {AuthContext} from "./provedorAutenticacao";
 import MeusRegistros from "../views/meusRegistros";
-import AdminUsuarios from "../views/adminUsuarios/adminUsuarios";
+import AdminUsuarios from "../views/adminUsuarios";
+import AdminRegistros from "../views/adminRegistros";
+import RelatoriosPublicos from "../views/relatoriosPublicos";
 
 const PrivateRoute = ({isUsuarioAutenticado, element}) => {
   return isUsuarioAutenticado ? element : <Navigate to="/login"/>;
@@ -33,9 +35,11 @@ function Rotas() {
           <Route path="/minha-conta" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<MinhaConta/>}/>}/>
           <Route path="/registro/:id" element={<VerRegistro/>}/>
           <Route path="/sandbox" element={<Sandbox/>}/>
+          <Route path={"/relatorios"} element={<RelatoriosPublicos/>}/>
           <Route path="/cadastrar-usuario" element={<CadastrarUsuario/>}/>
           <Route path="/login" element={<EntrarUsuario/>}/>
           <Route path="/admin/usuarios" element={<AdminUsuarios/>}/>
+          <Route path="/admin/registros" element={<AdminRegistros/>}/>
         </Routes>
       </div>
     </Router>)

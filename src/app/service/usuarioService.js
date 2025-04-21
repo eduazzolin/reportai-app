@@ -3,7 +3,15 @@ import MD5 from "crypto-js/md5";
 import ErroValidacao from "../exception/erroValidacao";
 
 export const usuarioPrototype = {
-  "id": null, "cpf": "", "dt_criacao": null, "dt_mofidicacao": null, "email": "", "is_deleted": false, "nome": "", "role": "", "senha": "",
+  "id": null,
+  "cpf": "",
+  "dt_criacao": null,
+  "dt_mofidicacao": null,
+  "email": "",
+  "is_deleted": false,
+  "nome": "",
+  "role": "USUARIO",
+  "senha": "",
 }
 
 export default class UsuarioService extends ApiService {
@@ -28,11 +36,12 @@ export default class UsuarioService extends ApiService {
     return this.delete(`/${id}`);
   }
 
-  buscarTodos() {
-    return this.get('/admin');
+  buscarTodos(pagina, limite, termo, ordenacao) {
+    termo = termo || '';
+    return this.get('/admin?pagina=' + pagina + '&limite=' + limite + '&termo=' + termo + '&ordenacao=' + ordenacao);
   }
 
-  validar(usuario) {
+  validar(usuario, isEdicao = false) {
     const erros = []
 
     // nome
@@ -50,14 +59,16 @@ export default class UsuarioService extends ApiService {
     }
 
     // senha
-    if (!usuario.senha || !usuario.senhaRepeticao) {
-      erros.push("O campo senha é obrigatório.")
-    } else if (usuario.senha.length < 6) {
-      erros.push("A senha deve ter pelo menos 6 caracteres.")
-    } else if (usuario.senha.length > 255) {
-      erros.push("A senha deve ter no máximo 255 caracteres.")
-    } else if (usuario.senha !== usuario.senhaRepeticao) {
-      erros.push("As senhas devem ser iguais.")
+    if(!isEdicao) {
+      if (!usuario.senha || !usuario.senhaRepeticao) {
+        erros.push("O campo senha é obrigatório.")
+      } else if (usuario.senha.length < 6) {
+        erros.push("A senha deve ter pelo menos 6 caracteres.")
+      } else if (usuario.senha.length > 255) {
+        erros.push("A senha deve ter no máximo 255 caracteres.")
+      } else if (usuario.senha !== usuario.senhaRepeticao) {
+        erros.push("As senhas devem ser iguais.")
+      }
     }
 
     // cpf

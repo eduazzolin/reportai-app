@@ -1,15 +1,9 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom';
-import Form from "react-bootstrap/Form";
-import UsuarioService, {usuarioPrototype} from "../app/service/usuarioService";
-import {Button} from "react-bootstrap";
+import {usuarioPrototype} from "../app/service/usuarioService";
 import {mensagemErro, mensagemSucesso} from "../components/toastr";
-import {AuthContext} from "../main/provedorAutenticacao";
-import LocalStorageService from "../app/service/localStorageService";
-import {USUARIO_LOGADO} from "../app/service/authService";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import {RegistroService} from "../app/service/registroService";
-import CardRegistroLateral from "../components/cardRegistroLateral/cardRegistroLateral";
 import CardRegistroMeusRegistros from "../components/cardRegistroMeusRegistros/cardRegistroMeusRegistros";
 import Pagination from 'react-bootstrap/Pagination';
 
@@ -25,6 +19,10 @@ export default function MeusRegistros() {
   const navigate = useNavigate();
 
   const service = new RegistroService();
+
+  useEffect(() => {
+    document.title = 'Reportaí - Meus Registros';
+  }, []);
 
   const abrirPopupRemocao = (idRegistro) => {
     setVisibilidadePopupRemocao(true)
@@ -44,6 +42,17 @@ export default function MeusRegistros() {
   const fecharPopupConclusao = () => {
     setVisibilidadePopupConclusao(false)
 
+  }
+
+  const handleIgnorarConclusao = (idRegistro) => {
+    service
+      .ignorarConclusao(idRegistro)
+      .then(response => {
+        mensagemSucesso("Conclusão programada ignorada com sucesso!");
+        loadRegistros()
+      }).catch(error => {
+      mensagemErro(error?.response?.data?.descricao ?? 'Erro ao ignorar conclusão');
+    });
   }
 
   const handleRemover = () => {
@@ -69,6 +78,7 @@ export default function MeusRegistros() {
       mensagemErro(error?.response?.data?.descricao ?? 'Erro ao concluir registro');
     });
   }
+
 
   const loadRegistros = () => {
     service
@@ -117,12 +127,13 @@ export default function MeusRegistros() {
       <div className="row mr_div_registros overflow-y-scroll">
         {
           registros.map((registro, index) => (
-            <div key={index} className={'p-2 col-md-6 col-xl-4'}>
+            <div key={index} className={'p-2 col-md-6'}>
               <CardRegistroMeusRegistros
                 key={index}
                 registro={registro}
                 funcaoRemover={abrirPopupRemocao}
                 funcaoConcluir={abrirPopupConclusao}
+                funcaoIgnorarConclusao={handleIgnorarConclusao}
               />
             </div>
           ))

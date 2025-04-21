@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import UsuarioService, {usuarioPrototype} from "../app/service/usuarioService";
 import {useNavigate} from "react-router-dom";
 import Form from "react-bootstrap/Form";
@@ -14,13 +14,17 @@ export default function EntrarUsuario() {
   const navigate = useNavigate();
   const service = new UsuarioService();
 
+  useEffect(() => {
+    document.title = 'Reportaí - Login';
+  }, []);
+
   const entrar = () => {
 
     if (!usuario.email) {
       mensagemErro('O campo email é obrigatório.')
       return false;
     }
-    if (!usuario.senha){
+    if (!usuario.senha) {
       mensagemErro('O campo senha é obrigatório.')
       return false;
     }
@@ -58,6 +62,7 @@ export default function EntrarUsuario() {
               <Form.Control
                 type="text"
                 placeholder="Digite seu email"
+                maxLength={255}
                 value={usuario.email}
                 onChange={event => setUsuario({...usuario, email: event.target.value})}/>
             </Form.Group>
@@ -67,6 +72,7 @@ export default function EntrarUsuario() {
               <Form.Label>Senha</Form.Label>
               <Form.Control
                 type="password"
+                maxLength={255}
                 placeholder="Crie uma senha"
                 value={usuario.senha}
                 onChange={event => setUsuario({...usuario, senha: event.target.value})}/>

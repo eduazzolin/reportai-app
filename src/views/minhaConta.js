@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import Form from "react-bootstrap/Form";
 import UsuarioService, {usuarioPrototype} from "../app/service/usuarioService";
 import {Button} from "react-bootstrap";
@@ -11,19 +11,24 @@ import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 
 export default function MinhaConta() {
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const {encerrarSessao} = useContext(AuthContext);
+
   const [usuario, setUsuario] = useState(usuarioPrototype);
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
+  const idUsuarioRecebido = location.state?.idUsuario;
 
-  const navigate = useNavigate();
   const service = new UsuarioService();
 
-
-  const {encerrarSessao} = useContext(AuthContext);
+  useEffect(() => {
+    document.title = 'Reportaí - Minha Conta';
+  }, []);
 
   const cadastrar = () => {
 
     try {
-      service.validar(usuario);
+      service.validar(usuario, true);
     } catch (erro) {
       const msgs = erro.mensagens;
       msgs.forEach(msg => mensagemErro(msg));
@@ -34,10 +39,12 @@ export default function MinhaConta() {
       .salvar(usuario)
       .then(response => {
         mensagemSucesso('Usuario editado com sucesso!');
-        encerrarSessao();
+        if (!idUsuarioRecebido) {
+          encerrarSessao();
+        }
       })
       .catch(error => {
-        mensagemErro(error.response.data)
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao editar usuario.');
       })
 
   }
@@ -62,18 +69,33 @@ export default function MinhaConta() {
       })
   }
 
+
   useEffect(() => {
-    const usuarioStorage = LocalStorageService.obterItem(USUARIO_LOGADO);
-    service
-      .buscarDTOPorId(usuarioStorage.id)
-      .then(response => {
-        setUsuario(response.data)
-        console.log('01', response.data)
-      })
-      .catch(error => {
-        mensagemErro(error.response.data)
-      })
-  }, []);
+    /* Carrega o usuário recebido, se houver */
+    if (idUsuarioRecebido) {
+
+      service
+        .buscarDTOPorId(idUsuarioRecebido)
+        .then(response => {
+          setUsuario(response.data)
+        }).catch(error => {
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar usuario.');
+      });
+
+      /* senão carrega o usuário logado */
+    } else {
+      const usuarioStorage = LocalStorageService.obterItem(USUARIO_LOGADO);
+      service
+        .buscarDTOPorId(usuarioStorage.id)
+        .then(response => {
+          setUsuario(response.data)
+          console.log('01', response.data)
+        })
+        .catch(error => {
+          mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar usuario.')
+        });
+    }
+  }, [idUsuarioRecebido]);
 
 
   return (

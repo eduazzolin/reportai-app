@@ -34,8 +34,11 @@ export default function Home() {
   const categoriaService = new CategoriaService();
   const interacaoService = new InteracaoService();
 
+  useEffect(() => {
+    document.title = 'Reportaí';
+  }, []);
 
-// a cada inicialização
+  // a cada inicialização
   useEffect(() => {
 
     categoriaService
@@ -97,6 +100,7 @@ export default function Home() {
 
   return (
     <div className={'container-fluid'}>
+
       <div className={'row flex-row-reverse'}>
 
         {/* ---------------------- MAPA ------------------------*/}
