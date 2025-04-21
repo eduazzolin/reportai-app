@@ -75,7 +75,7 @@ export default function RelatoriosPublicos() {
       .gerarRelatorioBairros(dataInicio, dataFim)
       .then(response => {
         setDatasetBairros(response.data);
-        setTotalRegistrosAtivos(response.data.reduce((acc, item) => acc + item.quantidade, 0));
+        console.log(response.data);
       }).catch(error => {
       console.error(error);
     });
@@ -149,20 +149,28 @@ export default function RelatoriosPublicos() {
               <div style={{maxHeight: 500, overflowY: 'auto'}}>
                 <BarChart
                   dataset={datasetBairros}
-                  xAxis={[{scaleType: 'linear', dataKey: 'quantidade', tickMinStep: 1}]}
+                  xAxis={[{scaleType: 'linear', tickMinStep: 1}]}
                   yAxis={[{scaleType: 'band', dataKey: 'bairro', width: 130, barSize: 35}]}
                   height={datasetBairros.length * 40}
                   series={[
                     {
-                      dataKey: 'quantidade',
-                      valueFormatter: v => `${v} registro${v > 1 ? 's' : ''} (${((v / totalRegistrosAtivos) * 100).toFixed(0)}%)`,
+                      dataKey: 'ativo',
+                      label: 'Ativo',
+                      stack: 'total',
                       color: '#f1c553',
+                    },
+                    {
+                      dataKey: 'concluido',
+                      label: 'Concluído',
+                      stack: 'total',
+                      color: '#279700D1',
                     },
                   ]}
                   layout="horizontal"
                   grid={{vertical: true}}
                   barLabel="value"
                 />
+
               </div>
 
             </div>
@@ -181,12 +189,19 @@ export default function RelatoriosPublicos() {
                 xAxis={[{scaleType: 'linear', dataKey: 'quantidade', tickMinStep: 1}]}
                 yAxis={[{scaleType: 'band', dataKey: 'categoria', width: 130}]}
                 series={[
-                  {
-                    dataKey: 'quantidade',
-                    valueFormatter: v => `${v} registro${v > 1 ? 's' : ''} (${((v / totalRegistrosAtivos) * 100).toFixed(0)}%)`,
-                    color: '#f1c553',
-                  }
-                ]}
+                    {
+                      dataKey: 'ativo',
+                      label: 'Ativo',
+                      stack: 'total',
+                      color: '#f1c553',
+                    },
+                    {
+                      dataKey: 'concluido',
+                      label: 'Concluído',
+                      stack: 'total',
+                      color: '#279700D1',
+                    },
+                  ]}
                 layout="horizontal"
                 grid={{vertical: true}}
                 barLabel="value"
@@ -208,7 +223,7 @@ export default function RelatoriosPublicos() {
                     arcLabelRadius: '60%',
                     innerRadius: '40%',
                     data: [
-                      {id: 0, value: datasetStatus[0].quantidade, label: datasetStatus[0].status, color: '#5378f1'},
+                      {id: 0, value: datasetStatus[0].quantidade, label: datasetStatus[0].status, color: '#f1c553'},
                       {id: 1, value: datasetStatus[1].quantidade, label: datasetStatus[1].status, color: '#279700D1'},
                     ],
                   },
