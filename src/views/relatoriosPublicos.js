@@ -138,7 +138,7 @@ export default function RelatoriosPublicos() {
 
       {/* ---------------------- gráficos ---------------------- */}
       {/*https://mui.com/x/react-charts/bars/*/}
-      <div className="row">
+      <div className="row p-2">
 
 
         {/* ---------------------- bairros ---------------------- */}
@@ -152,7 +152,7 @@ export default function RelatoriosPublicos() {
                   xAxis={[{scaleType: 'linear', tickMinStep: 1}]}
                   yAxis={[{scaleType: 'band', dataKey: 'bairro', width: 130, barSize: 35}]}
                   height={datasetBairros.length * 40}
-                  series={[
+                  series ={[
                     {
                       dataKey: 'ativo',
                       label: 'Ativo',
