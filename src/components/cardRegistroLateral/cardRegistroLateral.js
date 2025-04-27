@@ -26,7 +26,6 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
     interacaoService
       .consultarRegistroSimples(registro.id)
       .then(response => {
-        console.log(response.data);
         setQtRelevante(response.data.qtRelevante);
         setQtIrrelevante(response.data.qtIrrelevante);
         setQtConcluido(response.data.qtConcluido);
@@ -88,7 +87,6 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
 
   function interagirConcluido() {
 
-    console.log(usuarioInteracaoIdConcluido, registro, qtConcluido);
     if (usuarioInteracaoIdConcluido) {
       interacaoService
         .removerInteracao(usuarioInteracaoIdConcluido)

@@ -48,11 +48,9 @@ export default function CadastrarRegistro() {
   const imagemService = new ImagemService();
   const iaService = new IaService();
 
-  useEffect(() => {
-    document.title = 'Reportaí - Cadastrar Registro';
-  }, []);
-
-  /* Carrega o registro recebido, se houver */
+  /**
+   * Carrega o registro recebido, se houver
+   */
   useEffect(() => {
     if (registroRecebido) {
       setRegistro(registroRecebido);
@@ -61,9 +59,11 @@ export default function CadastrarRegistro() {
     }
   }, [registroRecebido]);
 
-  /* Carrega as categorias */
+  /**
+   * Carrega as categorias disponíveis e o título da página.
+   */
   useEffect(() => {
-
+    document.title = 'Reportaí - Cadastrar Registro';
     categoriaService
       .consultar()
       .then(response => {
@@ -79,7 +79,9 @@ export default function CadastrarRegistro() {
 
   }, []);
 
-  /* Atualiza o mapa para a posição do registro */
+  /**
+   * Atualiza o mapa para a posição do registro
+   */
   useEffect(() => {
     if (registro.latitude || registro.longitude) {
       mapRef.current.setView([registro.latitude, registro.longitude], zoomSelecao);
@@ -87,10 +89,11 @@ export default function CadastrarRegistro() {
   }, [registro.latitude, registro.longitude]);
 
 
+  /**
+   * Função que trata o clique no mapa
+   * @constructor
+   */
   const MapClickHandler = () => {
-    /**
-     * Função que captura o click no mapa e atualiza a localização do registro
-     */
     useMapEvents({
       async click(e) {
         const {lat, lng} = e.latlng;
@@ -105,10 +108,10 @@ export default function CadastrarRegistro() {
     return null;
   }
 
+  /**
+   * Cadastra o registro e as imagens
+   */
   const cadastrar = async () => {
-    /**
-     * Função que cadastra o registro
-     */
 
     if (checkRegras) {
       try {
@@ -180,10 +183,10 @@ export default function CadastrarRegistro() {
     }
   };
 
+  /**
+   * Aceitar a correção da IA
+   */
   const aceitarCorrecao = () => {
-    /**
-     * Função que aceita a correção da IA
-     */
     const correcaoTextoCorrigidoTratado = correcaoTextoCorrigido.replaceAll('<correcao>', '').replaceAll('</correcao>', '');
     if (correcaoTipo === 'titulo') {
       setRegistro({...registro, titulo: correcaoTextoCorrigidoTratado});
@@ -194,19 +197,19 @@ export default function CadastrarRegistro() {
     setVisibilidadePopupCorrecao(false);
   }
 
+  /**
+   * Abre o popup de remoção de imagem e define o índice da imagem a ser removida
+   * @param imagemIdx índice da imagem a ser removida
+   */
   const handleRemoverImagem = (imagemIdx) => {
-    /**
-     * Função que abre o popup de remoção de imagem
-     * @imagemIdx índice da imagem a ser removida
-     */
     setVisibilidadePopupRemocao(true);
     setImagemIdxParaRemover(imagemIdx);
   }
 
+  /**
+   * Remove a imagem do registro
+   */
   const removerImagem = () => {
-    /**
-     * Função que remove a imagem do registro
-     */
     setVisibilidadePopupRemocao(false);
 
     imagemService
