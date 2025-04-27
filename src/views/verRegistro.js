@@ -7,7 +7,6 @@ import {MapContainer, Marker, TileLayer} from "react-leaflet";
 import osm from "../app/service/osm-providers";
 import L from "leaflet";
 import {RegistroService} from "../app/service/registroService";
-import {mensagemErro} from "../components/toastr";
 import {BsArrowUpSquareFill, BsCheckSquareFill} from "react-icons/bs";
 import {FaTreeCity} from "react-icons/fa6";
 import {InteracaoService} from "../app/service/interacaoService";
@@ -74,10 +73,10 @@ export default function VerRegistro() {
       {/* ---------------------- cabeçalho ---------------------- */}
       <div className="row my-2 mt-4">
 
-        {/* título */}
+        {/* título e imprimir*/}
         <div className="col-12 my-2 d-flex justify-content-between align-items-center">
           <h1>{registro.titulo}</h1>
-          <Button onClick={handlePrint} className='my-auto' variant="warning">Imprimir</Button>
+          <Button onClick={handlePrint} className='my-auto no-print' variant="warning">Imprimir</Button>
         </div>
 
         {/* ícones */}

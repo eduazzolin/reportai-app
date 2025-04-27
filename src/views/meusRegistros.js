@@ -82,7 +82,7 @@ export default function MeusRegistros() {
 
   const loadRegistros = () => {
     service
-      .consultarMeusRegistros(pagina, 9)
+      .consultarMeusRegistros(pagina, 10)
       .then(response => {
         setRegistros(response.data.registros);
         setTotalPaginas(response.data.totalPaginas);
@@ -124,10 +124,10 @@ export default function MeusRegistros() {
       </div>
 
       {/* ---------------------- cards ---------------------- */}
-      <div className="row mr_div_registros overflow-y-scroll">
+      <div className="row ">
         {
           registros.map((registro, index) => (
-            <div key={index} className={'p-2 col-md-6'}>
+            <div key={index} className={'p-2 col-lg-6'}>
               <CardRegistroMeusRegistros
                 key={index}
                 registro={registro}

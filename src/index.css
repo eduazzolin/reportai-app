@@ -47,9 +47,6 @@
     text-align: justify;
 }
 
-.mr_div_registros {
-    height: calc(100vh - 200px);
-}
 
 .vr_imagem {
     max-height: 600px;

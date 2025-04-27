@@ -17,7 +17,7 @@ import IaService from "../app/service/iaService";
 import PopupCorrecao from "../components/popupCorrecao/popupCorrecao";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import BlocoImagem from "../components/blocoImagem/blocoImagem";
-import {obterBairroLocalizacaoPorLatLong, obterNomeBairro} from "../app/service/mapService";
+import {obterBairroLocalizacaoPorLatLong} from "../app/service/mapService";
 
 export default function CadastrarRegistro() {
 
@@ -333,7 +333,7 @@ export default function CadastrarRegistro() {
             {/* -------------------- imagens ----------------- */}
             <Form.Group className="mb-3">
               <Form.Label>Imagens</Form.Label>
-              <div className="row d-flex gap-1">
+              <div className="row d-flex gap-1 px-2">
 
                 {registro.imagens[0] ?
                   <BlocoImagem imagem={registro.imagens[0].caminho} onClick={() => handleRemoverImagem(0)}/> :
