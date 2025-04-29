@@ -80,6 +80,7 @@ export class RegistroService extends ApiService {
 
   /**
    * Calcula a distância do registro até o centro da cidade. Utilizado para validar o registro.
+   * Calcula a distância através da fórmula euclidiana.
    *
    * @param lat latitude
    * @param lon longitude
