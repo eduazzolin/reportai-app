@@ -69,7 +69,7 @@ export default function CadastrarUsuario() {
 
             {/*nome*/}
             <Form.Group className="mb-3">
-              <Form.Label>Nome completo</Form.Label>
+              <Form.Label>Nome completo*</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Digite seu nome completo"
@@ -79,7 +79,7 @@ export default function CadastrarUsuario() {
 
             {/*cpf*/}
             <Form.Group className="mb-3">
-              <Form.Label>CPF</Form.Label>
+              <Form.Label>CPF*</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="000.000.000-00"
@@ -89,7 +89,7 @@ export default function CadastrarUsuario() {
 
             {/*email*/}
             <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
+              <Form.Label>Email*</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Digite seu email"
@@ -99,7 +99,7 @@ export default function CadastrarUsuario() {
 
             {/*senha*/}
             <Form.Group className="mb-3">
-              <Form.Label>Senha</Form.Label>
+              <Form.Label>Senha*</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Crie uma senha"
@@ -108,7 +108,7 @@ export default function CadastrarUsuario() {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Repita a senha</Form.Label>
+              <Form.Label>Repita a senha*</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Repita a senha, por favor"

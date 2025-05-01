@@ -112,7 +112,6 @@ export default function CadastrarRegistro() {
    * Cadastra o registro e as imagens
    */
   const cadastrar = async () => {
-
     if (checkRegras) {
       try {
         setIsLoading(true);
@@ -280,7 +279,7 @@ export default function CadastrarRegistro() {
 
             {/*localizacao*/}
             <Form.Group className="mb-3">
-              <Form.Label>Localização</Form.Label>
+              <Form.Label>Localização*</Form.Label>
               <InputEndereco
                 registro={registro}
                 setRegistro={setRegistro}
@@ -292,7 +291,7 @@ export default function CadastrarRegistro() {
 
               {/*titulo*/}
               <Form.Group className="col-md-6">
-                <Form.Label>Título</Form.Label>
+                <Form.Label>Título*</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Digite o título"
@@ -302,7 +301,7 @@ export default function CadastrarRegistro() {
 
               {/*categoria*/}
               <Form.Group className="col-md-6">
-                <Form.Label>Categoria</Form.Label>
+                <Form.Label>Categoria*</Form.Label>
                 <Form.Select
                   aria-label="Categoria"
                   value={registro.categoria.id}
@@ -324,7 +323,7 @@ export default function CadastrarRegistro() {
 
             {/*descrição*/}
             <Form.Group className="mb-3">
-              <Form.Label>Descrição</Form.Label>
+              <Form.Label>Descrição*</Form.Label>
               <Form.Control
                 as="textarea"
                 placeholder="Descreva o problema em detalhes"
