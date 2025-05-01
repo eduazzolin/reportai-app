@@ -23,7 +23,7 @@ export default function AdminRegistros() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const statusPermitidos = [{id: '', nome: 'Todos'}, {id: 'ATIVO', nome: 'Ativos'}, {id: 'CONCLUIDO', nome: 'Concluído'}];
+  const statusPermitidos = [{id: '', nome: 'Qualquer status'}, {id: 'ATIVO', nome: 'Abertos'}, {id: 'CONCLUIDO', nome: 'Resolvidos'}];
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
   const [visibilidadePopupConclusao, setVisibilidadePopupConclusao] = useState(false);
   const [registros, setRegistros] = useState([]);
@@ -378,10 +378,11 @@ export default function AdminRegistros() {
         </div>
       </div>
 
-      {/* ---------------------- tabela ---------------------- */}
+      {/* ---------------------- tabela e filtros ---------------------- */}
       <div className="row">
 
         {/*pesquisa e exportar*/}
+        {/*id ou titulo*/}
         <div className="col-12 my-2 d-flex gap-2 p-2">
           <Form.Group className="mb-3 flex-grow-1">
             <Form.Label>ID ou Título do registro</Form.Label>
@@ -391,6 +392,7 @@ export default function AdminRegistros() {
               onKeyUp={(event) => setTimeout(() => setPesquisaIdNome(event.target.value), 1000)}/>
           </Form.Group>
 
+          {/*id do usuário*/}
           <Form.Group className="mb-3 flex-grow-0">
             <Form.Label>ID do usuário</Form.Label>
             <Form.Control
@@ -399,6 +401,7 @@ export default function AdminRegistros() {
               onKeyUp={(event) => setTimeout(() => setPesquisaIdUsuario(event.target.value), 1000)}/>
           </Form.Group>
 
+          {/*bairro*/}
           <Form.Group className="mb-3 flex-grow-0">
             <Form.Label>Bairro</Form.Label>
             <Form.Control
@@ -407,6 +410,7 @@ export default function AdminRegistros() {
               onKeyUp={(event) => setTimeout(() => setPesquisaBairro(event.target.value), 1000)}/>
           </Form.Group>
 
+          {/*categoria*/}
           <Form.Group className="mb-3 flex-grow-0">
             <Form.Label>Categoria</Form.Label>
             <Form.Select
@@ -424,6 +428,7 @@ export default function AdminRegistros() {
             </Form.Select>
           </Form.Group>
 
+          {/*status*/}
           <Form.Group className="mb-3 flex-grow-0">
             <Form.Label>Status</Form.Label>
             <Form.Select

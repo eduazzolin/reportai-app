@@ -14,7 +14,7 @@ import {InteracaoService} from "../app/service/interacaoService";
 export default function Home() {
 
   const ZOOM_SELECAO = 18;
-  const FILTRO_STATUS_REGISTRO = [{label: 'Qualquer status', value: 'AND 0=0'}, {label: 'Ativos', value: 'AND NOT is_concluido'}, {label: 'Concluídos', value: 'AND is_concluido'}]
+  const FILTRO_STATUS_REGISTRO = [{label: 'Qualquer status', value: 'AND 0=0'}, {label: 'Abertos', value: 'AND NOT is_concluido'}, {label: 'Resolvidos', value: 'AND is_concluido'}]
 
   const [zoom, setZoom] = useState(13);
   const [centroMapa, setCentroMapa] = useState(COORDENADAS_CENTRO);
