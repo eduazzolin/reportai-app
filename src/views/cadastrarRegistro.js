@@ -35,7 +35,7 @@ export default function CadastrarRegistro() {
   const [iconeCategoriaSelecionada, setIconeCategoriaSelecionada] = useState('/markers/general.svg')
   const [imagens, setImagens] = useState([null, null, null])
   const [imagemIdxParaRemover, setImagemIdxParaRemover] = useState(null)
-  const [checkRegras, setCheckRegras] = useState(true)
+  const [checkRegras, setCheckRegras] = useState(false)
   const [visibilidadePopupRegras, setVisibilidadePopupRegras] = useState(false)
   const [visibilidadePopupCorrecao, setVisibilidadePopupCorrecao] = useState(false)
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false)
