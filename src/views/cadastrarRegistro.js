@@ -17,7 +17,7 @@ import IaService from "../app/service/iaService";
 import PopupCorrecao from "../components/popupCorrecao/popupCorrecao";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import BlocoImagem from "../components/blocoImagem/blocoImagem";
-import {obterBairroLocalizacaoPorLatLong, obterNomeBairro} from "../app/service/mapService";
+import {obterBairroLocalizacaoPorLatLong} from "../app/service/mapService";
 
 export default function CadastrarRegistro() {
 
@@ -35,7 +35,7 @@ export default function CadastrarRegistro() {
   const [iconeCategoriaSelecionada, setIconeCategoriaSelecionada] = useState('/markers/general.svg')
   const [imagens, setImagens] = useState([null, null, null])
   const [imagemIdxParaRemover, setImagemIdxParaRemover] = useState(null)
-  const [checkRegras, setCheckRegras] = useState(true)
+  const [checkRegras, setCheckRegras] = useState(false)
   const [visibilidadePopupRegras, setVisibilidadePopupRegras] = useState(false)
   const [visibilidadePopupCorrecao, setVisibilidadePopupCorrecao] = useState(false)
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false)
@@ -48,11 +48,9 @@ export default function CadastrarRegistro() {
   const imagemService = new ImagemService();
   const iaService = new IaService();
 
-  useEffect(() => {
-    document.title = 'Reportaí - Cadastrar Registro';
-  }, []);
-
-  /* Carrega o registro recebido, se houver */
+  /**
+   * Carrega o registro recebido, se houver
+   */
   useEffect(() => {
     if (registroRecebido) {
       setRegistro(registroRecebido);
@@ -61,9 +59,11 @@ export default function CadastrarRegistro() {
     }
   }, [registroRecebido]);
 
-  /* Carrega as categorias */
+  /**
+   * Carrega as categorias disponíveis e o título da página.
+   */
   useEffect(() => {
-
+    document.title = 'Reportaí - Cadastrar Registro';
     categoriaService
       .consultar()
       .then(response => {
@@ -79,7 +79,9 @@ export default function CadastrarRegistro() {
 
   }, []);
 
-  /* Atualiza o mapa para a posição do registro */
+  /**
+   * Atualiza o mapa para a posição do registro
+   */
   useEffect(() => {
     if (registro.latitude || registro.longitude) {
       mapRef.current.setView([registro.latitude, registro.longitude], zoomSelecao);
@@ -87,10 +89,11 @@ export default function CadastrarRegistro() {
   }, [registro.latitude, registro.longitude]);
 
 
+  /**
+   * Função que trata o clique no mapa
+   * @constructor
+   */
   const MapClickHandler = () => {
-    /**
-     * Função que captura o click no mapa e atualiza a localização do registro
-     */
     useMapEvents({
       async click(e) {
         const {lat, lng} = e.latlng;
@@ -105,11 +108,10 @@ export default function CadastrarRegistro() {
     return null;
   }
 
+  /**
+   * Cadastra o registro e as imagens
+   */
   const cadastrar = async () => {
-    /**
-     * Função que cadastra o registro
-     */
-
     if (checkRegras) {
       try {
         setIsLoading(true);
@@ -180,10 +182,10 @@ export default function CadastrarRegistro() {
     }
   };
 
+  /**
+   * Aceitar a correção da IA
+   */
   const aceitarCorrecao = () => {
-    /**
-     * Função que aceita a correção da IA
-     */
     const correcaoTextoCorrigidoTratado = correcaoTextoCorrigido.replaceAll('<correcao>', '').replaceAll('</correcao>', '');
     if (correcaoTipo === 'titulo') {
       setRegistro({...registro, titulo: correcaoTextoCorrigidoTratado});
@@ -194,19 +196,19 @@ export default function CadastrarRegistro() {
     setVisibilidadePopupCorrecao(false);
   }
 
+  /**
+   * Abre o popup de remoção de imagem e define o índice da imagem a ser removida
+   * @param imagemIdx índice da imagem a ser removida
+   */
   const handleRemoverImagem = (imagemIdx) => {
-    /**
-     * Função que abre o popup de remoção de imagem
-     * @imagemIdx índice da imagem a ser removida
-     */
     setVisibilidadePopupRemocao(true);
     setImagemIdxParaRemover(imagemIdx);
   }
 
+  /**
+   * Remove a imagem do registro
+   */
   const removerImagem = () => {
-    /**
-     * Função que remove a imagem do registro
-     */
     setVisibilidadePopupRemocao(false);
 
     imagemService
@@ -277,7 +279,7 @@ export default function CadastrarRegistro() {
 
             {/*localizacao*/}
             <Form.Group className="mb-3">
-              <Form.Label>Localização</Form.Label>
+              <Form.Label>Localização*</Form.Label>
               <InputEndereco
                 registro={registro}
                 setRegistro={setRegistro}
@@ -289,7 +291,7 @@ export default function CadastrarRegistro() {
 
               {/*titulo*/}
               <Form.Group className="col-md-6">
-                <Form.Label>Título</Form.Label>
+                <Form.Label>Título*</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Digite o título"
@@ -299,7 +301,7 @@ export default function CadastrarRegistro() {
 
               {/*categoria*/}
               <Form.Group className="col-md-6">
-                <Form.Label>Categoria</Form.Label>
+                <Form.Label>Categoria*</Form.Label>
                 <Form.Select
                   aria-label="Categoria"
                   value={registro.categoria.id}
@@ -321,7 +323,7 @@ export default function CadastrarRegistro() {
 
             {/*descrição*/}
             <Form.Group className="mb-3">
-              <Form.Label>Descrição</Form.Label>
+              <Form.Label>Descrição*</Form.Label>
               <Form.Control
                 as="textarea"
                 placeholder="Descreva o problema em detalhes"
@@ -333,7 +335,7 @@ export default function CadastrarRegistro() {
             {/* -------------------- imagens ----------------- */}
             <Form.Group className="mb-3">
               <Form.Label>Imagens</Form.Label>
-              <div className="row d-flex gap-1">
+              <div className="row d-flex gap-1 px-2">
 
                 {registro.imagens[0] ?
                   <BlocoImagem imagem={registro.imagens[0].caminho} onClick={() => handleRemoverImagem(0)}/> :

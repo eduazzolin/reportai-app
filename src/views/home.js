@@ -5,7 +5,6 @@ import osm from '../app/service/osm-providers';
 import 'leaflet/dist/leaflet.css';
 import {ORDENACOES_PERMITIDAS, RegistroService} from "../app/service/registroService";
 import CardRegistroLateral from "../components/cardRegistroLateral/cardRegistroLateral";
-import {useNavigate} from "react-router-dom";
 import {COORDENADAS_CENTRO} from "../app/service/appService";
 import {mensagemErro} from "../components/toastr";
 import Form from "react-bootstrap/Form";
@@ -14,10 +13,10 @@ import {InteracaoService} from "../app/service/interacaoService";
 
 export default function Home() {
 
-  const ZOOM_SELECAO = 16;
-  const FILTRO_STATUS_REGISTRO = [{label: 'Qualquer status', value: 'AND 0=0'}, {label: 'Ativos', value: 'AND NOT is_concluido'}, {label: 'Concluídos', value: 'AND is_concluido'}]
+  const ZOOM_SELECAO = 18;
+  const FILTRO_STATUS_REGISTRO = [{label: 'Qualquer status', value: 'AND 0=0'}, {label: 'Abertos', value: 'AND NOT is_concluido'}, {label: 'Resolvidos', value: 'AND is_concluido'}]
 
-  const [zoom, setZoom] = useState(13); // 11 = 50 km  12 = 25 km  13 = 12 km  14 = 6 km  15 = 3 km  16 = 1.5 km  17 = 750 m  18 = 375 m  19 = 187 m  20 = 93 m
+  const [zoom, setZoom] = useState(13);
   const [centroMapa, setCentroMapa] = useState(COORDENADAS_CENTRO);
   const [distanciaVisivel, setdistanciaVisivel] = useState(calcularDistanciaComBaseNoZoom(13));
 
@@ -28,19 +27,16 @@ export default function Home() {
 
   const cardRefs = useRef([]);
   const mapRef = useRef();
-  const navigate = useNavigate();
 
   const registroService = new RegistroService();
   const categoriaService = new CategoriaService();
   const interacaoService = new InteracaoService();
 
+  /**
+   * Carrega as categorias disponíveis e o título da página.
+   */
   useEffect(() => {
     document.title = 'Reportaí';
-  }, []);
-
-  // a cada inicialização
-  useEffect(() => {
-
     categoriaService
       .consultar()
       .then(response => {
@@ -50,8 +46,9 @@ export default function Home() {
     });
   }, []);
 
-
-  // a cada mudança de zoom ou no centro do mapa, atualiza os registros
+  /**
+   * A cada mudança de zoom ou centro do mapa, atualiza a distância visível e busca os registros.
+   */
   useEffect(() => {
 
     setdistanciaVisivel(calcularDistanciaComBaseNoZoom(zoom));
@@ -68,16 +65,30 @@ export default function Home() {
   }, [zoom, centroMapa, ordenacaoSelecionada, filtros]);
 
 
+  /**
+   * Calcula a distância visível no mapa com base no nível de zoom.
+   * 11 = 50 km  12 = 25 km  13 = 12 km  14 = 6 km  15 = 3 km  16 = 1.5 km  17 = 750 m  18 = 375 m  19 = 187 m  20 = 93 m
+   * @param zoomLevel
+   * @returns {number} distância em km
+   */
   function calcularDistanciaComBaseNoZoom(zoomLevel) {
     const baseDistancia = 50000;
     return (baseDistancia * Math.pow(2, -(zoomLevel - 11))) / 1000;
   }
 
+  /**
+   * Foca o mapa no registro selecionado.
+   * @param registro
+   */
   const focarMapaNoRegistro = (registro) => {
-    console.log([registro.latitude, registro.longitude]);
     mapRef.current.setView([registro.latitude, registro.longitude], ZOOM_SELECAO);
+    setdistanciaVisivel(calcularDistanciaComBaseNoZoom(ZOOM_SELECAO));
   }
 
+  /**
+   * Foca o registro selecionado na timeline.
+   * @param id
+   */
   const highlightRegistro = (id) => {
     const card = cardRefs.current[id];
     if (card) {
@@ -85,6 +96,12 @@ export default function Home() {
     }
   };
 
+  /**
+   * Componente que escuta os eventos do mapa e atualiza o estado.
+   * @param onZoomChange
+   * @param onCenterChange
+   * @constructor
+   */
   function MapEventsHandler({onZoomChange, onCenterChange}) {
     // Esse hook permite "ouvir" eventos do mapa
     const map = useMapEvents({
@@ -111,18 +128,13 @@ export default function Home() {
             ref={mapRef}
             style={{width: '100%', height: '100%'}}
           >
-            <TileLayer
-              url={osm.maptiler.url}
-              attribution={osm.maptiler.attribution}
-            />
-            {/* Componente que "escuta" os eventos e atualiza o estado */}
+            <TileLayer url={osm.maptiler.url} attribution={osm.maptiler.attribution}/>
             <MapEventsHandler
               onZoomChange={(novoZoom) => setZoom(novoZoom)}
-              onCenterChange={(lat, lng) => {
-                setCentroMapa([lat, lng]);
-              }}
+              onCenterChange={(lat, lng) => setCentroMapa([lat, lng])}
             />
 
+            {/*marcadores*/}
             {registros.map((registro, index) => (
               <Marker
                 key={index}
@@ -137,12 +149,12 @@ export default function Home() {
                 eventHandlers={{
                   click: () => {
                     highlightRegistro(registro.id);
-                    focarMapaNoRegistro(registro);
                   },
                 }}
               >
               </Marker>
             ))}
+
           </MapContainer>
         </div>
 

@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom';
-import {usuarioPrototype} from "../app/service/usuarioService";
 import {mensagemErro, mensagemSucesso} from "../components/toastr";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import {RegistroService} from "../app/service/registroService";
@@ -9,41 +8,44 @@ import Pagination from 'react-bootstrap/Pagination';
 
 export default function MeusRegistros() {
 
-  const [usuario, setUsuario] = useState(usuarioPrototype);
   const [pagina, setPagina] = useState(0);
   const [totalPaginas, setTotalPaginas] = useState(0);
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
   const [visibilidadePopupConclusao, setVisibilidadePopupConclusao] = useState(false);
   const [registros, setRegistros] = useState([]);
   const [registroSelecionado, setRegistroSelecionado] = useState(null);
-  const navigate = useNavigate();
 
   const service = new RegistroService();
 
+  /**
+   * Carrega o título da página
+   */
   useEffect(() => {
     document.title = 'Reportaí - Meus Registros';
   }, []);
 
+  /**
+   * Abre o popup de remoção de registro e seta o registro selecionado.
+   * @param idRegistro
+   */
   const abrirPopupRemocao = (idRegistro) => {
     setVisibilidadePopupRemocao(true)
     setRegistroSelecionado(idRegistro)
   }
 
-  const fecharPopupRemocao = () => {
-    setVisibilidadePopupRemocao(false)
-  }
-
-
+  /**
+   * Abre o popup de conclusão de registro e seta o registro selecionado.
+   * @param idRegistro
+   */
   const abrirPopupConclusao = (idRegistro) => {
     setVisibilidadePopupConclusao(true)
     setRegistroSelecionado(idRegistro)
   }
 
-  const fecharPopupConclusao = () => {
-    setVisibilidadePopupConclusao(false)
-
-  }
-
+  /**
+   * Ignora a conclusão automática de um registro e recarrega os registros.
+   * @param idRegistro
+   */
   const handleIgnorarConclusao = (idRegistro) => {
     service
       .ignorarConclusao(idRegistro)
@@ -55,6 +57,9 @@ export default function MeusRegistros() {
     });
   }
 
+  /**
+   * Remove o registro selecionado e recarrega os registros.
+   */
   const handleRemover = () => {
     setVisibilidadePopupRemocao(false);
     service
@@ -67,6 +72,9 @@ export default function MeusRegistros() {
     });
   }
 
+  /**
+   * Conclui o registro selecionado e recarrega os registros.
+   */
   const handleConcluir = () => {
     setVisibilidadePopupConclusao(false);
     service
@@ -79,10 +87,12 @@ export default function MeusRegistros() {
     });
   }
 
-
+  /**
+   * Carrega os registros do usuário logado na página.
+   */
   const loadRegistros = () => {
     service
-      .consultarMeusRegistros(pagina, 9)
+      .consultarMeusRegistros(pagina, 10)
       .then(response => {
         setRegistros(response.data.registros);
         setTotalPaginas(response.data.totalPaginas);
@@ -93,6 +103,9 @@ export default function MeusRegistros() {
     });
   }
 
+  /**
+   * A cada mudança de página, carrega os registros.
+   */
   useEffect(() => {
     loadRegistros()
   }, [pagina]);
@@ -106,14 +119,14 @@ export default function MeusRegistros() {
         titulo="Remover registro"
         mensagem="Tem certeza que deseja remover o registro? Não é possível desfazer esta ação."
         onConfirm={handleRemover}
-        onCancel={fecharPopupRemocao}
+        onCancel={() => setVisibilidadePopupRemocao(false)}
       />
       <PopupConfirmacao
         visivel={visibilidadePopupConclusao}
         titulo="Concluir registro"
         mensagem="Tem certeza que deseja concluir o registro? Não é possível desfazer esta ação."
         onConfirm={handleConcluir}
-        onCancel={fecharPopupConclusao}
+        onCancel={() => setVisibilidadePopupConclusao(false)}
       />
 
       {/* ---------------------- titulo ---------------------- */}
@@ -124,10 +137,10 @@ export default function MeusRegistros() {
       </div>
 
       {/* ---------------------- cards ---------------------- */}
-      <div className="row mr_div_registros overflow-y-scroll">
+      <div className="row ">
         {
           registros.map((registro, index) => (
-            <div key={index} className={'p-2 col-md-6'}>
+            <div key={index} className={'p-2 col-lg-6'}>
               <CardRegistroMeusRegistros
                 key={index}
                 registro={registro}

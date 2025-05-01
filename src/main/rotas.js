@@ -13,6 +13,7 @@ import MeusRegistros from "../views/meusRegistros";
 import AdminUsuarios from "../views/adminUsuarios";
 import AdminRegistros from "../views/adminRegistros";
 import RelatoriosPublicos from "../views/relatoriosPublicos";
+import Sobre from "../views/sobre";
 
 const PrivateRoute = ({isUsuarioAutenticado, element}) => {
   return isUsuarioAutenticado ? element : <Navigate to="/login"/>;
@@ -30,6 +31,7 @@ function Rotas() {
         <Routes>
           <Route path="/" element={<Navigate to="/home"/>}/>
           <Route path="/home" element={<Home/>}/>
+          <Route path="/sobre" element={<Sobre/>}/>
           <Route path="/cadastrar-registro" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<CadastrarRegistro/>}/>}/>
           <Route path="/meus-registros" element={<MeusRegistros/>}/>
           <Route path="/minha-conta" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<MinhaConta/>}/>}/>
