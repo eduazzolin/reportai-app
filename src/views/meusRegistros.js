@@ -8,6 +8,8 @@ import Pagination from 'react-bootstrap/Pagination';
 
 export default function MeusRegistros() {
 
+  const navigate = useNavigate();
+
   const [pagina, setPagina] = useState(0);
   const [totalPaginas, setTotalPaginas] = useState(0);
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
@@ -182,6 +184,23 @@ export default function MeusRegistros() {
 
         </div>
       </div>
+
+      {
+        registros.length > 0 ? '' :
+          <div className={'row p-3 h-50'}>
+            <div className="col-12 d-flex flex-column justify-content-center align-items-center text-center">
+              <span className="fs-2">ℹ️</span>
+              <p className="mt-2 mb-1">Nenhum registro encontrado!</p>
+              <p>
+                Experimente{' '}
+                <a className="clicavel" onClick={() => navigate('/cadastrar-registro')}>
+                  criar um novo registro
+                </a>.
+              </p>
+            </div>
+
+          </div>
+      }
 
     </div>
 
