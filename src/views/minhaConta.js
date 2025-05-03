@@ -8,6 +8,7 @@ import {AuthContext} from "../main/provedorAutenticacao";
 import LocalStorageService from "../app/service/localStorageService";
 import {USUARIO_LOGADO} from "../app/service/authService";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
+import Accordion from 'react-bootstrap/Accordion';
 
 export default function MinhaConta() {
 
@@ -17,6 +18,7 @@ export default function MinhaConta() {
 
   const [usuario, setUsuario] = useState(usuarioPrototype);
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
+  const [alterarSenha, setAlterarSenha] = useState(false);
   const idUsuarioRecebido = location.state?.idUsuario;
 
   const service = new UsuarioService();
@@ -25,10 +27,38 @@ export default function MinhaConta() {
     document.title = 'Reportaí - Minha Conta';
   }, []);
 
-  const cadastrar = () => {
+  useEffect(() => {
+    /* Carrega o usuário recebido, se houver */
+    if (idUsuarioRecebido) {
+
+      service
+        .buscarDTOPorId(idUsuarioRecebido)
+        .then(response => {
+          setUsuario(response.data)
+        }).catch(error => {
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar usuario.');
+      });
+
+      /* senão carrega o usuário logado */
+    } else {
+      const usuarioStorage = LocalStorageService.obterItem(USUARIO_LOGADO);
+      service
+        .buscarDTOPorId(usuarioStorage.id)
+        .then(response => {
+          setUsuario(response.data)
+        })
+        .catch(error => {
+          mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar usuario.')
+        });
+    }
+  }, [idUsuarioRecebido]);
+
+  const editar = () => {
+
+    usuario.senha = null;
 
     try {
-      service.validar(usuario, true);
+      service.validar(usuario, 'exceto-senha');
     } catch (erro) {
       const msgs = erro.mensagens;
       msgs.forEach(msg => mensagemErro(msg));
@@ -45,6 +75,30 @@ export default function MinhaConta() {
       })
       .catch(error => {
         mensagemErro(error?.response?.data?.descricao ?? 'Erro ao editar usuario.');
+      })
+
+  }
+
+  const editarSenha = () => {
+
+    try {
+      service.validar(usuario, 'senha');
+    } catch (erro) {
+      const msgs = erro.mensagens;
+      msgs.forEach(msg => mensagemErro(msg));
+      return false;
+    }
+
+    service
+      .alterarSenha(usuario)
+      .then(response => {
+        mensagemSucesso('Senha alterada com sucesso!');
+        if (!idUsuarioRecebido) {
+          encerrarSessao();
+        }
+      })
+      .catch(error => {
+        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao alterar senha.');
       })
 
   }
@@ -70,34 +124,6 @@ export default function MinhaConta() {
   }
 
 
-  useEffect(() => {
-    /* Carrega o usuário recebido, se houver */
-    if (idUsuarioRecebido) {
-
-      service
-        .buscarDTOPorId(idUsuarioRecebido)
-        .then(response => {
-          setUsuario(response.data)
-        }).catch(error => {
-        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar usuario.');
-      });
-
-      /* senão carrega o usuário logado */
-    } else {
-      const usuarioStorage = LocalStorageService.obterItem(USUARIO_LOGADO);
-      service
-        .buscarDTOPorId(usuarioStorage.id)
-        .then(response => {
-          setUsuario(response.data)
-          console.log('01', response.data)
-        })
-        .catch(error => {
-          mensagemErro(error?.response?.data?.descricao ?? 'Erro ao buscar usuario.')
-        });
-    }
-  }, [idUsuarioRecebido]);
-
-
   return (
     <div className='container'>
 
@@ -109,11 +135,12 @@ export default function MinhaConta() {
         onCancel={fecharPopupRemocao}
       />
 
-      <div className="row mt-5">
+      {/*atualizar conta*/}
+      <div className="row mt-5" hidden={alterarSenha}>
 
         {/*titulo*/}
         <div className="col-12">
-          <h2>👤 {usuario.nome}</h2>
+          <h2>Minha conta</h2>
         </div>
 
         {/*form*/}
@@ -149,13 +176,37 @@ export default function MinhaConta() {
                 onChange={event => setUsuario({...usuario, email: event.target.value})}/>
             </Form.Group>
 
-            {/*senha*/}
+            {/*botão*/}
+            <div className='d-flex gap-2'>
+              <Button className="mt-3" variant="warning" onClick={() => editar()}> Salvar alterações </Button>
+              <Button className="mt-3" variant="danger" onClick={() => abrirPopupRemocao()}> Remover conta </Button>
+              <Button className="mt-3 border border-black" variant="light" onClick={() => setAlterarSenha(true)}> Alterar senha </Button>
+            </div>
+
+
+          </Form>
+        </div>
+
+      </div>
+
+      {/*mudar senha*/}
+      {/*atualizar conta*/}
+      <div className="row mt-5" hidden={!alterarSenha}>
+
+        {/*titulo*/}
+        <div className="col-12">
+          <h2>Alterar senha</h2>
+        </div>
+
+        {/*form*/}
+        <div className="col-lg-6 mt-3">
+
+          <Form>
             <Form.Group className="mb-3">
               <Form.Label>Senha</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Crie uma senha"
-                value={usuario.senha}
                 onChange={event => setUsuario({...usuario, senha: event.target.value})}/>
             </Form.Group>
 
@@ -164,20 +215,17 @@ export default function MinhaConta() {
               <Form.Control
                 type="password"
                 placeholder="Repita a senha, por favor"
-                value={usuario.senhaRepeticao || ''}
                 onChange={event => setUsuario({...usuario, senhaRepeticao: event.target.value})}/>
             </Form.Group>
 
-            {/*botão*/}
+             {/*botão*/}
             <div className='d-flex gap-2'>
-              <Button className="mt-3" variant="warning" onClick={() => cadastrar()}> Salvar alterações </Button>
-              <Button className="mt-3" variant="danger" onClick={() => abrirPopupRemocao()}> Remover conta </Button>
+              <Button className="mt-3" variant="warning" onClick={() => editarSenha()}> Alterar senha </Button>
+              <Button className="mt-3" variant="danger" onClick={() => setAlterarSenha(false)}> Cancelar </Button>
             </div>
-
 
           </Form>
         </div>
-
       </div>
     </div>
 

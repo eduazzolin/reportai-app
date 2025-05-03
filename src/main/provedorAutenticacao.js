@@ -1,6 +1,5 @@
 import React from "react";
 import AuthService from "../app/service/authService";
-import {jwtDecode} from 'jwt-decode'
 
 export const AuthContext = React.createContext();
 export const AuthConsumer = AuthContext.Consumer;
@@ -22,13 +21,6 @@ function ProvedorAutenticacao(props) {
 
   const iniciarSessao = (tokenDTO) => {
     const token = tokenDTO.token;
-    // const claims = jwtDecode(token);
-    // const usuario = {
-    //   nome: claims.nome,
-    //   email: claims.sub,
-    //   id: claims.id
-    // }
-
     const usuario = {
       nome: tokenDTO.nomeUsuario,
       id: tokenDTO.id

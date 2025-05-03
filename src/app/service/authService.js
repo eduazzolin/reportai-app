@@ -11,12 +11,11 @@ export default class AuthService {
     if (!token) {
       return false;
     } else {
-      return true; // #ToDo #SpringSecurity
+      const decoded = jwtDecode(token);
+      const expiracao = decoded.exp;
+      const agora = new Date().getTime();
+      return token && agora <= expiracao * 1000;
     }
-    // const decoded = jwtDecode(token);
-    // const expiracao = decoded.exp;
-    // const agora = new Date().getTime();
-    // return token && agora <= expiracao * 1000;
   }
 
   static removerUsuarioAutenticado() {

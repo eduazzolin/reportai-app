@@ -63,8 +63,22 @@ class ApiService {
   }
 
   get(url) {
+
+    let token = localStorage.getItem('access_token') || '';
+    token = token.replace(/^"|"$/g, '');
+    const header = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }
     const requestUrl = `${this.apiUrl}${url}`;
-    return httpClient.get(requestUrl);
+    if (token) {
+      return httpClient.get(requestUrl, header)
+    } else {
+      return httpClient.get(requestUrl)
+    }
+
   }
 
 
