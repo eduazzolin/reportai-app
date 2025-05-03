@@ -4,7 +4,6 @@ import Home from "../views/home";
 import VerRegistro from "../views/verRegistro";
 import CadastrarRegistro from "../views/cadastrarRegistro";
 import AppNavbar from "../components/navbar";
-import Sandbox from "../views/sandbox";
 import CadastrarUsuario from "../views/cadastrarUsuario";
 import MinhaConta from "../views/minhaConta";
 import EntrarUsuario from "../views/entrarUsuario";
@@ -29,19 +28,25 @@ function Rotas() {
       <div>
         <AppNavbar/>
         <Routes>
+
+          {/*------------------------------ rotas abertas ------------------------------*/}
           <Route path="/" element={<Navigate to="/home"/>}/>
           <Route path="/home" element={<Home/>}/>
           <Route path="/sobre" element={<Sobre/>}/>
-          <Route path="/cadastrar-registro" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<CadastrarRegistro/>}/>}/>
-          <Route path="/meus-registros" element={<MeusRegistros/>}/>
-          <Route path="/minha-conta" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<MinhaConta/>}/>}/>
           <Route path="/registro/:id" element={<VerRegistro/>}/>
-          <Route path="/sandbox" element={<Sandbox/>}/>
-          <Route path={"/relatorios"} element={<RelatoriosPublicos/>}/>
+          <Route path="/relatorios" element={<RelatoriosPublicos/>}/>
           <Route path="/cadastrar-usuario" element={<CadastrarUsuario/>}/>
           <Route path="/login" element={<EntrarUsuario/>}/>
-          <Route path="/admin/usuarios" element={<AdminUsuarios/>}/>
-          <Route path="/admin/registros" element={<AdminRegistros/>}/>
+
+          {/*------------------------------ rotas privadas ------------------------------*/}
+          <Route path="/cadastrar-registro" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<CadastrarRegistro/>}/>}/>
+          <Route path="/meus-registros" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<MeusRegistros/>}/>}/>
+          <Route path="/minha-conta" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<MinhaConta/>}/>}/>
+
+          {/*------------------------------ rotas admin --------------------------------*/}
+          <Route path="/admin/usuarios" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<AdminUsuarios/>}/>}/>
+          <Route path="/admin/registros" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<AdminRegistros/>}/>}/>
+
         </Routes>
       </div>
     </Router>)

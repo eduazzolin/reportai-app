@@ -1,17 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import './cardRegistroLateralStyle.css'
 import {BsArrowDownSquareFill, BsArrowUpSquareFill, BsCheckSquareFill, BsFillXSquareFill} from "react-icons/bs";
 import IconeContagem from "../iconeContagem/iconeContagem";
-import {mensagemErro} from "../toastr";
+import {mensagemAlerta, mensagemErro} from "../toastr";
 import IconeMapa from "../iconeMapa/iconeMapa";
 import TextConcluido from "../textConcluido/textConcluido";
 import IconeCrud from "../iconeCrud/iconeCrud";
+import {AuthContext} from "../../main/provedorAutenticacao";
+import {useNavigate} from "react-router-dom";
 
 export default function CardRegistroLateral({registro, focarMapaNoRegistro, interacaoService}) {
 
-  const irParaRegistro = () => {
-    window.open(`/registro/${registro.id}`, '_blank');
-  };
+  const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [qtRelevante, setQtRelevante] = useState(0);
   const [qtIrrelevante, setQtIrrelevante] = useState(0);
@@ -19,6 +20,11 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
   const [usuarioInteracaoIdRelevante, setUsuarioInteracaoIdRelevante] = useState();
   const [usuarioInteracaoIdIrrelevante, setUsuarioInteracaoIdIrrelevante] = useState();
   const [usuarioInteracaoIdConcluido, setUsuarioInteracaoIdConcluido] = useState();
+
+
+  const irParaRegistro = () => {
+    window.open(`/registro/${registro.id}`, '_blank');
+  };
 
   // a cada inicialização
   useEffect(() => {
@@ -38,6 +44,11 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
   }, [registro]);
 
   function interagirRelevante() {
+
+    if (!authContext.isAutenticado) {
+      mensagemAlerta('Você precisa estar logado para interagir com os registros.');
+      return;
+    }
 
     if (usuarioInteracaoIdRelevante) {
       interacaoService
@@ -63,6 +74,10 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
   }
 
   function interagirIrrelevante() {
+    if (!authContext.isAutenticado) {
+      mensagemAlerta('Você precisa estar logado para interagir com os registros.');
+      return;
+    }
 
     if (usuarioInteracaoIdIrrelevante) {
       interacaoService
@@ -86,6 +101,10 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
   }
 
   function interagirConcluido() {
+    if (!authContext.isAutenticado) {
+      mensagemAlerta('Você precisa estar logado para interagir com os registros.');
+      return;
+    }
 
     if (usuarioInteracaoIdConcluido) {
       interacaoService

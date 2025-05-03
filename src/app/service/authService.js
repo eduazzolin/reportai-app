@@ -18,6 +18,19 @@ export default class AuthService {
     }
   }
 
+  static isUsuarioAdmin() {
+    const token = LocalStorageService.obterItem(TOKEN);
+    if (!token) {
+      return false;
+    } else {
+      const decoded = jwtDecode(token);
+      const expiracao = decoded.exp;
+      const agora = new Date().getTime();
+      const role = decoded.role;
+      return token && agora <= expiracao * 1000 && role === 'ADMIN';
+    }
+  }
+
   static removerUsuarioAutenticado() {
     LocalStorageService.removerItem(USUARIO_LOGADO);
     LocalStorageService.removerItem(TOKEN);
