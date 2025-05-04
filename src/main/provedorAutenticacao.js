@@ -7,7 +7,7 @@ const AuthProvider = AuthContext.Provider;
 
 function ProvedorAutenticacao(props) {
 
-  const [usuarioAutenticado, setUsuarioAutenticado] = React.useState(() => {if (AuthService.isUsuarioAutenticado()) return AuthService.refreshSession();return null;});
+  const [usuarioAutenticado, setUsuarioAutenticado] = React.useState(AuthService.obterUsuarioAutenticado());
   const [isAutenticado, setIsAutenticado] = React.useState(AuthService.isUsuarioAutenticado());
   const [isAdmin, setIsAdmin] = React.useState(AuthService.isUsuarioAdmin());
 

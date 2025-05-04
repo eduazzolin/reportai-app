@@ -41,9 +41,12 @@ export default function AdminRegistros() {
   const categoriaService = new CategoriaService();
   const service = new RegistroService();
 
+  const idUsuarioRecebido = location.state?.usuarioFiltro;
+
   useEffect(() => {
     document.title = 'Reportaí - Administração de Registros';
   }, []);
+
 
   function handleEditar(linha) {
     service
