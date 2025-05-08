@@ -107,4 +107,17 @@ export default class UsuarioService extends ApiService {
     usuario.senha = this.hashSenha(usuario.senha);
     return this.post('/alterar-senha', usuario);
   }
+
+  recuperarSenha(usuario) {
+    return this.post('/recuperar-senha', usuario);
+  }
+
+  alterarSenhaToken(usuario, token) {
+    const tokenSenhaDTO = {
+      email: usuario.email,
+      senha: this.hashSenha(usuario.senha),
+      token: token
+    }
+    return this.post('/alterar-senha-token', tokenSenhaDTO);
+  }
 }

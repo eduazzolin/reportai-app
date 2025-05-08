@@ -190,7 +190,6 @@ export default function MinhaConta() {
       </div>
 
       {/*mudar senha*/}
-      {/*atualizar conta*/}
       <div className="row mt-5" hidden={!alterarSenha}>
 
         {/*titulo*/}
