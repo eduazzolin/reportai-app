@@ -178,7 +178,6 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
           </div>
 
 
-          {/*botões*/}{/*https://react-icons.github.io/react-icons/*/}
           {/* ---------------------- botões ---------------------- */}
           {/*https://react-icons.github.io/react-icons/*/}
           <div className="row div_rodape align-items-end">
