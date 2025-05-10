@@ -254,7 +254,7 @@ export default function AdminRegistros() {
       minWidth: '160px',
     },
     {
-      name: 'Data de Conclusão',
+      name: 'Data de Resolução',
       selector: row => row.dtConclusao ? new Date(row.dtConclusao).toLocaleString() : '',
       reorder: true,
       wrap: true,
@@ -281,7 +281,7 @@ export default function AdminRegistros() {
       minWidth: '180px',
     },
     {
-      name: 'Data de Conclusão Programada',
+      name: 'Data de Resolução Programada',
       selector: row => row.dtAteConclusao? new Date(row.dtAteConclusao).toLocaleString() : '',
       reorder: true,
       wrap: true,
@@ -310,7 +310,7 @@ export default function AdminRegistros() {
       center: true,
     },
     {
-      name: 'Qtd. Concluído',
+      name: 'Qtd. Não está lá',
       selector: row => row.qtConcluido,
       reorder: true,
       wrap: true,
@@ -326,7 +326,7 @@ export default function AdminRegistros() {
           <IconeCrudSemTexto icone={MdEditSquare} cor={'#bf9600'} funcao={() => handleEditar(row)} tooltip='Editar'/>
           <IconeCrudSemTexto icone={BsFillXSquareFill} cor={'#D3310ED1'} funcao={() => handleRemover(row)} tooltip='Remover'/>
           {row.dtConclusao ? '' :
-          <IconeCrudSemTexto icone={BsCheckSquareFill} cor={'rgba(39,151,0,0.82)'} funcao={() => handleConcluir(row)} tooltip='Concluir'/>}
+          <IconeCrudSemTexto icone={BsCheckSquareFill} cor={'rgba(39,151,0,0.82)'} funcao={() => handleConcluir(row)} tooltip='Marcar como resolvido'/>}
         </div>
       ),
       minWidth: '140px',

@@ -126,7 +126,7 @@ export default function MeusRegistros() {
       <PopupConfirmacao
         visivel={visibilidadePopupConclusao}
         titulo="Concluir registro"
-        mensagem="Tem certeza que deseja concluir o registro? Não é possível desfazer esta ação."
+        mensagem="Tem certeza que deseja marcar o registro como resolvido? Não é possível desfazer esta ação."
         onConfirm={handleConcluir}
         onCancel={() => setVisibilidadePopupConclusao(false)}
       />

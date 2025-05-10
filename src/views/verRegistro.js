@@ -111,7 +111,7 @@ export default function VerRegistro() {
             registro.isConcluido ?
               <div className='d-flex gap-2 align-items-center mb-1'>
                 <BsCheckSquareFill height={24}/>
-                <span className='small'>Concluído em {formatarDataHora(registro.dtConclusao)}</span>
+                <span className='small'>Resolvido em {formatarDataHora(registro.dtConclusao)}</span>
               </div>
               :
               <div>

@@ -1,13 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
 import './cardRegistroLateralStyle.css'
-import {BsArrowDownSquareFill, BsArrowUpSquareFill, BsCheckSquareFill, BsFillXSquareFill} from "react-icons/bs";
+import {BsArrowDownSquareFill, BsArrowUpSquareFill} from "react-icons/bs";
 import IconeContagem from "../iconeContagem/iconeContagem";
 import {mensagemAlerta, mensagemErro} from "../toastr";
 import IconeMapa from "../iconeMapa/iconeMapa";
 import TextConcluido from "../textConcluido/textConcluido";
-import IconeCrud from "../iconeCrud/iconeCrud";
 import {AuthContext} from "../../main/provedorAutenticacao";
 import {useNavigate} from "react-router-dom";
+import {BiSolidXSquare} from "react-icons/bi";
+import {FaSquareCaretDown, FaSquareCaretUp, FaSquareXmark} from "react-icons/fa6";
 
 export default function CardRegistroLateral({registro, focarMapaNoRegistro, interacaoService}) {
 
@@ -193,19 +194,19 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
 
                 :
 
-                <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-sm-2 ">
+                <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-sm-1 ">
                   <IconeMapa registro={registro} focarMapaNoRegistro={focarMapaNoRegistro}/>
                   <IconeContagem
-                    icone={BsArrowUpSquareFill}
+                    icone={FaSquareCaretUp }
                     contagem={qtRelevante}
-                    cor={'#e6b000'}
                     isClicado={usuarioInteracaoIdRelevante}
+                    cor={'rgba(65,195,20,0.82)'}
                     interagir={interagirRelevante}
                     tooltip={'Relevante'}
                     tipo={'RELEVANTE'}
                   />
                   <IconeContagem
-                    icone={BsArrowDownSquareFill}
+                    icone={FaSquareCaretDown }
                     contagem={qtIrrelevante}
                     cor={'rgba(243,93,63,0.82)'}
                     isClicado={usuarioInteracaoIdIrrelevante}
@@ -214,12 +215,12 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
                     tipo={'IRRELEVANTE'}
                   />
                   <IconeContagem
-                    icone={BsCheckSquareFill}
+                    icone={FaSquareXmark  }
                     contagem={qtConcluido}
-                    cor={'rgba(65,195,20,0.82)'}
+                    cor={'#e6b000'}
                     isClicado={usuarioInteracaoIdConcluido}
                     interagir={interagirConcluido}
-                    tooltip={'Concluído'}
+                    tooltip={'Não está lá'}
                     tipo={'CONCLUIDO'}
                   />
                 </div>

@@ -9,7 +9,7 @@ export default function TextConclusaoProgramada({data}) {
 
   return (
     <div className='border rounded p-1 px-2 bg-dark-subtle flex-grow-1'>
-      ⚠️ Conclusão em {diasParaConcluir} dias
+      ⚠️ Resolução automática em {diasParaConcluir} dias
     </div>
   )
 }
