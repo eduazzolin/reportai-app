@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {MapContainer, Marker, TileLayer, useMapEvents} from "react-leaflet";
 import L from 'leaflet';
 import osm from '../app/service/osm-providers';
@@ -10,11 +10,16 @@ import {mensagemErro} from "../components/toastr";
 import Form from "react-bootstrap/Form";
 import {categoriaPrototype, CategoriaService} from "../app/service/categoriaService";
 import {InteracaoService} from "../app/service/interacaoService";
+import {AuthContext} from "../main/provedorAutenticacao";
+import {useNavigate} from "react-router-dom";
 
 export default function Home() {
 
   const ZOOM_SELECAO = 18;
   const FILTRO_STATUS_REGISTRO = [{label: 'Qualquer status', value: 'AND 0=0'}, {label: 'Abertos', value: 'AND NOT is_concluido'}, {label: 'Resolvidos', value: 'AND is_concluido'}]
+
+  const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [zoom, setZoom] = useState(13);
   const [centroMapa, setCentroMapa] = useState(COORDENADAS_CENTRO);

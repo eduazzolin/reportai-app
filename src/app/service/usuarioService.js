@@ -28,7 +28,9 @@ export default class UsuarioService extends ApiService {
   }
 
   salvar(usuario) {
-    usuario.senha = this.hashSenha(usuario.senha);
+    if (usuario.senha) {
+      usuario.senha = this.hashSenha(usuario.senha);
+    }
     return this.post('', usuario);
   }
 
@@ -41,25 +43,42 @@ export default class UsuarioService extends ApiService {
     return this.get('/admin?pagina=' + pagina + '&limite=' + limite + '&termo=' + termo + '&ordenacao=' + ordenacao);
   }
 
-  validar(usuario, isEdicao = false) {
+  /**
+   * Valida os campos do usuário de acordo com o modo.
+   * @param usuario Objeto com os dados do usuário
+   * @param modo ['completo', 'senha', 'exceto-senha']
+   */
+  validar(usuario, modo = 'completo') {
     const erros = []
 
-    // nome
-    if (!usuario.nome) {
-      erros.push("O campo nome é obrigatório.")
-    } else if (usuario.nome.length > 255) {
-      erros.push("O campo nome deve ter no máximo 255 caracteres.")
+    if (modo === 'completo' || modo === 'exceto-senha') {
+
+      // nome
+      if (!usuario.nome) {
+        erros.push("O campo nome é obrigatório.")
+      } else if (usuario.nome.length > 255) {
+        erros.push("O campo nome deve ter no máximo 255 caracteres.")
+      }
+
+      // email
+      if (!usuario.email) {
+        erros.push("O campo email é obrigatório.")
+      } else if (!usuario.email.match(/^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/)) {
+        erros.push("Informe um email válido.")
+      }
+
+      // cpf
+      if (!usuario.cpf) {
+        erros.push("O campo CPF é obrigatório.");
+      } else if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(usuario.cpf)) {
+        erros.push("Informe um CPF válido.");
+      }
+
     }
 
-    // email
-    if (!usuario.email) {
-      erros.push("O campo email é obrigatório.")
-    } else if (!usuario.email.match(/^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/)) {
-      erros.push("Informe um email válido.")
-    }
+    if (modo === 'completo' || modo === 'senha') {
 
-    // senha
-    if(!isEdicao) {
+      // senha
       if (!usuario.senha || !usuario.senhaRepeticao) {
         erros.push("O campo senha é obrigatório.")
       } else if (usuario.senha.length < 6) {
@@ -69,13 +88,7 @@ export default class UsuarioService extends ApiService {
       } else if (usuario.senha !== usuario.senhaRepeticao) {
         erros.push("As senhas devem ser iguais.")
       }
-    }
 
-    // cpf
-    if (!usuario.cpf) {
-      erros.push("O campo CPF é obrigatório.");
-    } else if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(usuario.cpf)) {
-      erros.push("Informe um CPF válido.");
     }
 
     // lançando erros
@@ -88,5 +101,23 @@ export default class UsuarioService extends ApiService {
   autenticar(credenciais) {
     credenciais.senha = this.hashSenha(credenciais.senha);
     return this.post('/autenticar', credenciais)
+  }
+
+  alterarSenha(usuario) {
+    usuario.senha = this.hashSenha(usuario.senha);
+    return this.post('/alterar-senha', usuario);
+  }
+
+  recuperarSenha(usuario) {
+    return this.post('/recuperar-senha', usuario);
+  }
+
+  alterarSenhaToken(usuario, token) {
+    const tokenSenhaDTO = {
+      email: usuario.email,
+      senha: this.hashSenha(usuario.senha),
+      token: token
+    }
+    return this.post('/alterar-senha-token', tokenSenhaDTO);
   }
 }

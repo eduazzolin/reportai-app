@@ -1,17 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import './cardRegistroLateralStyle.css'
-import {BsArrowDownSquareFill, BsArrowUpSquareFill, BsCheckSquareFill, BsFillXSquareFill} from "react-icons/bs";
+import {BsArrowDownSquareFill, BsArrowUpSquareFill} from "react-icons/bs";
 import IconeContagem from "../iconeContagem/iconeContagem";
-import {mensagemErro} from "../toastr";
+import {mensagemAlerta, mensagemErro} from "../toastr";
 import IconeMapa from "../iconeMapa/iconeMapa";
 import TextConcluido from "../textConcluido/textConcluido";
-import IconeCrud from "../iconeCrud/iconeCrud";
+import {AuthContext} from "../../main/provedorAutenticacao";
+import {useNavigate} from "react-router-dom";
+import {BiSolidXSquare} from "react-icons/bi";
+import {FaSquareCaretDown, FaSquareCaretUp, FaSquareXmark} from "react-icons/fa6";
 
 export default function CardRegistroLateral({registro, focarMapaNoRegistro, interacaoService}) {
 
-  const irParaRegistro = () => {
-    window.open(`/registro/${registro.id}`, '_blank');
-  };
+  const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [qtRelevante, setQtRelevante] = useState(0);
   const [qtIrrelevante, setQtIrrelevante] = useState(0);
@@ -19,6 +21,11 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
   const [usuarioInteracaoIdRelevante, setUsuarioInteracaoIdRelevante] = useState();
   const [usuarioInteracaoIdIrrelevante, setUsuarioInteracaoIdIrrelevante] = useState();
   const [usuarioInteracaoIdConcluido, setUsuarioInteracaoIdConcluido] = useState();
+
+
+  const irParaRegistro = () => {
+    window.open(`/registro/${registro.id}`, '_blank');
+  };
 
   // a cada inicialização
   useEffect(() => {
@@ -38,6 +45,11 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
   }, [registro]);
 
   function interagirRelevante() {
+
+    if (!authContext.isAutenticado) {
+      mensagemAlerta('Você precisa estar logado para interagir com os registros.');
+      return;
+    }
 
     if (usuarioInteracaoIdRelevante) {
       interacaoService
@@ -63,6 +75,10 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
   }
 
   function interagirIrrelevante() {
+    if (!authContext.isAutenticado) {
+      mensagemAlerta('Você precisa estar logado para interagir com os registros.');
+      return;
+    }
 
     if (usuarioInteracaoIdIrrelevante) {
       interacaoService
@@ -86,6 +102,10 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
   }
 
   function interagirConcluido() {
+    if (!authContext.isAutenticado) {
+      mensagemAlerta('Você precisa estar logado para interagir com os registros.');
+      return;
+    }
 
     if (usuarioInteracaoIdConcluido) {
       interacaoService
@@ -159,7 +179,6 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
           </div>
 
 
-          {/*botões*/}{/*https://react-icons.github.io/react-icons/*/}
           {/* ---------------------- botões ---------------------- */}
           {/*https://react-icons.github.io/react-icons/*/}
           <div className="row div_rodape align-items-end">
@@ -175,19 +194,19 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
 
                 :
 
-                <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-sm-2 ">
+                <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-sm-1 ">
                   <IconeMapa registro={registro} focarMapaNoRegistro={focarMapaNoRegistro}/>
                   <IconeContagem
-                    icone={BsArrowUpSquareFill}
+                    icone={FaSquareCaretUp }
                     contagem={qtRelevante}
-                    cor={'#e6b000'}
                     isClicado={usuarioInteracaoIdRelevante}
+                    cor={'rgba(65,195,20,0.82)'}
                     interagir={interagirRelevante}
                     tooltip={'Relevante'}
                     tipo={'RELEVANTE'}
                   />
                   <IconeContagem
-                    icone={BsArrowDownSquareFill}
+                    icone={FaSquareCaretDown }
                     contagem={qtIrrelevante}
                     cor={'rgba(243,93,63,0.82)'}
                     isClicado={usuarioInteracaoIdIrrelevante}
@@ -196,12 +215,12 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
                     tipo={'IRRELEVANTE'}
                   />
                   <IconeContagem
-                    icone={BsCheckSquareFill}
+                    icone={FaSquareXmark  }
                     contagem={qtConcluido}
-                    cor={'rgba(65,195,20,0.82)'}
+                    cor={'#e6b000'}
                     isClicado={usuarioInteracaoIdConcluido}
                     interagir={interagirConcluido}
-                    tooltip={'Concluído'}
+                    tooltip={'Não está lá'}
                     tipo={'CONCLUIDO'}
                   />
                 </div>

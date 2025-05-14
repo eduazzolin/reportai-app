@@ -57,7 +57,6 @@ export default function RelatoriosPublicos() {
   const [datasetCategorias, setDatasetCategorias] = React.useState([]);
   const [datasetStatus, setDatasetStatus] = React.useState([]);
   const [totalRegistros, setTotalRegistros] = React.useState(0);
-  const [totalRegistrosAtivos, setTotalRegistrosAtivos] = React.useState(0);
 
   const service = new RelatorioService();
 
@@ -155,13 +154,13 @@ export default function RelatoriosPublicos() {
                   series ={[
                     {
                       dataKey: 'ativo',
-                      label: 'Ativo',
+                      label: 'Aberto',
                       stack: 'total',
                       color: '#f1c553',
                     },
                     {
                       dataKey: 'concluido',
-                      label: 'Concluído',
+                      label: 'Resolvido',
                       stack: 'total',
                       color: '#279700D1',
                     },
@@ -191,13 +190,13 @@ export default function RelatoriosPublicos() {
                 series={[
                     {
                       dataKey: 'ativo',
-                      label: 'Ativo',
+                      label: 'Aberto',
                       stack: 'total',
                       color: '#f1c553',
                     },
                     {
                       dataKey: 'concluido',
-                      label: 'Concluído',
+                      label: 'Resolvido',
                       stack: 'total',
                       color: '#279700D1',
                     },

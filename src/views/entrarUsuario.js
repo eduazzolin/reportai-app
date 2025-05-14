@@ -18,15 +18,18 @@ export default function EntrarUsuario() {
     document.title = 'Reportaí - Login';
   }, []);
 
+  /**
+   * Valida se os campos obrigatórios estão preenchidos e chama o serviço de autenticação.
+   */
   const entrar = () => {
 
     if (!usuario.email) {
       mensagemErro('O campo email é obrigatório.')
-      return false;
+      return;
     }
     if (!usuario.senha) {
       mensagemErro('O campo senha é obrigatório.')
-      return false;
+      return;
     }
 
     service
@@ -81,6 +84,7 @@ export default function EntrarUsuario() {
             {/*botão*/}
             <div className="d-flex gap-2 flex-column align-items-center">
               <Button className="mt-3" variant="warning" onClick={() => entrar()}> Entrar </Button>
+              <div onClick={() => navigate('/redefinir-senha')} className='link'>Esqueci a senha</div>
               <div onClick={() => navigate('/cadastrar-usuario')} className='link'>Cadastre-se</div>
             </div>
 

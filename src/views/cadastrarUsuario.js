@@ -22,7 +22,7 @@ export default function CadastrarUsuario() {
     usuario.role = 'USUARIO';
 
     try {
-      service.validar(usuario);
+      service.validar(usuario, 'completo');
     } catch (erro) {
       const msgs = erro.mensagens;
       msgs.forEach(msg => mensagemErro(msg));

@@ -162,7 +162,7 @@ export default function CadastrarRegistro() {
 
           try {
             await imagemService.salvar(formData);
-            mensagemSucesso('Imagem cadastrada com sucesso!');
+            console.log('Imagem cadastrada com sucesso!');
           } catch (error) {
             mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar imagem');
             await registroService.deletar(data.id);

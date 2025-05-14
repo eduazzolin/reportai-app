@@ -106,7 +106,7 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
                 <IconeCrudSemTexto
                   icone={MdHelpCenter}
                   size='25px'
-                  tooltip='Quando alguém marca seu registro como concluído, você tem 30 dias para confirmar a conclusão ou ignorá-la.'
+                  tooltip='Se 5 pessoas marcarem seu registro como "Não está lá", ele será automaticamente resolvido em 30 dias, a menos que você ignore a conclusão automática.'
                 />
 
                 <IconeCrud
@@ -118,7 +118,7 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
 
                 <IconeCrud
                   icone={BsCheckSquareFill}
-                  texto={'Concluir'}
+                  texto={'Resolver'}
                   cor={'rgba(39,151,0,0.82)'}
                   funcao={() => funcaoConcluir(registro.id)}
                 />
@@ -146,7 +146,7 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
                 />
                 <IconeCrud
                   icone={BsCheckSquareFill}
-                  texto={'Concluir'}
+                  texto={'Resolver'}
                   cor={'rgba(39,151,0,0.82)'}
                   funcao={() => funcaoConcluir(registro.id)}
                 />
