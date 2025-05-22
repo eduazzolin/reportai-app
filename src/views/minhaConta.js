@@ -123,7 +123,7 @@ export default function MinhaConta() {
       })
   }
 
-
+  console.log(service.hashSenha('adm@reportai.com'), 'adm', service.hashSenha('user@reportai.com'));
   return (
     <div className='container'>
 

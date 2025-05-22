@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import {mensagemErro, mensagemSucesso} from "../components/toastr";
 import DataTable from "react-data-table-component";
@@ -11,6 +11,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {RegistroService} from "../app/service/registroService";
 import Form from "react-bootstrap/Form";
 import {categoriaPrototype, CategoriaService} from "../app/service/categoriaService";
+import {AuthContext} from "../main/provedorAutenticacao";
 
 export default function AdminRegistros() {
   /**
@@ -22,6 +23,7 @@ export default function AdminRegistros() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const authContext = useContext(AuthContext);
 
   const statusPermitidos = [{id: '', nome: 'Qualquer status'}, {id: 'ATIVO', nome: 'Abertos'}, {id: 'CONCLUIDO', nome: 'Resolvidos'}];
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
@@ -128,7 +130,7 @@ export default function AdminRegistros() {
 
       // itens da tabela
       // const headers = colunas.filter(coluna => coluna.name !== 'Ações').map(coluna => coluna.name);
-      const headers = ['ID', 'Título', 'ID Usuário', 'Data de\nCriação', 'Data de\nModificação', 'Data de\nConclusão', 'Categoria', 'Bairro', 'Data Conclusão Programada', 'Qtd.\nRelevante', 'Qtd.\nIrrelevante', 'Qtd.\nConcluído'];
+      const headers = ['ID', 'Título', 'ID Usuário', 'Data de\nCriação', 'Data de\nModificação', 'Data de\nConclusão', 'Categoria', 'Bairro', 'Data Conclusão Programada', 'Qtd.\nRelevante', 'Qtd.\nIrrelevante', 'Qtd.\nNão está lá'];
       const dados = registrosCompletos.map(registro => [
         registro.id,
         registro.titulo,
@@ -138,7 +140,7 @@ export default function AdminRegistros() {
         registro.dtConclusao ? new Date(registro.dtConclusao).toLocaleString() : '',
         registro.categoria,
         registro.bairro,
-        registro.dtAteConclusao? new Date(registro.dtAteConclusao).toLocaleString() : '',
+        registro.dtAteConclusao ? new Date(registro.dtAteConclusao).toLocaleString() : '',
         registro.qtRelevante,
         registro.qtIrrelevante,
         registro.qtConcluido
@@ -282,7 +284,7 @@ export default function AdminRegistros() {
     },
     {
       name: 'Data de Resolução Programada',
-      selector: row => row.dtAteConclusao? new Date(row.dtAteConclusao).toLocaleString() : '',
+      selector: row => row.dtAteConclusao ? new Date(row.dtAteConclusao).toLocaleString() : '',
       reorder: true,
       wrap: true,
       sortable: true,
@@ -326,7 +328,7 @@ export default function AdminRegistros() {
           <IconeCrudSemTexto icone={MdEditSquare} cor={'#bf9600'} funcao={() => handleEditar(row)} tooltip='Editar'/>
           <IconeCrudSemTexto icone={BsFillXSquareFill} cor={'#D3310ED1'} funcao={() => handleRemover(row)} tooltip='Remover'/>
           {row.dtConclusao ? '' :
-          <IconeCrudSemTexto icone={BsCheckSquareFill} cor={'rgba(39,151,0,0.82)'} funcao={() => handleConcluir(row)} tooltip='Marcar como resolvido'/>}
+            <IconeCrudSemTexto icone={BsCheckSquareFill} cor={'rgba(39,151,0,0.82)'} funcao={() => handleConcluir(row)} tooltip='Marcar como resolvido'/>}
         </div>
       ),
       minWidth: '140px',
@@ -354,136 +356,151 @@ export default function AdminRegistros() {
 
 
   return (
-    <div className='container'>
+    <div>
+      {
+        !authContext.isAdmin
 
-      {/* ---------------------- popups ---------------------- */}
-      <PopupConfirmacao
-        visivel={visibilidadePopupRemocao}
-        titulo="Remover registro"
-        mensagem={`Tem certeza que deseja remover o registro "${linhaSelecionada?.titulo ?? ''}"?`}
-        onConfirm={removerRegistro}
-        onCancel={() => setVisibilidadePopupRemocao(false)}
-      />
+          ?
 
-      <PopupConfirmacao
-        visivel={visibilidadePopupConclusao}
-        titulo="Concluir registro"
-        mensagem={`Tem certeza que deseja concluir o registro "${linhaSelecionada?.titulo ?? ''}"?`}
-        onConfirm={concluirRegistro}
-        onCancel={() => setVisibilidadePopupConclusao(false)}
-      />
+          <div className="row mt-5">
+            <div className="col-12 d-flex flex-column justify-content-center align-items-center">
+              <img src="/logo.png" alt="Logo Reportaí" width={200} className='mt-5 mb-3'/>
+              <h2>Você não tem permissão para acessar essa página.</h2>
+            </div>
+          </div>
 
-      {/* ---------------------- titulo ---------------------- */}
-      <div className="row mt-3">
-        <div className="col-12 d-flex justify-content-between">
-          <h2>Gerenciar registros</h2>
-          <button className="btn btn-warning text-nowrap flex-grow-0 my-auto" onClick={exportarPDF}>Exportar PDF</button>
-        </div>
-      </div>
+          :
 
-      {/* ---------------------- tabela e filtros ---------------------- */}
-      <div className="row">
+          <div className='container'>
+            {/* ---------------------- popups ---------------------- */}
+            <PopupConfirmacao
+              visivel={visibilidadePopupRemocao}
+              titulo="Remover registro"
+              mensagem={`Tem certeza que deseja remover o registro "${linhaSelecionada?.titulo ?? ''}"?`}
+              onConfirm={removerRegistro}
+              onCancel={() => setVisibilidadePopupRemocao(false)}
+            />
 
-        {/*pesquisa e exportar*/}
-        {/*id ou titulo*/}
-        <div className="col-12 my-2 d-flex gap-2 p-2">
-          <Form.Group className="mb-3 flex-grow-1">
-            <Form.Label>ID ou Título do registro</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Digite o ID ou Título do registro"
-              onKeyUp={(event) => setTimeout(() => setPesquisaIdNome(event.target.value), 1000)}/>
-          </Form.Group>
+            <PopupConfirmacao
+              visivel={visibilidadePopupConclusao}
+              titulo="Concluir registro"
+              mensagem={`Tem certeza que deseja concluir o registro "${linhaSelecionada?.titulo ?? ''}"?`}
+              onConfirm={concluirRegistro}
+              onCancel={() => setVisibilidadePopupConclusao(false)}
+            />
 
-          {/*id do usuário*/}
-          <Form.Group className="mb-3 flex-grow-0">
-            <Form.Label>ID do usuário</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Digite o ID do usuário"
-              onKeyUp={(event) => setTimeout(() => setPesquisaIdUsuario(event.target.value), 1000)}/>
-          </Form.Group>
+            {/* ---------------------- titulo ---------------------- */}
+            <div className="row mt-3">
+              <div className="col-12 d-flex justify-content-between">
+                <h2>Gerenciar registros</h2>
+                <button className="btn btn-warning text-nowrap flex-grow-0 my-auto" onClick={exportarPDF}>Exportar PDF</button>
+              </div>
+            </div>
 
-          {/*bairro*/}
-          <Form.Group className="mb-3 flex-grow-0">
-            <Form.Label>Bairro</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Digite o bairro"
-              onKeyUp={(event) => setTimeout(() => setPesquisaBairro(event.target.value), 1000)}/>
-          </Form.Group>
+            {/* ---------------------- tabela e filtros ---------------------- */}
+            <div className="row">
 
-          {/*categoria*/}
-          <Form.Group className="mb-3 flex-grow-0">
-            <Form.Label>Categoria</Form.Label>
-            <Form.Select
-              aria-label="Categoria"
-              value={pesquisaCategoria}
-              onChange={event => {
-                const categoriaSelecionada = categorias.find(cat => cat.id == event.target.value);
-                setPesquisaCategoria(categoriaSelecionada.id)
-              }}>
+              {/*pesquisa e exportar*/}
+              {/*id ou titulo*/}
+              <div className="col-12 my-2 d-flex gap-2 p-2">
+                <Form.Group className="mb-3 flex-grow-1">
+                  <Form.Label>ID ou Título do registro</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Digite o ID ou Título do registro"
+                    onKeyUp={(event) => setTimeout(() => setPesquisaIdNome(event.target.value), 1000)}/>
+                </Form.Group>
 
-              {/*opções*/}
-              {categorias.map((categoria, index) => (
-                <option key={index} value={categoria.id}>{categoria.nome}</option>
-              ))}
-            </Form.Select>
-          </Form.Group>
+                {/*id do usuário*/}
+                <Form.Group className="mb-3 flex-grow-0">
+                  <Form.Label>ID do usuário</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Digite o ID do usuário"
+                    onKeyUp={(event) => setTimeout(() => setPesquisaIdUsuario(event.target.value), 1000)}/>
+                </Form.Group>
 
-          {/*status*/}
-          <Form.Group className="mb-3 flex-grow-0">
-            <Form.Label>Status</Form.Label>
-            <Form.Select
-              aria-label="Status"
-              value={pesquisaStatus}
-              onChange={event => {
-                const statusSelecionado = statusPermitidos.find(cat => cat.id == event.target.value);
-                setPesquisaStatus(statusSelecionado.id)
-                console.log(statusSelecionado.id)
-              }}>
+                {/*bairro*/}
+                <Form.Group className="mb-3 flex-grow-0">
+                  <Form.Label>Bairro</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Digite o bairro"
+                    onKeyUp={(event) => setTimeout(() => setPesquisaBairro(event.target.value), 1000)}/>
+                </Form.Group>
 
-              {/*opções*/}
-              {statusPermitidos.map((status, index) => (
-                <option key={index} value={status.id}>{status.nome}</option>
-              ))}
-            </Form.Select>
-          </Form.Group>
+                {/*categoria*/}
+                <Form.Group className="mb-3 flex-grow-0">
+                  <Form.Label>Categoria</Form.Label>
+                  <Form.Select
+                    aria-label="Categoria"
+                    value={pesquisaCategoria}
+                    onChange={event => {
+                      const categoriaSelecionada = categorias.find(cat => cat.id == event.target.value);
+                      setPesquisaCategoria(categoriaSelecionada.id)
+                    }}>
 
-        </div>
+                    {/*opções*/}
+                    {categorias.map((categoria, index) => (
+                      <option key={index} value={categoria.id}>{categoria.nome}</option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
 
-        {/*tabela*/}
-        <DataTable
-          columns={colunas}
-          data={registros}
-          fixedHeader
-          pagination
-          responsive
-          dense
-          paginationServer
-          fixedHeaderScrollHeight={'calc(100vh - 284px)'}
-          paginationTotalRows={totalRegistros}
-          paginationPerPage={limite}
-          paginationDefaultPage={pagina + 1}
-          paginationComponentOptions={{
-            rowsPerPageText: 'Linhas por página',
-            rangeSeparatorText: 'de',
-          }}
-          paginationRowsPerPageOptions={[30, 70, 100]}
-          onChangePage={(page) => setPagina(page - 1)}
-          onChangeRowsPerPage={(newLimit, page) => {
-            setLimite(newLimit);
-            setPagina(page - 1);
-          }}
-          highlightOnHover
-          onSort={(column, sortDirection) => {
-            setOrdenacao(`${column.sortField ?? 'dtCriacao'} ${sortDirection}`);
-          }}
-        />
-      </div>
+                {/*status*/}
+                <Form.Group className="mb-3 flex-grow-0">
+                  <Form.Label>Status</Form.Label>
+                  <Form.Select
+                    aria-label="Status"
+                    value={pesquisaStatus}
+                    onChange={event => {
+                      const statusSelecionado = statusPermitidos.find(cat => cat.id == event.target.value);
+                      setPesquisaStatus(statusSelecionado.id)
+                      console.log(statusSelecionado.id)
+                    }}>
+
+                    {/*opções*/}
+                    {statusPermitidos.map((status, index) => (
+                      <option key={index} value={status.id}>{status.nome}</option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+
+              </div>
+
+              {/*tabela*/}
+              <DataTable
+                columns={colunas}
+                data={registros}
+                fixedHeader
+                pagination
+                responsive
+                dense
+                paginationServer
+                fixedHeaderScrollHeight={'calc(100vh - 284px)'}
+                paginationTotalRows={totalRegistros}
+                paginationPerPage={limite}
+                paginationDefaultPage={pagina + 1}
+                paginationComponentOptions={{
+                  rowsPerPageText: 'Linhas por página',
+                  rangeSeparatorText: 'de',
+                }}
+                paginationRowsPerPageOptions={[30, 70, 100]}
+                onChangePage={(page) => setPagina(page - 1)}
+                onChangeRowsPerPage={(newLimit, page) => {
+                  setLimite(newLimit);
+                  setPagina(page - 1);
+                }}
+                highlightOnHover
+                onSort={(column, sortDirection) => {
+                  setOrdenacao(`${column.sortField ?? 'dtCriacao'} ${sortDirection}`);
+                }}
+              />
+            </div>
 
 
+          </div>
+      }
     </div>
-
   );
 }
