@@ -16,7 +16,7 @@ import {useNavigate} from "react-router-dom";
 export default function Home() {
 
   const ZOOM_SELECAO = 18;
-  const FILTRO_STATUS_REGISTRO = [{label: 'Qualquer status', value: 'AND 0=0'}, {label: 'Abertos', value: 'AND NOT is_concluido'}, {label: 'Resolvidos', value: 'AND is_concluido'}]
+  const FILTRO_STATUS_REGISTRO = [{label: 'Abertos', value: 'AND NOT is_concluido'}, {label: 'Resolvidos', value: 'AND is_concluido'}, {label: 'Qualquer status', value: 'AND 0=0'}]
 
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ export default function Home() {
   const [distanciaVisivel, setdistanciaVisivel] = useState(calcularDistanciaComBaseNoZoom(13));
 
   const [ordenacaoSelecionada, setOrdenacaoSelecionada] = useState(ORDENACOES_PERMITIDAS[0]);
-  const [filtros, setFiltros] = useState(['AND 0=0', 'AND 0=0']);
+  const [filtros, setFiltros] = useState(['AND 0=0', FILTRO_STATUS_REGISTRO[0]['value']]);
   const [categorias, setCategorias] = useState([categoriaPrototype])
   const [registros, setRegistros] = useState([]);
 

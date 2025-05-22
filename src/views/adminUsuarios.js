@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import {mensagemErro, mensagemSucesso} from "../components/toastr";
 import UsuarioService from "../app/service/usuarioService";
@@ -11,6 +11,7 @@ import IconeCrudSemTexto from "../components/iconeCrudSemTexto/iconeCrudSemTexto
 import {BsFillXSquareFill, BsFolderFill} from "react-icons/bs";
 import {useLocation, useNavigate} from "react-router-dom";
 import Form from "react-bootstrap/Form";
+import {AuthContext} from "../main/provedorAutenticacao";
 
 export default function AdminUsuarios() {
   /**
@@ -21,6 +22,7 @@ export default function AdminUsuarios() {
    */
 
   const navigate = useNavigate();
+  const authContext = useContext(AuthContext);
 
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
@@ -230,71 +232,87 @@ export default function AdminUsuarios() {
 
 
   return (
-    <div className='container'>
+    <div>
+      {
+        !authContext.isAdmin
 
-      {/* ---------------------- popups ---------------------- */}
-      <PopupConfirmacao
-        visivel={visibilidadePopupRemocao}
-        titulo="Remover usuário"
-        mensagem={`Tem certeza que deseja remover o usuário "${linhaSelecionada?.nome ?? ''}"? os registros associados a ele não serão removidos.`}
-        onConfirm={removerUsuario}
-        onCancel={() => setVisibilidadePopupRemocao(false)}
-      />
+          ?
 
-      {/* ---------------------- titulo ---------------------- */}
-      <div className="row mt-3">
-        <div className="col-12 d-flex justify-content-between my-auto">
-          <h2>Gerenciar usuários</h2>
-          <button className="btn btn-warning text-nowrap my-auto" onClick={exportarPDF}>Exportar PDF</button>
-        </div>
-      </div>
+          <div className="row mt-5">
+            <div className="col-12 d-flex flex-column justify-content-center align-items-center">
+              <img src="/logo.png" alt="Logo Reportaí" width={200} className='mt-5 mb-3'/>
+              <h2>Você não tem permissão para acessar essa página.</h2>
+            </div>
+          </div>
 
-      {/* ---------------------- tabela ---------------------- */}
-      <div className="row">
+          :
 
-        {/*pesquisa e exportar*/}
-        <div className="col-12 my-2">
-          <Form.Group className="mb-3 flex-grow-1 ">
-            <Form.Label>Pesquisar usuários por ID, nome, email ou CPF</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Digite o ID, nome, email ou CPF do usuário"
-              onKeyUp={(event) => setTimeout(() => setTermo(event.target.value), 1000)}/>
-          </Form.Group>
-        </div>
+          <div className='container'>
 
-        {/*tabela*/}
-        <DataTable
-          columns={colunas}
-          data={usuarios}
-          fixedHeader
-          pagination
-          responsive
-          dense
-          paginationServer
-          fixedHeaderScrollHeight={'calc(100vh - 284px)'}
-          paginationTotalRows={totalUsuarios}
-          paginationPerPage={limite}
-          paginationDefaultPage={pagina + 1}
-          paginationComponentOptions={{
-            rowsPerPageText: 'Linhas por página',
-            rangeSeparatorText: 'de',
-          }}
-          paginationRowsPerPageOptions={[10, 50, 100]}
-          onChangePage={(page) => setPagina(page - 1)}
-          onChangeRowsPerPage={(newLimit, page) => {
-            setLimite(newLimit);
-            setPagina(page - 1);
-          }}
-          highlightOnHover
-          onSort={(column, sortDirection) => {
-            setOrdenacao(`${column.sortField ?? 'nome'} ${sortDirection}`);
-          }}
-        />
-      </div>
+            {/* ---------------------- popups ---------------------- */}
+            <PopupConfirmacao
+              visivel={visibilidadePopupRemocao}
+              titulo="Remover usuário"
+              mensagem={`Tem certeza que deseja remover o usuário "${linhaSelecionada?.nome ?? ''}"? os registros associados a ele não serão removidos.`}
+              onConfirm={removerUsuario}
+              onCancel={() => setVisibilidadePopupRemocao(false)}
+            />
+
+            {/* ---------------------- titulo ---------------------- */}
+            <div className="row mt-3">
+              <div className="col-12 d-flex justify-content-between my-auto">
+                <h2>Gerenciar usuários</h2>
+                <button className="btn btn-warning text-nowrap my-auto" onClick={exportarPDF}>Exportar PDF</button>
+              </div>
+            </div>
+
+            {/* ---------------------- tabela ---------------------- */}
+            <div className="row">
+
+              {/*pesquisa e exportar*/}
+              <div className="col-12 my-2">
+                <Form.Group className="mb-3 flex-grow-1 ">
+                  <Form.Label>Pesquisar usuários por ID, nome, email ou CPF</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Digite o ID, nome, email ou CPF do usuário"
+                    onKeyUp={(event) => setTimeout(() => setTermo(event.target.value), 1000)}/>
+                </Form.Group>
+              </div>
+
+              {/*tabela*/}
+              <DataTable
+                columns={colunas}
+                data={usuarios}
+                fixedHeader
+                pagination
+                responsive
+                dense
+                paginationServer
+                fixedHeaderScrollHeight={'calc(100vh - 284px)'}
+                paginationTotalRows={totalUsuarios}
+                paginationPerPage={limite}
+                paginationDefaultPage={pagina + 1}
+                paginationComponentOptions={{
+                  rowsPerPageText: 'Linhas por página',
+                  rangeSeparatorText: 'de',
+                }}
+                paginationRowsPerPageOptions={[10, 50, 100]}
+                onChangePage={(page) => setPagina(page - 1)}
+                onChangeRowsPerPage={(newLimit, page) => {
+                  setLimite(newLimit);
+                  setPagina(page - 1);
+                }}
+                highlightOnHover
+                onSort={(column, sortDirection) => {
+                  setOrdenacao(`${column.sortField ?? 'nome'} ${sortDirection}`);
+                }}
+              />
+            </div>
 
 
+          </div>
+      }
     </div>
-
   );
 }

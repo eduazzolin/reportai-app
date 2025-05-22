@@ -150,7 +150,7 @@ export default function RelatoriosPublicos() {
                   dataset={datasetBairros}
                   xAxis={[{scaleType: 'linear', tickMinStep: 1}]}
                   yAxis={[{scaleType: 'band', dataKey: 'bairro', width: 130, barSize: 35}]}
-                  height={datasetBairros.length * 40}
+                  height={(datasetBairros.length+2) * 40}
                   series ={[
                     {
                       dataKey: 'ativo',
@@ -222,8 +222,8 @@ export default function RelatoriosPublicos() {
                     arcLabelRadius: '60%',
                     innerRadius: '40%',
                     data: [
-                      {id: 0, value: datasetStatus[0].quantidade, label: datasetStatus[0].status, color: '#f1c553'},
-                      {id: 1, value: datasetStatus[1].quantidade, label: datasetStatus[1].status, color: '#279700D1'},
+                      {id: 0, value: datasetStatus[0]?.quantidade ?? 0, label: datasetStatus[0]?.status ?? 'Aberto', color: '#f1c553'},
+                      {id: 1, value: datasetStatus[1]?.quantidade ?? 0, label: datasetStatus[1]?.status ?? 'Resolvido', color: '#279700D1'},
                     ],
                   },
                 ]}
