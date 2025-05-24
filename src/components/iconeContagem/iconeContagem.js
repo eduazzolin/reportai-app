@@ -17,7 +17,7 @@ export default function IconeContagem({icone: Icone, contagem, tooltip, isClicad
       delay={{show: 50, hide: 50}}
       overlay={renderTooltip}
     >
-      <div className="d-flex container-botao flex-shrink-0 border p-1 rounded">
+      <div className="d-flex container-botao flex-shrink-0 border p-1 rounded shadow-sm">
 
         <Icone
           className={`flex-shrink-0  icon-hover `}

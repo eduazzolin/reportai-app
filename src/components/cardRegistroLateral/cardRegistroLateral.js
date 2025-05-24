@@ -135,7 +135,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
       <div className="row p-2 overflow-hidden">
 
         {/*imagem*/}
-        <div className="col-4 p-0 ">
+        <div className="col-sm-4 p-0 ">
           <div>
             {registro.imagens[0]?.caminho ? (
               <img src={registro.imagens[0].caminho} className="img_thumb rounded clicavel border" onClick={irParaRegistro} alt="..."/>
@@ -146,7 +146,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
         </div>
 
         {/*texto*/}
-        <div className="col-8 ps-3">
+        <div className="col-sm-8 ps-3">
 
           {/*titulo e localização*/}
           <div className="row">
@@ -194,7 +194,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
 
                 :
 
-                <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-sm-1 ">
+                <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-2 ">
                   <IconeMapa registro={registro} focarMapaNoRegistro={focarMapaNoRegistro}/>
                   <IconeContagem
                     icone={FaSquareCaretUp }

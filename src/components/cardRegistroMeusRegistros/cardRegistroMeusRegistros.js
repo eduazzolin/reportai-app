@@ -29,7 +29,7 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
       <div className="row p-2 overflow-hidden">
 
         {/* ---------------------- imagens ---------------------- */}
-        <div className="col-4 p-0 ">
+        <div className="col-sm-4 p-0 ">
           <div>
             {registro.imagens[0]?.caminho ? (
               <img src={registro.imagens[0].caminho} className="mr_img_thumb  rounded clicavel border" onClick={goToRegistro} alt="..."/>
@@ -40,7 +40,7 @@ export default function CardRegistroMeusRegistros({registro, funcaoRemover, func
         </div>
 
         {/* ---------------------- texto ---------------------- */}
-        <div className="col-8 ps-3">
+        <div className="col-sm-8 ps-3">
 
           {/*titulo e localização*/}
           <div className="row">
