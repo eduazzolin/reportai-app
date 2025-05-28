@@ -77,7 +77,7 @@ export default function Home() {
    * @returns {number} distância em km
    */
   function calcularDistanciaComBaseNoZoom(zoomLevel) {
-    const baseDistancia = 50000;
+    const baseDistancia = 100000;
     return (baseDistancia * Math.pow(2, -(zoomLevel - 11))) / 1000;
   }
 
@@ -230,6 +230,10 @@ export default function Home() {
                 </div>
               ))
             }
+            <div className="col-12 justify-content-center align-items-center d-flex text-center my-5">
+              🗺️️ <br/>
+              Experimente navegar no mapa para obter mais registros! <br/>
+            </div>
           </div>
 
           {

@@ -66,6 +66,10 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
         .then(response => {
           setUsuarioInteracaoIdRelevante(response.data.id);
           setQtRelevante(qtRelevante + 1);
+          if (usuarioInteracaoIdIrrelevante) {
+            setUsuarioInteracaoIdIrrelevante(null);
+            setQtIrrelevante(qtIrrelevante - 1);
+          }
         }).catch(error => {
         mensagemErro(error?.response?.data?.descricao ?? 'Erro ao interagir.');
       });
@@ -95,6 +99,10 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
         .then(response => {
           setUsuarioInteracaoIdIrrelevante(response.data.id);
           setQtIrrelevante(qtIrrelevante + 1);
+          if (usuarioInteracaoIdRelevante) {
+            setUsuarioInteracaoIdRelevante(null);
+            setQtRelevante(qtRelevante - 1);
+          }
         }).catch(error => {
         mensagemErro(error?.response?.data?.descricao ?? 'Erro ao interagir.');
       });
@@ -197,7 +205,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
                 <div className="col-12 d-flex align-items-center justify-content-center justify-content-md-end gap-2 ">
                   <IconeMapa registro={registro} focarMapaNoRegistro={focarMapaNoRegistro}/>
                   <IconeContagem
-                    icone={FaSquareCaretUp }
+                    icone={FaSquareCaretUp}
                     contagem={qtRelevante}
                     isClicado={usuarioInteracaoIdRelevante}
                     cor={'rgba(65,195,20,0.82)'}
@@ -206,7 +214,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
                     tipo={'RELEVANTE'}
                   />
                   <IconeContagem
-                    icone={FaSquareCaretDown }
+                    icone={FaSquareCaretDown}
                     contagem={qtIrrelevante}
                     cor={'rgba(243,93,63,0.82)'}
                     isClicado={usuarioInteracaoIdIrrelevante}
@@ -215,7 +223,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
                     tipo={'IRRELEVANTE'}
                   />
                   <IconeContagem
-                    icone={FaSquareXmark  }
+                    icone={FaSquareXmark}
                     contagem={qtConcluido}
                     cor={'#e6b000'}
                     isClicado={usuarioInteracaoIdConcluido}
