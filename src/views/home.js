@@ -236,18 +236,6 @@ export default function Home() {
             </div>
           </div>
 
-          {
-            registros.length > 0 ? '' :
-              <div className={'row p-3 h-50'}>
-                <div className="col-12 justify-content-center align-items-center d-flex text-center">
-                  ℹ️ <br/>
-                  Nenhum registro encontrado! <br/>
-                  Experimente navegar no mapa ou alterar os filtros.
-                </div>
-              </div>
-          }
-
-
         </div>
 
 
