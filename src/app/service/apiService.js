@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const httpClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || '',
+  baseURL: process.env.REACT_APP_API_URL || 'https://reportai-server-168838082437.us-central1.run.app',
   withCredentials: true
 });
 
