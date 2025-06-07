@@ -98,8 +98,12 @@ export default class UsuarioService extends ApiService {
 
   }
 
-  autenticar(credenciais) {
-    credenciais.senha = this.hashSenha(credenciais.senha);
+  autenticar(cred) {
+    const credenciais = {
+      email: cred.email,
+      senha: this.hashSenha(cred.senha),
+      codigoSegundoFator: cred.codigoSegundoFator || null
+    }
     return this.post('/autenticar', credenciais)
   }
 
