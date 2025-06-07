@@ -12,10 +12,9 @@ import {RegistroService} from "../app/service/registroService";
 import Form from "react-bootstrap/Form";
 import {categoriaPrototype, CategoriaService} from "../app/service/categoriaService";
 import {AuthContext} from "../main/provedorAutenticacao";
-import {HiUserCircle} from "react-icons/hi";
 import {FaUserAlt} from "react-icons/fa";
 
-export function AdminRegistros() {
+export default function AdminRegistros() {
   /**
    * https://www.npmjs.com/package/react-data-table-component
    * https://www.youtube.com/watch?v=3oHUtG0cjfY&ab_channel=CodeWithYousaf

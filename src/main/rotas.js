@@ -10,7 +10,7 @@ import EntrarUsuario from "../views/entrarUsuario";
 import {AuthContext} from "./provedorAutenticacao";
 import MeusRegistros from "../views/meusRegistros";
 import AdminUsuarios from "../views/adminUsuarios";
-import {AdminRegistros} from "../views/adminRegistros";
+import AdminRegistros from "../views/adminRegistros";
 import RelatoriosPublicos from "../views/relatoriosPublicos";
 import Sobre from "../views/sobre";
 import RedefinirSenha from "../views/redefinirSenha";
