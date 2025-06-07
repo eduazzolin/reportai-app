@@ -225,6 +225,21 @@ export default function CadastrarRegistro() {
 
   }
 
+  const preencherRegitroDev = () => {
+    setRegistro({
+      titulo: 'Buraco na rua',
+      descricao: 'Há um buraco grande na rua que está causando problemas para os motoristas e pedestres.',
+      latitude: -27.57841321989771,
+      longitude: -48.538419398201704,
+      bairro: 'Agronômica',
+      localizacao: 'Agronômica',
+      categoria: categorias[0],
+      imagens: []
+    });
+    setIconeCategoriaSelecionada(categorias[0].icone);
+    setCheckRegras(true)
+  }
+
   return (
     <div className='container'>
 
@@ -265,8 +280,8 @@ export default function CadastrarRegistro() {
 
       {/* ---------------------- titulo ---------------------- */}
       <div className="row mt-3">
-        <div className="col-12">
-          <h2>Crie um novo registro</h2>
+        <div className="col-12 d-flex ">
+          <h2>Crie um novo registro</h2> <a onClick={preencherRegitroDev} className='text-white'>dev</a>
         </div>
       </div>
 
