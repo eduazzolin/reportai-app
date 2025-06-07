@@ -32,8 +32,8 @@ export class ImagemService extends ApiService {
       }
 
       // tamanho
-      if (imagem.size > 1024 * 1024 * 5) {
-        erros.push("A imagem deve ter no máximo 5MB.")
+      if (imagem.size > 1024 * 1024 * 10) {
+        erros.push("A imagem deve ter no máximo 10MB.")
       }
     }
 
