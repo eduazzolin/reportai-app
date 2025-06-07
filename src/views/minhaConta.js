@@ -9,6 +9,8 @@ import LocalStorageService from "../app/service/localStorageService";
 import {USUARIO_LOGADO} from "../app/service/authService";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import Accordion from 'react-bootstrap/Accordion';
+import IconeCrudSemTexto from "../components/iconeCrudSemTexto/iconeCrudSemTexto";
+import {MdHelpCenter} from "react-icons/md";
 
 export default function MinhaConta() {
 
@@ -123,7 +125,6 @@ export default function MinhaConta() {
       })
   }
 
-  console.log(service.hashSenha('adm@reportai.com'), 'adm', service.hashSenha('user@reportai.com'));
   return (
     <div className='container'>
 
@@ -176,6 +177,21 @@ export default function MinhaConta() {
                 onChange={event => setUsuario({...usuario, email: event.target.value})}/>
             </Form.Group>
 
+            {/*check de segundo fator*/}
+            <div className='border rounded p-2 d-flex gap-2 align-items-center'>
+              <Form.Check
+                type='checkbox'
+                label='Ativar segundo fator de autenticação'
+                checked={usuario.segundoFator}
+                onChange={event => setUsuario({...usuario, segundoFator: event.target.checked})}
+              />
+              <IconeCrudSemTexto
+                icone={MdHelpCenter}
+                size='20px'
+                tooltip='Ao fazer login, você precisará inserir um código enviado para o seu email cadastrado, além da sua senha.'
+              />
+            </div>
+
             {/*botão*/}
             <div className='d-flex gap-2'>
               <Button className="mt-3" variant="warning" onClick={() => editar()}> Salvar alterações </Button>
@@ -217,7 +233,7 @@ export default function MinhaConta() {
                 onChange={event => setUsuario({...usuario, senhaRepeticao: event.target.value})}/>
             </Form.Group>
 
-             {/*botão*/}
+            {/*botão*/}
             <div className='d-flex gap-2'>
               <Button className="mt-3" variant="warning" onClick={() => editarSenha()}> Alterar senha </Button>
               <Button className="mt-3" variant="danger" onClick={() => setAlterarSenha(false)}> Cancelar </Button>
