@@ -5,7 +5,6 @@ import UsuarioService from "../app/service/usuarioService";
 import DataTable from "react-data-table-component";
 import {jsPDF} from 'jspdf'
 import {autoTable} from 'jspdf-autotable'
-import IconeCrud from "../components/iconeCrud/iconeCrud";
 import {MdEditSquare} from "react-icons/md";
 import IconeCrudSemTexto from "../components/iconeCrudSemTexto/iconeCrudSemTexto";
 import {BsFillXSquareFill, BsFolderFill} from "react-icons/bs";
@@ -23,6 +22,7 @@ export default function AdminUsuarios() {
 
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
+  const location = useLocation();
 
   const [visibilidadePopupRemocao, setVisibilidadePopupRemocao] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
@@ -30,7 +30,8 @@ export default function AdminUsuarios() {
   const [pagina, setPagina] = useState(0);
   const [limite, setLimite] = useState(10);
   const [totalUsuarios, setTotalUsuarios] = useState(0);
-  const [termo, setTermo] = useState('');
+  const [termo, setTermo] = useState();
+  const [filtroId, setFiltroId] = useState(location.state?.usuarioFiltro);
   const [ordenacao, setOrdenacao] = useState('nome ASC');
 
   const service = new UsuarioService();
@@ -65,8 +66,7 @@ export default function AdminUsuarios() {
   }
 
   function buscarUsuarios() {
-    console.log(pagina, limite, termo, ordenacao)
-    service.buscarTodos(pagina, limite, termo, ordenacao)
+    service.buscarTodos(pagina, limite, termo, filtroId, ordenacao)
       .then(response => {
         setUsuarios(response.data.usuarios);
         setTotalUsuarios(response.data.totalUsuarios);
@@ -151,6 +151,19 @@ export default function AdminUsuarios() {
 
   const colunas = [
     {
+      name: 'Ações',
+      cell: (row) => (
+        <div className="d-flex gap-1">
+          <IconeCrudSemTexto icone={MdEditSquare} cor={'#bf9600'} funcao={() => handleEditar(row)} tooltip='Editar'/>
+          <IconeCrudSemTexto icone={BsFillXSquareFill} cor={'#D3310ED1'} funcao={() => handleRemover(row)} tooltip='Remover'/>
+          <IconeCrudSemTexto icone={BsFolderFill} cor={'rgba(0,93,151,0.82)'} funcao={() => {
+            navigate('/admin/registros', {state: {usuarioFiltro: row.id}});
+          }} tooltip='Registros'/>
+        </div>
+      ),
+      grow: 2,
+    },
+    {
       name: 'ID',
       selector: row => row.id,
       reorder: true,
@@ -209,26 +222,14 @@ export default function AdminUsuarios() {
       grow: 2,
       sortable: true,
       sortField: 'dtModificacao',
-    },
-    {
-      name: 'Ações',
-      cell: (row) => (
-        <div className="d-flex gap-1">
-          <IconeCrudSemTexto icone={MdEditSquare} cor={'#bf9600'} funcao={() => handleEditar(row)} tooltip='Editar'/>
-          <IconeCrudSemTexto icone={BsFillXSquareFill} cor={'#D3310ED1'} funcao={() => handleRemover(row)} tooltip='Remover'/>
-          <IconeCrudSemTexto icone={BsFolderFill} cor={'rgba(0,93,151,0.82)'} funcao={() => {
-            navigate('/admin/registros', {state: {usuarioFiltro: row.id}});
-          }} tooltip='Registros'/>
-        </div>
-      ),
-      grow: 2,
-    },
+    }
+
   ]
 
 
   useEffect(() => {
     buscarUsuarios();
-  }, [termo, pagina, limite, ordenacao]);
+  }, [termo, pagina, limite, ordenacao, filtroId]);
 
 
   return (
@@ -269,15 +270,24 @@ export default function AdminUsuarios() {
             {/* ---------------------- tabela ---------------------- */}
             <div className="row">
 
-              {/*pesquisa e exportar*/}
-              <div className="col-12 my-2">
-                <Form.Group className="mb-3 flex-grow-1 ">
-                  <Form.Label>Pesquisar usuários por ID, nome, email ou CPF</Form.Label>
+              {/*pesquisa*/}
+              <div className="col-12 my-2 d-flex gap-2">
+                <Form.Group className="mb-3">
+                  <Form.Label>ID</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Digite o ID, nome, email ou CPF do usuário"
-                    onKeyUp={(event) => setTimeout(() => setTermo(event.target.value), 1000)}/>
+                    value={filtroId}
+                    placeholder="Digite o ID do usuário"
+                    onChange={(event) => {setFiltroId(event.target.value); setPagina(0);}}/>
                 </Form.Group>
+                <Form.Group className="mb-3 flex-grow-1 ">
+                  <Form.Label>Nome, email ou CPF</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Digite o nome, email ou CPF do usuário"
+                    onChange={(event) => {setTermo(event.target.value); setPagina(0);}}/>
+                </Form.Group>
+
               </div>
 
               {/*tabela*/}

@@ -38,9 +38,10 @@ export default class UsuarioService extends ApiService {
     return this.delete(`/${id}`);
   }
 
-  buscarTodos(pagina, limite, termo, ordenacao) {
+  buscarTodos(pagina, limite, termo, id_usuario, ordenacao) {
     termo = termo || '';
-    return this.get('/admin?pagina=' + pagina + '&limite=' + limite + '&termo=' + termo + '&ordenacao=' + ordenacao);
+    id_usuario = id_usuario || '';
+    return this.get('/admin?pagina=' + pagina + '&limite=' + limite + '&termo=' + termo + '&id_usuario=' + id_usuario + '&ordenacao=' + ordenacao);
   }
 
   /**

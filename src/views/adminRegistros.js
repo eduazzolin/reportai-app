@@ -12,8 +12,10 @@ import {RegistroService} from "../app/service/registroService";
 import Form from "react-bootstrap/Form";
 import {categoriaPrototype, CategoriaService} from "../app/service/categoriaService";
 import {AuthContext} from "../main/provedorAutenticacao";
+import {HiUserCircle} from "react-icons/hi";
+import {FaUserAlt} from "react-icons/fa";
 
-export default function AdminRegistros() {
+export function AdminRegistros() {
   /**
    * https://www.npmjs.com/package/react-data-table-component
    * https://www.youtube.com/watch?v=3oHUtG0cjfY&ab_channel=CodeWithYousaf
@@ -43,7 +45,6 @@ export default function AdminRegistros() {
   const categoriaService = new CategoriaService();
   const service = new RegistroService();
 
-  const idUsuarioRecebido = location.state?.usuarioFiltro;
 
   useEffect(() => {
     document.title = 'Reportaí - Administração de Registros';
@@ -206,6 +207,22 @@ export default function AdminRegistros() {
 
   const colunas = [
     {
+      name: 'Ações',
+      cell: (row) => (
+        <div className="d-flex gap-1">
+          <IconeCrudSemTexto icone={MdEditSquare} cor={'#bf9600'} funcao={() => handleEditar(row)} tooltip='Editar'/>
+          <IconeCrudSemTexto icone={BsFillXSquareFill} cor={'#D3310ED1'} funcao={() => handleRemover(row)} tooltip='Remover'/>
+          <IconeCrudSemTexto icone={FaUserAlt} cor={'rgba(0,93,151,0.82)'} funcao={() => {
+            navigate('/admin/usuarios', {state: {usuarioFiltro: row.usuarioId}});
+          }} tooltip='Ver usuário'/>
+          {row.dtConclusao ? '' :
+            <IconeCrudSemTexto icone={BsCheckSquareFill} cor={'rgba(39,151,0,0.82)'} funcao={() => handleConcluir(row)} tooltip='Marcar como resolvido'/>}
+        </div>
+      ),
+      minWidth: '140px',
+
+    },
+    {
       name: 'ID',
       selector: row => row.id,
       reorder: true,
@@ -320,20 +337,7 @@ export default function AdminRegistros() {
       minWidth: '140px',
       sortField: 'qtConcluido',
       center: true,
-    },
-    {
-      name: 'Ações',
-      cell: (row) => (
-        <div className="d-flex gap-1">
-          <IconeCrudSemTexto icone={MdEditSquare} cor={'#bf9600'} funcao={() => handleEditar(row)} tooltip='Editar'/>
-          <IconeCrudSemTexto icone={BsFillXSquareFill} cor={'#D3310ED1'} funcao={() => handleRemover(row)} tooltip='Remover'/>
-          {row.dtConclusao ? '' :
-            <IconeCrudSemTexto icone={BsCheckSquareFill} cor={'rgba(39,151,0,0.82)'} funcao={() => handleConcluir(row)} tooltip='Marcar como resolvido'/>}
-        </div>
-      ),
-      minWidth: '140px',
-
-    },
+    }
   ]
 
   /* Carrega as categorias */
@@ -408,7 +412,7 @@ export default function AdminRegistros() {
                   <Form.Control
                     type="text"
                     placeholder="Digite o ID ou Título do registro"
-                    onKeyUp={(event) => setTimeout(() => setPesquisaIdNome(event.target.value), 1000)}/>
+                    onKeyUp={(event) => {setPesquisaIdNome(event.target.value); setPagina(0);}}/>
                 </Form.Group>
 
                 {/*id do usuário*/}
@@ -416,8 +420,9 @@ export default function AdminRegistros() {
                   <Form.Label>ID do usuário</Form.Label>
                   <Form.Control
                     type="text"
+                    value={pesquisaIdUsuario}
                     placeholder="Digite o ID do usuário"
-                    onKeyUp={(event) => setTimeout(() => setPesquisaIdUsuario(event.target.value), 1000)}/>
+                    onChange={event => {setPesquisaIdUsuario(event.target.value); setPagina(0);}}/>
                 </Form.Group>
 
                 {/*bairro*/}
@@ -426,7 +431,7 @@ export default function AdminRegistros() {
                   <Form.Control
                     type="text"
                     placeholder="Digite o bairro"
-                    onKeyUp={(event) => setTimeout(() => setPesquisaBairro(event.target.value), 1000)}/>
+                    onChange={(event) => {setPesquisaBairro(event.target.value); setPagina(0);}}/>
                 </Form.Group>
 
                 {/*categoria*/}
@@ -437,7 +442,8 @@ export default function AdminRegistros() {
                     value={pesquisaCategoria}
                     onChange={event => {
                       const categoriaSelecionada = categorias.find(cat => cat.id == event.target.value);
-                      setPesquisaCategoria(categoriaSelecionada.id)
+                      setPesquisaCategoria(categoriaSelecionada.id);
+                      setPagina(0);
                     }}>
 
                     {/*opções*/}
@@ -457,6 +463,7 @@ export default function AdminRegistros() {
                       const statusSelecionado = statusPermitidos.find(cat => cat.id == event.target.value);
                       setPesquisaStatus(statusSelecionado.id)
                       console.log(statusSelecionado.id)
+                      setPagina(0);
                     }}>
 
                     {/*opções*/}
@@ -485,7 +492,7 @@ export default function AdminRegistros() {
                   rowsPerPageText: 'Linhas por página',
                   rangeSeparatorText: 'de',
                 }}
-                paginationRowsPerPageOptions={[30, 70, 100]}
+                paginationRowsPerPageOptions={[10, 50, 100]}
                 onChangePage={(page) => setPagina(page - 1)}
                 onChangeRowsPerPage={(newLimit, page) => {
                   setLimite(newLimit);
