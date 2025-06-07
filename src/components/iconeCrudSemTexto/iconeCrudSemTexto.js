@@ -3,8 +3,8 @@ import '../iconeCrud/iconeCrud.css';
 import Tooltip from "react-bootstrap/Tooltip";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 
-export default function IconeCrudSemTexto({icone: Icone, cor, funcao, tooltip, size='16px'}) {
-
+// https://react-icons.github.io/react-icons/
+export default function IconeCrudSemTexto({icone: Icone, cor, funcao, tooltip, size = '16px'}) {
   const [isHovered, setIsHovered] = useState(false);
 
   const renderTooltip = (props) => (
@@ -27,7 +27,7 @@ export default function IconeCrudSemTexto({icone: Icone, cor, funcao, tooltip, s
       >
 
         <Icone
-          className={`flex-shrink-0 icon-hover`}
+          className={`flex-shrink-0 icon-hover my-auto`}
 
           size={size}
           style={{'color': `${isHovered ? cor : 'black'}`}}

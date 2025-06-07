@@ -48,7 +48,7 @@ export default function InputEndereco  ({registro, setRegistro})  {
   };
 
   return (
-    <div ref={containerRef} className="position-relative">
+    <div ref={containerRef} className="position-relative flex-grow-1">
 
       {/*input*/}
       <Form.Control

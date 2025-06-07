@@ -18,6 +18,9 @@ import PopupCorrecao from "../components/popupCorrecao/popupCorrecao";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import BlocoImagem from "../components/blocoImagem/blocoImagem";
 import {obterBairroLocalizacaoPorLatLong} from "../app/service/mapService";
+import IconeCrud from "../components/iconeCrud/iconeCrud";
+import IconeCrudSemTexto from "../components/iconeCrudSemTexto/iconeCrudSemTexto";
+import {FaLocationArrow} from "react-icons/fa";
 
 export default function CadastrarRegistro() {
 
@@ -107,6 +110,35 @@ export default function CadastrarRegistro() {
     });
     return null;
   }
+
+
+  const handleGetLocation = () => {
+
+    if (navigator.geolocation) {
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const {latitude, longitude} = position.coords;
+          if (registroService.calcularDistanciaDoCentro(latitude, longitude) > 30) {
+            mensagemErro('Sua localização atual está a mais de 30 km do centro. Por favor, selecione um local mais próximo.');
+          } else {
+
+
+            const [bairro, localizacao] = await obterBairroLocalizacaoPorLatLong(latitude, longitude);
+            setRegistro({...registro, latitude, longitude, bairro, localizacao});
+
+
+          }
+        },
+        (error) => {
+          mensagemErro('Erro ao obter sua localização: ' + error.message);
+        }
+      );
+
+    } else {
+      mensagemErro('Geolocalização não é suportada por este navegador.');
+    }
+  };
 
   /**
    * Cadastra o registro e as imagens
@@ -295,10 +327,15 @@ export default function CadastrarRegistro() {
             {/*localizacao*/}
             <Form.Group className="mb-3">
               <Form.Label>Localização*</Form.Label>
-              <InputEndereco
-                registro={registro}
-                setRegistro={setRegistro}
-              />
+              <div className="d-flex gap-2 flex-column flex-lg-row">
+                <InputEndereco
+                  registro={registro}
+                  setRegistro={setRegistro}
+                />
+                <Button variant="outline-primary" className="" onClick={handleGetLocation}>
+                  Localização atual
+                </Button>
+              </div>
             </Form.Group>
 
             {/*titulo e categoria*/}
@@ -428,6 +465,7 @@ export default function CadastrarRegistro() {
             <div className='rounded border border-1 border-dark-subtle p-2 d-flex gap-2'>
               <Form.Check
                 type='checkbox'
+                checked={checkRegras}
                 onChange={event => setCheckRegras(event.target.checked)}
               />
               <span>Li e concordo com as <a className='clicavel' onClick={() => setVisibilidadePopupRegras(true)}>regras de publicação</a></span>

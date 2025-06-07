@@ -3,8 +3,8 @@ import './iconeContagem.css';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 
+// https://react-icons.github.io/react-icons/
 export default function IconeContagem({icone: Icone, contagem, tooltip, isClicado, tipo, cor, interagir}) {
-
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       {tooltip}
