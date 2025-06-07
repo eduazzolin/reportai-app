@@ -189,8 +189,14 @@ export default function CadastrarRegistro() {
           if (!imagem) continue;
 
           const formData = new FormData();
-          formData.append('file', imagem);
+
+          // comprime a imagem antes de enviar
+          const imagemComprimida = await imagemService.comprimirImagem(imagem);
+
+          formData.append('file', imagemComprimida);
           formData.append('idRegistro', data.id);
+
+
 
           try {
             await imagemService.salvar(formData);

@@ -43,8 +43,26 @@ export class ImagemService extends ApiService {
     }
   }
 
+  comprimirImagem(imagem) {
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.5);
+      };
+
+      img.onerror = (error) => reject(error);
+      img.src = URL.createObjectURL(imagem);
+    });
+  }
 
 }
+
 
 export const imagemPrototype = {
   "id": null,
