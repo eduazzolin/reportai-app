@@ -18,9 +18,8 @@ import PopupCorrecao from "../components/popupCorrecao/popupCorrecao";
 import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 import BlocoImagem from "../components/blocoImagem/blocoImagem";
 import {obterBairroLocalizacaoPorLatLong} from "../app/service/mapService";
-import IconeCrud from "../components/iconeCrud/iconeCrud";
-import IconeCrudSemTexto from "../components/iconeCrudSemTexto/iconeCrudSemTexto";
-import {FaLocationArrow} from "react-icons/fa";
+import regrasPublicacao from "../resources/regras_publicacao";
+
 
 export default function CadastrarRegistro() {
 
@@ -197,7 +196,6 @@ export default function CadastrarRegistro() {
           formData.append('idRegistro', data.id);
 
 
-
           try {
             await imagemService.salvar(formData);
             console.log('Imagem cadastrada com sucesso!');
@@ -281,6 +279,15 @@ export default function CadastrarRegistro() {
   return (
     <div className='container'>
 
+      {/* ---------------------- popup com as regras de publicação ---------------------- */}
+      <PopupSimples
+        visivel={visibilidadePopupRegras}
+        titulo="Regras de Publicação"
+        mensagem={regrasPublicacao}
+        fechar={() => setVisibilidadePopupRegras(false)}
+      />
+
+
       {/* ---------------------- popup com as correções de IA ---------------------- */}
       <PopupCorrecao
         visivel={visibilidadePopupCorrecao}
@@ -291,21 +298,6 @@ export default function CadastrarRegistro() {
         onRejeitar={() => setVisibilidadePopupCorrecao(false)}
       />
 
-      {/* ---------------------- popup com as regras de publicação ---------------------- */}
-      <PopupSimples
-        visivel={visibilidadePopupRegras}
-        titulo="Regras de Publicação"
-        mensagem="
-            <ul>
-              <li><strong>Sem palavrões ou linguagem ofensiva:</strong> O uso de xingamentos, palavras de baixo calão ou expressões agressivas não será permitido.</li>
-              <li><strong>Sem discurso de ódio:</strong> Não são aceitos textos que incentivem ou promovam preconceito, discriminação ou violência contra qualquer grupo ou indivíduo.</li>
-              <li><strong>Sem conteúdo explícito ou inapropriado:</strong> Qualquer menção a temas de natureza sexual explícita, violência gráfica ou conteúdo impróprio será removida.</li>
-              <li><strong>Sem calúnia ou difamação:</strong> O usuário não pode acusar terceiros sem provas, fazer alegações falsas ou prejudicar a reputação de pessoas ou instituições.</li>
-              <li><strong>Sem spam ou autopromoção:</strong> O sistema não deve ser usado para publicidade, propagandas ou autopromoção de produtos e serviços.</li>
-            </ul>
-        "
-        fechar={() => setVisibilidadePopupRegras(false)}
-      />
 
       {/* ---------------------- popup de confirmação de remoção de imagem ---------------------- */}
       <PopupConfirmacao

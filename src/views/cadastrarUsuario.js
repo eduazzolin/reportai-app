@@ -2,13 +2,14 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom';
 import Form from "react-bootstrap/Form";
 import UsuarioService, {usuarioPrototype} from "../app/service/usuarioService";
-import {Button} from "react-bootstrap";
+import {Button, Spinner} from "react-bootstrap";
 import {mensagemErro, mensagemSucesso} from "../components/toastr";
 
 
 export default function CadastrarUsuario() {
 
   const [usuario, setUsuario] = useState(usuarioPrototype);
+  const [checkPrivacidade, setCheckPrivacidade] = useState(false);
 
   const navigate = useNavigate();
   const service = new UsuarioService();
@@ -18,6 +19,7 @@ export default function CadastrarUsuario() {
   }, []);
 
   const cadastrar = () => {
+
 
     usuario.role = 'USUARIO';
 
@@ -29,18 +31,22 @@ export default function CadastrarUsuario() {
       return false;
     }
 
+    if (checkPrivacidade) {
 
-    service
-      .salvar(usuario)
-      .then(response => {
-        mensagemSucesso('Cadastro realizado com sucesso! Faça o login para acessar o sistema.');
-        navigate("/login")
-      })
-      .catch(error => {
-        mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar usuário')
-        setUsuario({...usuario, senha: '', senhaRepeticao: ''})
-      })
+      service
+        .salvar(usuario)
+        .then(response => {
+          mensagemSucesso('Cadastro realizado com sucesso! Faça o login para acessar o sistema.');
+          navigate("/login")
+        })
+        .catch(error => {
+          mensagemErro(error?.response?.data?.descricao ?? 'Erro ao cadastrar usuário')
+          setUsuario({...usuario, senha: '', senhaRepeticao: ''})
+        })
 
+    } else {
+      mensagemErro('Você precisa aceitar a Política de Privacidade para se cadastrar.');
+    }
 
   }
 
@@ -54,17 +60,21 @@ export default function CadastrarUsuario() {
       .replace(/(-\d{2})\d+?$/, '$1')
   }
 
+  const irParaPoliticaPrivacidade = () => {
+    window.open(`/politica-privacidade`, '_blank');
+  };
+
   return (
     <div className='container'>
       <div className="row mt-5">
 
         {/*titulo*/}
-        <div className="col-12">
+        <div className="col-12 justify-content-center d-flex">
           <h2>Faça parte do Reportaí 👋</h2>
         </div>
 
         {/*form*/}
-        <div className="col-lg-6 mt-3">
+        <div className="col-lg-6 mt-3 mx-auto">
           <Form>
 
             {/*nome*/}
@@ -116,8 +126,24 @@ export default function CadastrarUsuario() {
                 onChange={event => setUsuario({...usuario, senhaRepeticao: event.target.value})}/>
             </Form.Group>
 
-            {/*botão*/}
-            <Button className="mt-3" variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
+            <div className="my-4 d-lg-flex gap-2 align-items-center">
+
+              {/*check de privacidade*/}
+              <div className='rounded border border-1 border-dark-subtle d-flex gap-2 align-items-center p-2 flex-grow-1'>
+                <Form.Check
+                  type='checkbox'
+                  checked={checkPrivacidade}
+                  onChange={event => setCheckPrivacidade(event.target.checked)}
+                />
+                <span>Li e concordo com a <a className='clicavel' onClick={irParaPoliticaPrivacidade}>Política de Privacidade.</a></span>
+              </div>
+
+              {/*botão*/}
+              <div className='mt-4 mt-lg-0'>
+                <Button className="" variant="warning" onClick={() => cadastrar()}> Cadastrar </Button>
+              </div>
+
+            </div>
 
 
           </Form>

@@ -14,6 +14,7 @@ import AdminRegistros from "../views/adminRegistros";
 import RelatoriosPublicos from "../views/relatoriosPublicos";
 import Sobre from "../views/sobre";
 import RedefinirSenha from "../views/redefinirSenha";
+import PoliticaPrivacidade from "../views/politicaPrivacidade";
 
 const PrivateRoute = ({isUsuarioAutenticado, element}) => {
   return isUsuarioAutenticado ? element : <Navigate to="/login"/>;
@@ -39,6 +40,7 @@ function Rotas() {
           <Route path="/cadastrar-usuario" element={<CadastrarUsuario/>}/>
           <Route path="/login" element={<EntrarUsuario/>}/>
           <Route path="/redefinir-senha" element={<RedefinirSenha/>}/>
+          <Route path="/politica-privacidade" element={<PoliticaPrivacidade/>}/>
 
           {/*------------------------------ rotas privadas ------------------------------*/}
           <Route path="/cadastrar-registro" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<CadastrarRegistro/>}/>}/>

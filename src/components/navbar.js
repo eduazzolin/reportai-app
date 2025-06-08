@@ -22,7 +22,7 @@ function AppNavbar() {
         {/*  --------------------- logo --------------------------*/}
         <Navbar.Brand as={Link} to="/home">
           <img
-            src="/logo.png"
+            src="https://storage.googleapis.com/reportai/resources/logo.png"
             height="30"
             className="d-inline-block align-top"
             alt="React Bootstrap logo"

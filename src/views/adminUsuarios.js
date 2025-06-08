@@ -79,7 +79,7 @@ export default function AdminUsuarios() {
 
   async function exportarPDF() {
     try {
-      const response = await service.buscarTodos(0, totalUsuarios, termo, ordenacao);
+      const response = await service.buscarTodos(0, totalUsuarios, termo, filtroId, ordenacao);
       const usuariosCompletos = response.data.usuarios;
 
       const doc = new jsPDF()
@@ -241,7 +241,7 @@ export default function AdminUsuarios() {
 
           <div className="row mt-5">
             <div className="col-12 d-flex flex-column justify-content-center align-items-center">
-              <img src="/logo.png" alt="Logo Reportaí" width={200} className='mt-5 mb-3'/>
+              <img src="https://storage.googleapis.com/reportai/resources/logo.png" alt="Logo Reportaí" width={200} className='mt-5 mb-3'/>
               <h2>Você não tem permissão para acessar essa página.</h2>
             </div>
           </div>

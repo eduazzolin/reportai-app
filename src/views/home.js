@@ -151,7 +151,7 @@ export default function Home() {
       {/* ---------------------- TELA DE CARREGAMENTO ------------------------*/}
       <div className={`row justify-content-center align-items-center ${isLoading ? 'd-flex' : 'd-none'}`} style={{height: '90vh'}}>
         <div className="col-12 text-center d-flex flex-column justify-content-center align-items-center">
-          <img src="/logo.png" alt="Logo Reportaí" className="img-fluid mt-3 mb-2" style={{maxWidth: '200px'}}/>
+          <img src="https://storage.googleapis.com/reportai/resources/logo.png" alt="Logo Reportaí" className="img-fluid mt-3 mb-2" style={{maxWidth: '200px'}}/>
           <Spinner as="span" animation="border"  role="status" aria-hidden="true"/>
         </div>
       </div>

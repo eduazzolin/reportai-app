@@ -367,7 +367,7 @@ export default function AdminRegistros() {
 
           <div className="row mt-5">
             <div className="col-12 d-flex flex-column justify-content-center align-items-center">
-              <img src="/logo.png" alt="Logo Reportaí" width={200} className='mt-5 mb-3'/>
+              <img src="https://storage.googleapis.com/reportai/resources/logo.png" alt="Logo Reportaí" width={200} className='mt-5 mb-3'/>
               <h2>Você não tem permissão para acessar essa página.</h2>
             </div>
           </div>

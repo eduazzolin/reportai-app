@@ -208,7 +208,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
                     icone={FaSquareCaretUp}
                     contagem={qtRelevante}
                     isClicado={usuarioInteracaoIdRelevante}
-                    cor={'rgba(65,195,20,0.82)'}
+                    cor={'#f1c553'}
                     interagir={interagirRelevante}
                     tooltip={'Relevante'}
                     tipo={'RELEVANTE'}
@@ -225,7 +225,7 @@ export default function CardRegistroLateral({registro, focarMapaNoRegistro, inte
                   <IconeContagem
                     icone={FaSquareXmark}
                     contagem={qtConcluido}
-                    cor={'#e6b000'}
+                    cor={'#8c8c8c'}
                     isClicado={usuarioInteracaoIdConcluido}
                     interagir={interagirConcluido}
                     tooltip={'Não está lá'}
