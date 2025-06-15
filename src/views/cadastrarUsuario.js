@@ -18,8 +18,10 @@ export default function CadastrarUsuario() {
     document.title = 'Reportaí - Cadastro de Usuário';
   }, []);
 
+  /**
+   * Cadastra um novo usuário no sistema.
+   */
   const cadastrar = () => {
-
 
     usuario.role = 'USUARIO';
 
@@ -50,6 +52,9 @@ export default function CadastrarUsuario() {
 
   }
 
+  /**
+   * Aplica a máscara de CPF ao valor informado.
+   */
   const mascaraCpf = value => {
     // https://medium.com/reactbrasil/mascara-de-cpf-com-react-javascript-a07719345c93
     return value
@@ -60,6 +65,9 @@ export default function CadastrarUsuario() {
       .replace(/(-\d{2})\d+?$/, '$1')
   }
 
+  /**
+   * Redireciona o usuário para a página de Política de Privacidade em uma nova aba.
+   */
   const irParaPoliticaPrivacidade = () => {
     window.open(`/politica-privacidade`, '_blank');
   };

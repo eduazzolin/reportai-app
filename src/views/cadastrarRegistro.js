@@ -110,7 +110,9 @@ export default function CadastrarRegistro() {
     return null;
   }
 
-
+  /**
+   * Obtém a localização atual do usuário e define as coordenadas no registro.
+   */
   const handleGetLocation = () => {
 
     if (navigator.geolocation) {
@@ -149,7 +151,7 @@ export default function CadastrarRegistro() {
         console.log(registro)
 
 
-        // validações
+        // validações ----------------------------------------------------------
         try {
           registroService.validar(registro);
           imagemService.validar(imagens);
@@ -159,7 +161,7 @@ export default function CadastrarRegistro() {
           return false;
         }
 
-        // correção com IA
+        // correção com IA ------------------------------------------------------
         const respCorrecaoTitulo = await iaService.corrigir(registro.titulo);
         const respCorrecaoTituloData = respCorrecaoTitulo.data;
         if (!respCorrecaoTituloData.valido) {
@@ -179,11 +181,11 @@ export default function CadastrarRegistro() {
           return false;
         }
 
-        // registro
+        // registro -----------------------------------------------------------
         const {data} = await registroService.salvar(registro);
 
 
-        // imagens
+        // imagens ------------------------------------------------------------
         for (const imagem of imagens) {
           if (!imagem) continue;
 
@@ -261,6 +263,10 @@ export default function CadastrarRegistro() {
 
   }
 
+  /**
+   * Preenche o registro com dados de desenvolvimento para testes, ao clicar em
+   * um ponto invisível na tela.
+   */
   const preencherRegitroDev = () => {
     setRegistro({
       titulo: 'Buraco na rua',
