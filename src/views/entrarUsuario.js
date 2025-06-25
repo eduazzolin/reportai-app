@@ -48,7 +48,7 @@ export default function EntrarUsuario() {
           return;
         }
         if (tokenDTO.status === 'OK') {
-          mensagemSucesso('Bem vindo!');
+          mensagemSucesso('Bem-vindo!');
           authContext.iniciarSessao(response.data)
           navigate("/")
         }

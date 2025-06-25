@@ -1,3 +1,10 @@
+/**
+ * Função para obter o nome do bairro e a localização a partir de coordenadas de latitude e longitude.
+ *
+ * @param lat latitude
+ * @param lng longitude
+ * @returns [bairro, localizacao]
+ */
 export const obterBairroLocalizacaoPorLatLong = async (lat, lng) => {
   // https://nominatim.org/release-docs/develop/api/Reverse/
   try {

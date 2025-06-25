@@ -19,14 +19,32 @@ export default class UsuarioService extends ApiService {
     super('/usuarios');
   }
 
+  /**
+   * Busca um usuário pelo ID e retorna um DTO com os dados do usuário.
+   *
+   * @param id
+   * @returns UsuarioDTO
+   */
   buscarDTOPorId(id) {
     return this.get(`/${id}`);
   }
 
+  /**
+   * Gera um hash MD5 da senha do usuário.
+   *
+   * @param senha
+   * @returns string
+   */
   hashSenha(senha) {
     return MD5(senha).toString();
   }
 
+  /**
+   * Salva um usuário no banco de dados.
+   *
+   * @param usuario
+   * @returns UsuarioDTO
+   */
   salvar(usuario) {
     if (usuario.senha) {
       usuario.senha = this.hashSenha(usuario.senha);
@@ -34,10 +52,25 @@ export default class UsuarioService extends ApiService {
     return this.post('', usuario);
   }
 
+  /**
+   * Remove um usuário do banco de dados.
+   *
+   * @param id
+   */
   deletar(id) {
     return this.delete(`/${id}`);
   }
 
+  /**
+   * Busca todos os usuários com paginação, filtro por termo, ID do usuário e ordenação.
+   * Usado na tela Admin.
+   *
+   * @param pagina
+   * @param limite
+   * @param termo
+   * @param id_usuario
+   * @param ordenacao
+   */
   buscarTodos(pagina, limite, termo, id_usuario, ordenacao) {
     termo = termo || '';
     id_usuario = id_usuario || '';
@@ -45,7 +78,8 @@ export default class UsuarioService extends ApiService {
   }
 
   /**
-   * Valida os campos do usuário de acordo com o modo.
+   * Valida os campos do usuário conforme o modo.
+   *
    * @param usuario Objeto com os dados do usuário
    * @param modo ['completo', 'senha', 'exceto-senha']
    */
@@ -99,6 +133,11 @@ export default class UsuarioService extends ApiService {
 
   }
 
+  /**
+   * Autentica um usuário com email, senha e código de segundo fator (opcional).
+   *
+   * @param cred: objeto com email, senha e código de segundo fator
+   */
   autenticar(cred) {
     const credenciais = {
       email: cred.email,
@@ -108,15 +147,31 @@ export default class UsuarioService extends ApiService {
     return this.post('/autenticar', credenciais)
   }
 
+  /**
+   * Altera a senha do usuário autenticado.
+   *
+   * @param usuario
+   */
   alterarSenha(usuario) {
     usuario.senha = this.hashSenha(usuario.senha);
     return this.post('/alterar-senha', usuario);
   }
 
+  /**
+   * Inicia o processo de recuperação de senha para o usuário.
+   *
+   * @param usuario
+   */
   recuperarSenha(usuario) {
     return this.post('/recuperar-senha', usuario);
   }
 
+  /**
+   * Altera a senha do usuário usando um token de recuperação.
+   *
+   * @param usuario
+   * @param token
+   */
   alterarSenhaToken(usuario, token) {
     const tokenSenhaDTO = {
       email: usuario.email,

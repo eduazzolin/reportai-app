@@ -6,6 +6,12 @@ export class ImagemService extends ApiService {
     super('/imagens');
   }
 
+  /**
+   * Salva uma imagem no servidor.
+   *
+   * @param formData
+   * @returns Imagem
+   */
   salvar(formData) {
     for (let par of formData.entries()) {
       console.log(par[0], par[1]);
@@ -13,10 +19,20 @@ export class ImagemService extends ApiService {
     return this.post('', formData);
   }
 
+  /**
+   * Remove uma imagem do servidor.
+   *
+   * @param id
+   */
   remover(id) {
     return this.delete(`/${id}`);
   }
 
+  /**
+   * Valida uma lista de imagens antes de enviá-las para o servidor.
+   *
+   * @param listaImagens
+   */
   validar(listaImagens) {
     const erros = []
 
@@ -43,6 +59,11 @@ export class ImagemService extends ApiService {
     }
   }
 
+  /**
+   * Comprime uma imagem para reduzir seu tamanho.
+   *
+   * @param imagem
+   */
   comprimirImagem(imagem) {
     return new Promise((resolve, reject) => {
       const canvas = document.createElement('canvas');
