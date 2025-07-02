@@ -411,7 +411,10 @@ export default function AdminRegistros() {
                   <Form.Control
                     type="text"
                     placeholder="Digite o ID ou Título do registro"
-                    onKeyUp={(event) => {setPesquisaIdNome(event.target.value); setPagina(0);}}/>
+                    onKeyUp={(event) => {
+                      setPesquisaIdNome(event.target.value);
+                      setPagina(0);
+                    }}/>
                 </Form.Group>
 
                 {/*id do usuário*/}
@@ -421,7 +424,10 @@ export default function AdminRegistros() {
                     type="text"
                     value={pesquisaIdUsuario}
                     placeholder="Digite o ID do usuário"
-                    onChange={event => {setPesquisaIdUsuario(event.target.value); setPagina(0);}}/>
+                    onChange={event => {
+                      setPesquisaIdUsuario(event.target.value);
+                      setPagina(0);
+                    }}/>
                 </Form.Group>
 
                 {/*bairro*/}
@@ -430,7 +436,10 @@ export default function AdminRegistros() {
                   <Form.Control
                     type="text"
                     placeholder="Digite o bairro"
-                    onChange={(event) => {setPesquisaBairro(event.target.value); setPagina(0);}}/>
+                    onChange={(event) => {
+                      setPesquisaBairro(event.target.value);
+                      setPagina(0);
+                    }}/>
                 </Form.Group>
 
                 {/*categoria*/}
@@ -501,6 +510,7 @@ export default function AdminRegistros() {
                 onSort={(column, sortDirection) => {
                   setOrdenacao(`${column.sortField ?? 'dtCriacao'} ${sortDirection}`);
                 }}
+                noDataComponent={<div className="text-center mt-5">Nenhum registro encontrado.</div>}
               />
             </div>
 

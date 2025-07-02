@@ -317,6 +317,7 @@ export default function AdminUsuarios() {
                 onSort={(column, sortDirection) => {
                   setOrdenacao(`${column.sortField ?? 'nome'} ${sortDirection}`);
                 }}
+                noDataComponent={<div className="text-center mt-5">Nenhum usuário encontrado.</div>}
               />
             </div>
 
